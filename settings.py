@@ -1,7 +1,4 @@
 DEBUG = True
 
 # DB config
-MYSQL_DATABASE_USER = 'admin'
-MYSQL_DATABASE_PASSWORD = '123456'
-MYSQL_DATABASE_DB = 'db1'
-MYSQL_DATABASE_HOST = 'localhost'
+SQLALCHEMY_DATABASE_URI = 'mysql://root:qwe123@localhost/db123'
