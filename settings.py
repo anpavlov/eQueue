@@ -1,4 +1,4 @@
 DEBUG = True
-
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 # DB config
-SQLALCHEMY_DATABASE_URI = 'mysql://root:qwe123@localhost/db123'
+SQLALCHEMY_DATABASE_URI = 'mysql://equser:techteam@localhost/equeuedb'
