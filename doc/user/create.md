@@ -6,7 +6,7 @@ Create new anonym user
 
 Requesting http://some.host.ru/api/user/create/ 
 
-Response
+Response:
 ```json
 {
     "code": 0,
