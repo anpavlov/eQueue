@@ -18,7 +18,7 @@ def create():
     db.session.add(session)
     db.session.commit()
 
-    response = {'code': 0, 'body': {'token': session.token} }
+    response = {'code': 200, 'body': {'token': session.token} }
     return json.dumps(response)
 
 
@@ -29,12 +29,12 @@ def update():
     try:
         token = request.form['token']
     except KeyError:
-        response = { 'code': 1, 'body': {'error': 'invalid request params'} }
+        response = { 'code': 400, 'body': {'error': 'invalid request params'} }
         return json.dumps(response)
       
     session = Session.query.filter_by(token=token).first()
     if not session:
-        response = { 'code': 2, 'body': {'error': 'bad token'} }
+        response = { 'code': 403, 'body': {'error': 'bad token'} }
         return json.dumps(response)
     
     user = session.user;
@@ -56,7 +56,7 @@ def update():
     db.session.add(session)
     db.session.commit()
 
-    response = { 'code': 0,
+    response = { 'code': 200,
        'body': {
            'username': user.username,
            'email': user.email,
@@ -70,17 +70,17 @@ def details():
 
     token = request.args.get('token', '')
     if not token:
-        response = { 'code': 1, 'body': {'error': 'invalid request params'} }
+        response = { 'code': 400, 'body': {'error': 'invalid request params'} }
         return json.dumps(response)
       
     session = Session.query.filter_by(token=token).first()
     if not session or int((datetime.utcnow()-session.act_date).total_seconds()) > SESSION_TIME:
-        response = { 'code': 2, 'body': {'error': 'bad token'} }
+        response = { 'code': 403, 'body': {'error': 'bad token'} }
         return json.dumps(response)
     
     user = session.user;
 
-    response = { 'code': 0,
+    response = { 'code': 200,
        'body': {
            'username': user.username,
            'email': user.email,
