@@ -40,7 +40,7 @@ class Queue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship('User', backref=db.backref('users', lazy='dynamic'))
+    user = db.relationship('User', backref=db.backref('q_users', lazy='dynamic'))
     name = db.Column(db.String(255))
     current = db.Column(db.Integer)
 

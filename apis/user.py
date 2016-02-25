@@ -10,7 +10,10 @@ SESSION_TIME = 24*60*60
 @user_api.route("/create/", methods=['POST'])
 def create():
     # user
-    user_id = User.query.order_by(User.id.desc()).first().id + 1;
+    try:
+        user_id = User.query.order_by(User.id.desc()).first().id + 1
+    except AttributeError:
+        user_id = 1
     user = User('anonym'+str(user_id))
     db.session.add(user)
     # session
