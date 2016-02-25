@@ -37,7 +37,7 @@ def update():
         response = { 'code': 403, 'body': {'error': 'bad token'} }
         return json.dumps(response)
     
-    user = session.user;
+    user = session.user
     # username
     try:
         username = request.form['username']
@@ -78,7 +78,7 @@ def details():
         response = { 'code': 403, 'body': {'error': 'bad token'} }
         return json.dumps(response)
     
-    user = session.user;
+    user = session.user
 
     response = { 'code': 200,
        'body': {

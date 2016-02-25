@@ -17,6 +17,7 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     token = db.Column(db.String(36))
@@ -33,3 +34,19 @@ class Session(db.Model):
 
     def __repr__(self):
         return '<Post %r>' % self.title
+
+
+class Queue(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('users', lazy='dynamic'))
+    name = db.Column(db.String(255))
+    current = db.Column(db.Integer)
+
+    def __init__(self, user, name):
+        self.user = user
+        self.name = name
+
+    def __repr__(self):
+        return '<Queue %r>' % self.name

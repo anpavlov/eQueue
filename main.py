@@ -6,6 +6,7 @@ from flask_migrate import Migrate, MigrateCommand
 from models import db
 
 from apis.user import user_api
+from apis.queue import queue_api
 
 app = Flask(__name__)
 app.config.from_object(settings)
@@ -16,6 +17,7 @@ manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
 app.register_blueprint(user_api, url_prefix='/api/user')
+app.register_blueprint(queue_api, url_prefix='/api/queue')
 
 
 @app.route("/")
