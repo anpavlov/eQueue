@@ -74,9 +74,9 @@ def info():
         qid = int(request.args.get('qid'))
     except (ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
-    try:
-        q = Queue.query.filter_by(id=qid).one()
-    except NoResultFound:
+
+    q = Queue.query.get(qid)
+    if q is None:
         return json.dumps(responses.QUEUE_NOT_FOUND)
 
     response = {
@@ -89,3 +89,15 @@ def info():
         }
     }
     return json.dumps(response)
+
+
+@queue_api.route("/join/", methods=['POST'])
+def join():
+    try:
+        token = request.form['token']
+        qid = request.form['qid']
+    except KeyError:
+        return json.dumps(responses.BAD_REQUEST)
+    # check if user has been already in queue
+
+    #standings.

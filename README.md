@@ -11,10 +11,10 @@ dependencies:
 * [details](./doc/user/details.md)
 * [update](./doc/user/update.md)
 
-#tarantool start
+#tarantool start (temporary solution)
 ```bash
 $ tarantool
 tarantool> box.cfg{listen=3301}
 tarantool> s = box.schema.space.create('standings')
-tarantool> s:create_index('primary', {type = 'hash', parts = {1, 'NUM'}})
+tarantool> s:create_index('primary', {type = 'tree', parts = {1, 'NUM', 2, 'NUM'}})
 ```
