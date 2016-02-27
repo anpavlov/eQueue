@@ -15,4 +15,6 @@ dependencies:
 ```bash
 $ tarantool
 tarantool> box.cfg{listen=3301}
+tarantool> s = box.schema.space.create('standings')
+tarantool> s:create_index('primary', {type = 'hash', parts = {1, 'NUM'}})
 ```

@@ -19,12 +19,19 @@ def create():
     except KeyError:
         response = {'code': 400, 'body': {'error': 'invalid request params'}}
         return json.dumps(response)
-    user_id = Session.query.filter_by(token=token).first().user_id
-    user = User.query.filter_by(id=user_id).first()
+    try:
+        name = request.form['name']
+    except KeyError:
+        name = ''
+    user_id = Session.query.filter_by(token=token).one().user_id
+    user = User.query.filter_by(id=user_id).one()
+    q = Queue(user, name)
+    db.session.add(q)
+    db.session.commit()
     response = {
         'code': 200,
         'body': {
-            'user_id': user.id
+            'qid': q.id
         }
     }
     return json.dumps(response)
