@@ -80,13 +80,18 @@ def info():
     if q is None:
         return json.dumps(responses.QUEUE_NOT_FOUND)
 
+    stands = standings.select(qid)
+    users = [u[1] for u in stands]
+
+    if q.created is None:
+        q.created = datetime(1970, 1, 1)
     response = {
         'code': 200,
         'body': {
             'name': q.name,
             'description': q.description,
             'date_opened': int((q.created - datetime(1970, 1, 1)).total_seconds()),
-            'users': [2, 3, 7]
+            'users': users
         }
     }
     return json.dumps(response)
