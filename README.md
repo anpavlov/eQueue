@@ -12,7 +12,7 @@ dependencies:
 * [update](./doc/user/update.md)
 
 #tarantool start
-<code>
-$ tarantool <br />
+```bash
+$ tarantool
 tarantool> box.cfg{listen=3301}
-</code>
+```
