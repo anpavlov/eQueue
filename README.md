@@ -10,3 +10,9 @@ dependencies:
 * [create](./doc/user/create.md)
 * [details](./doc/user/details.md)
 * [update](./doc/user/update.md)
+
+#tarantool start
+<code>
+$ tarantool <br />
+tarantool> box.cfg{listen=3301}
+</code>

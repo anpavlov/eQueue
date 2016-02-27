@@ -16,6 +16,7 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
+
 app.register_blueprint(user_api, url_prefix='/api/user')
 app.register_blueprint(queue_api, url_prefix='/api/queue')
 

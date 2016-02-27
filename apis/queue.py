@@ -2,8 +2,14 @@
 from flask import request, Blueprint
 from models import db, User, Session, Queue
 import json
+import tarantool
+import settings
 
 queue_api = Blueprint('queue', __name__)
+
+# tarantool connection
+tarantool_conn = tarantool.connect(settings.TARANTOOL_HOST, settings.TARANTOOL_PORT)
+standings = tarantool_conn.space('standings')
 
 
 @queue_api.route("/create/", methods=['POST'])
