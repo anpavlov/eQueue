@@ -2,6 +2,7 @@
 from flask import request, Blueprint
 from models import db, User, Queue
 from sqlalchemy.orm.exc import NoResultFound
+from datetime import datetime
 import json
 import tarantool
 import settings
@@ -63,5 +64,28 @@ def update():
     db.session.commit()
     response = {
         'code': 200
+    }
+    return json.dumps(response)
+
+
+@queue_api.route("/info/", methods=['GET'])
+def info():
+    try:
+        qid = int(request.args.get('qid'))
+    except (ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        q = Queue.query.filter_by(id=qid).one()
+    except NoResultFound:
+        return json.dumps(responses.QUEUE_NOT_FOUND)
+
+    response = {
+        'code': 200,
+        'body': {
+            'name': q.name,
+            'description': q.description,
+            'date_opened': int((q.created - datetime(1970, 1, 1)).total_seconds()),
+            'users': [2, 3, 7]
+        }
     }
     return json.dumps(response)

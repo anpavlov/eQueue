@@ -75,7 +75,7 @@ def details():
     token = request.args.get('token', '')
     if not token:
         return json.dumps(responses.BAD_REQUEST)
-      
+
     session = Session.query.filter_by(token=token).first()
     if not session or int((datetime.utcnow()-session.act_date).total_seconds()) > SESSION_TIME:
         response = {'code': 403, 'body': {'error': 'bad token'}}

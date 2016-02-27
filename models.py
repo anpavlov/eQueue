@@ -49,7 +49,7 @@ class Queue(db.Model):
     name = db.Column(db.String(255))
     description = db.Column(db.Text)
     current = db.Column(db.Integer)
-    created = db.Column(db.DateTime, default=datetime.now())
+    created = db.Column(db.DateTime, default=datetime.utcnow())
     closed = db.Column(db.DateTime)
 
     def __init__(self, user, name):
