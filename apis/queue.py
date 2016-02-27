@@ -111,8 +111,10 @@ def join():
     if user is None:
         return json.dumps(responses.INVALID_TOKEN)
     # check if user has been already in queue
-
-    standings.insert((int(qid), int(user.id), None, None, int(time.time()), None, 0))
+    try:
+        standings.insert((int(qid), int(user.id), None, None, int(time.time()), None, 0))
+    except tarantool.DatabaseError:
+        return json.dumps(responses.ALREADY_IN_QUEUE)
     response = {
         'code': 200,
         'body': {
@@ -120,3 +122,8 @@ def join():
         }
     }
     return json.dumps(response)
+
+
+@queue_api.route("/call/", methods=['POST'])
+def call():
+    pass
