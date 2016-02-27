@@ -17,6 +17,7 @@ import com.sudo.equeue.models.basic.Queue;
 import com.sudo.equeue.models.SearchResults;
 import com.sudo.equeue.models.Vacancy;
 import com.sudo.equeue.models.VacancyShort;
+import com.sudo.equeue.models.basic.QueueList;
 import com.sudo.equeue.models.basic.ResponseBase;
 import com.sudo.equeue.models.basic.User;
 
@@ -141,6 +142,19 @@ public class Processor {
             return NetService.CODE_OK;
         }
         return NetService.CODE_FAILED;
+    }
+
+    public QueueList findQueue() {
+        Response<ResponseBase<QueueList>> response;
+        try {
+            response = queueApi.findQueue().execute();
+        } catch (IOException e) {
+            return null;
+        }
+        if (response.isSuccess() && response.body().getCode() == 200) {
+            return response.body().getBody();
+        }
+        return null;
     }
 
 //    public Employer getEmployer(long id) {

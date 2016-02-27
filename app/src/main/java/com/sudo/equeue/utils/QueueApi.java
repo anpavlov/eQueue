@@ -9,6 +9,7 @@ import com.sudo.equeue.models.Employer;
 import com.sudo.equeue.models.basic.Queue;
 import com.sudo.equeue.models.SearchResults;
 import com.sudo.equeue.models.Vacancy;
+import com.sudo.equeue.models.basic.QueueList;
 import com.sudo.equeue.models.basic.ResponseBase;
 import com.sudo.equeue.models.basic.User;
 
@@ -58,7 +59,7 @@ public interface QueueApi {
     Call<ResponseBase<Void>> callNext(@Field("token") String token, @Field("qid") int qid);
 
     @GET("/queue/find")
-    Call<ResponseBase<List<Queue>>> findQueue();
+    Call<ResponseBase<QueueList>> findQueue();
 
     @FormUrlEncoded
     @POST("/queue/join")

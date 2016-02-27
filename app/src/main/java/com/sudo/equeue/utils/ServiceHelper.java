@@ -120,6 +120,13 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
+    public int findQueue() {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_CALL_NEXT, requestId);
+
+        application.startService(i);
+        return requestId;
+    }
 
 //    =============== old======================
 

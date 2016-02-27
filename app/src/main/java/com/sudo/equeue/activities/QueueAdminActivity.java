@@ -61,9 +61,9 @@ public class QueueAdminActivity extends NetBaseActivity {
         ((TextView) findViewById(R.id.description_field)).setText(queueInfo.getDescription());
         ((LinearLayout) findViewById(R.id.list)).removeAllViews();
         if (!queueInfo.getUserlist().isEmpty()) {
-            for (String username : queueInfo.getUserlist()) {
+            for (Integer userId : queueInfo.getUserlist()) {
                 TextView userTextView = new TextView(this);
-                userTextView.setText(username);
+                userTextView.setText(userId);
                 ((LinearLayout) findViewById(R.id.list)).addView(userTextView);
             }
         }

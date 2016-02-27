@@ -10,14 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
+
 import com.sudo.equeue.NetBaseActivity;
+import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
 
 //import com.sudo.equeue.fragments.AboutFragment;
 //import com.sudo.equeue.fragments.PrefsFragment;
 //import com.sudo.equeue.fragments.SearchFormFragment;
 //import com.sudo.equeue.fragments.SearchResultsFragment;
+import com.sudo.equeue.fragments.QueueListFragment;
 import com.sudo.equeue.fragments.StartFragment;
+import com.sudo.equeue.models.basic.Queue;
+import com.sudo.equeue.models.basic.QueueList;
 //import com.sudo.equeue.utils.ThemeUtils;
 
 import java.util.ArrayList;
@@ -25,10 +31,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends NetBaseActivity implements StartFragment.StartFragmentListener {
+public class MainActivity extends NetBaseActivity implements StartFragment.StartFragmentListener, QueueListFragment.SaveIdListener {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    private QueueListFragment queueListFragment;
+
+    private int findQueuesRequestId;
 
 //    private Map<String, Fragment> fragmentMap;
 //    private final Fragment mSearchFormFragment = new SearchFormFragment();
@@ -151,14 +160,32 @@ public class MainActivity extends NetBaseActivity implements StartFragment.Start
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-//        if (searchRequestIds.indexOf(requestId) != -1) {
-//            progressBar.setVisibility(View.INVISIBLE);
-//        }
+        if (requestId == findQueuesRequestId) {
+            if (resultCode == NetService.CODE_OK) {
+                if (queueListFragment != null) {
+                    queueListFragment.updateQueueList((QueueList) data.getSerializable(NetService.RETURN_QUEUE_LIST));
+                }
+            } else {
+                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
     public void findQueueButtonCallback() {
+        queueListFragment = (QueueListFragment) getFragmentManager().findFragmentByTag(QueueListFragment.TAG);
+        if (queueListFragment == null) {
+            queueListFragment = new QueueListFragment();
+        }
+        getFragmentManager().beginTransaction()
+                .replace(R.id.main_content_frame, queueListFragment)
+                .addToBackStack(null)
+                .commit();
+    }
 
+    @Override
+    public void saveFindRequestId(int id) {
+        findQueuesRequestId = id;
     }
 
 //    @Override

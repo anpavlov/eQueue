@@ -12,13 +12,13 @@ public class Queue extends PossibleError implements Serializable {
     private String name;
     private String alias;
     private String description;
-    private List<String> users;
+    private List<Integer> users;
 
-    public List<String> getUserlist() {
+    public List<Integer> getUserlist() {
         return users;
     }
 
-    public void setUserlist(List<String> userlist) {
+    public void setUserlist(List<Integer> userlist) {
         this.users = userlist;
     }
 
