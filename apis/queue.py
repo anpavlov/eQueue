@@ -7,6 +7,7 @@ import json
 import tarantool
 import settings
 import responses
+import time
 
 queue_api = Blueprint('queue', __name__)
 
@@ -98,6 +99,19 @@ def join():
         qid = request.form['qid']
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = User.get_user_by_token(token)
+    except NoResultFound:
+        return json.dumps(responses.INVALID_TOKEN)
+    if user is None:
+        return json.dumps(responses.INVALID_TOKEN)
     # check if user has been already in queue
 
-    #standings.
+    standings.insert((int(qid), int(user.id), None, None, int(time.time()), None, 0))
+    response = {
+        'code': 200,
+        'body': {
+            'ok': 'ok'
+        }
+    }
+    return json.dumps(response)
