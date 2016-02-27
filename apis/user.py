@@ -3,6 +3,7 @@ from flask import request, Blueprint
 from models import db, User, Session
 from datetime import datetime, timedelta
 import json
+import responses
 
 user_api = Blueprint('user', __name__)
 SESSION_TIME = 24*60*60
@@ -21,7 +22,7 @@ def create():
     db.session.add(session)
     db.session.commit()
 
-    response = {'code': 200, 'body': {'token': session.token} }
+    response = {'code': 200, 'body': {'token': session.token}}
     return json.dumps(response)
 
 
@@ -32,12 +33,11 @@ def update():
     try:
         token = request.form['token']
     except KeyError:
-        response = { 'code': 400, 'body': {'error': 'invalid request params'} }
-        return json.dumps(response)
-      
+        return json.dumps(responses.BAD_REQUEST)
+
     session = Session.query.filter_by(token=token).first()
     if not session:
-        response = { 'code': 403, 'body': {'error': 'bad token'} }
+        response = {'code': 403, 'body': {'error': 'bad token'}}
         return json.dumps(response)
     
     user = session.user
@@ -59,11 +59,12 @@ def update():
     db.session.add(session)
     db.session.commit()
 
-    response = { 'code': 200,
-       'body': {
-           'username': user.username,
-           'email': user.email,
-       }
+    response = {
+        'code': 200,
+        'body': {
+            'username': user.username,
+            'email': user.email,
+        }
     }
     return json.dumps(response)
 
@@ -73,20 +74,20 @@ def details():
 
     token = request.args.get('token', '')
     if not token:
-        response = { 'code': 400, 'body': {'error': 'invalid request params'} }
-        return json.dumps(response)
+        return json.dumps(responses.BAD_REQUEST)
       
     session = Session.query.filter_by(token=token).first()
     if not session or int((datetime.utcnow()-session.act_date).total_seconds()) > SESSION_TIME:
-        response = { 'code': 403, 'body': {'error': 'bad token'} }
+        response = {'code': 403, 'body': {'error': 'bad token'}}
         return json.dumps(response)
     
     user = session.user
 
-    response = { 'code': 200,
-       'body': {
-           'username': user.username,
-           'email': user.email,
-       }
+    response = {
+        'code': 200,
+        'body': {
+            'username': user.username,
+            'email': user.email,
+        }
     }
     return json.dumps(response)

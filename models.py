@@ -17,6 +17,11 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+    @staticmethod
+    def get_user_by_token(token):
+        session = Session.query.filter_by(token=token).one()
+        return User.query.get(session.user_id)
+
 
 class Session(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -42,7 +47,10 @@ class Queue(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship('User', backref=db.backref('q_users', lazy='dynamic'))
     name = db.Column(db.String(255))
+    description = db.Column(db.Text)
     current = db.Column(db.Integer)
+    created = db.Column(db.DateTime, default=datetime.now())
+    closed = db.Column(db.DateTime)
 
     def __init__(self, user, name):
         self.user = user
