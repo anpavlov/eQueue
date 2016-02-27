@@ -8,26 +8,26 @@ import java.util.List;
  */
 public class Queue extends PossibleError implements Serializable {
 
-    private int queueId;
+    private int qid;
     private String name;
     private String alias;
     private String description;
-    private List<String> userlist;
+    private List<String> users;
 
     public List<String> getUserlist() {
-        return userlist;
+        return users;
     }
 
     public void setUserlist(List<String> userlist) {
-        this.userlist = userlist;
+        this.users = userlist;
     }
 
     public int getQueueId() {
-        return queueId;
+        return qid;
     }
 
     public void setQueueId(int queueId) {
-        this.queueId = queueId;
+        this.qid = queueId;
     }
 
     public String getName() {

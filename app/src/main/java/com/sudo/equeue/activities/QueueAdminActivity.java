@@ -40,8 +40,8 @@ public class QueueAdminActivity extends NetBaseActivity {
             }
         }
 
-        ((Button) findViewById(R.id.btn_save_info)).setOnClickListener(v -> saveInfo());
-        ((Button) findViewById(R.id.btn_next)).setOnClickListener(v -> callNext());
+        findViewById(R.id.btn_save_info).setOnClickListener(v -> saveInfo());
+        findViewById(R.id.btn_next).setOnClickListener(v -> callNext());
     }
 
     private void saveInfo() {
@@ -51,12 +51,15 @@ public class QueueAdminActivity extends NetBaseActivity {
     }
 
     private void callNext() {
-        callRequestId = getServiceHelper().callNext();
+        if (queueInfo != null) {
+            callRequestId = getServiceHelper().callNext(queueInfo.getQueueId());
+        }
     }
 
     private void updateQueueView() {
         ((EditText) findViewById(R.id.name_field)).setText(queueInfo.getName());
         ((TextView) findViewById(R.id.description_field)).setText(queueInfo.getDescription());
+        ((LinearLayout) findViewById(R.id.list)).removeAllViews();
         if (!queueInfo.getUserlist().isEmpty()) {
             for (String username : queueInfo.getUserlist()) {
                 TextView userTextView = new TextView(this);
@@ -68,10 +71,17 @@ public class QueueAdminActivity extends NetBaseActivity {
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-        if (requestId == createRequestId) {
+        if (requestId == createRequestId || requestId == getQueueRequestId) {
             if (resultCode == NetService.CODE_OK) {
                 queueInfo = (Queue) data.getSerializable(NetService.RETURN_QUEUE);
                 updateQueueView();
+            } else {
+                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            }
+        } else
+        if (requestId == saveInfoRequestId || requestId == callRequestId) {
+            if (resultCode == NetService.CODE_OK) {
+                Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
             }

@@ -9,6 +9,7 @@ import android.net.Uri;
 //import com.example.alex.headhunter.models.Vacancy;
 //import com.example.alex.headhunter.models.VacancyShort;
 
+import com.sudo.equeue.NetService;
 import com.sudo.equeue.content.contracts.SearchResultContract;
 import com.sudo.equeue.models.CreateQueueResponse;
 import com.sudo.equeue.models.Employer;
@@ -100,54 +101,96 @@ public class Processor {
         return null;
     }
 
-    public Employer getEmployer(long id) {
-        Response<Employer> response;
+    public Queue getQueue(int queueId) {
+        Response<ResponseBase<Queue>> response;
         try {
-            response = queueApi.getEmployer(id).execute();
+            response = queueApi.getQueue(queueId).execute();
         } catch (IOException e) {
             return null;
         }
         if (response.isSuccess()) {
-            return response.body();
-        }
-        return null;
-    }
-
-    public Vacancy getVacancy(int id) {
-        Response<Vacancy> response;
-        try {
-            response = queueApi.getVacancy(id).execute();
-        } catch (IOException e) {
-            return null;
-        }
-        if (response.isSuccess()) {
-            return response.body();
-        }
-        return null;
-    }
-
-    public SearchResults makeSearch(String text, int areaId, String experienceApiId, ArrayList<String> employmentApiIds, ArrayList<String> scheduleApiIds, int page) {
-        Response<SearchResults> response;
-        try {
-            response = queueApi.makeSearch(text, areaId, experienceApiId, employmentApiIds, scheduleApiIds, page).execute();
-        } catch (IOException e) {
-            return null;
-        }
-        if (response.isSuccess()) {
-            SearchResults results = response.body();
-//            context.getContentResolver().delete(CONTENT_SEARCH_RESULTS_URI, null, null);
-
-            ContentValues contentValues = new ContentValues();
-
-            for (VacancyShort vacancy : results.getItems()) {
-                contentValues.put(SearchResultContract.SearchResultEntry.COLUMN_NAME_VACANCY_ID, vacancy.getId());
-                contentValues.put(SearchResultContract.SearchResultEntry.COLUMN_NAME_NAME, vacancy.getName());
-                contentValues.put(SearchResultContract.SearchResultEntry.COLUMN_NAME_EMPLOYER_NAME, vacancy.getEmployer().getName());
-
-                context.getContentResolver().insert(CONTENT_SEARCH_RESULTS_URI, contentValues);
+            ResponseBase<Queue> respBody = response.body();
+            if (respBody.getCode() == 200) {
+                return respBody.getBody();
             }
-            return results;
         }
         return null;
     }
+
+    public int saveQueue(String token, Queue queue) {
+        Response<ResponseBase<Void>> response;
+        try {
+            response = queueApi.saveQueue(token, queue.getQueueId(), queue.getName(), queue.getDescription()).execute();
+        } catch (IOException e) {
+            return NetService.CODE_FAILED;
+        }
+        if (response.isSuccess() && response.body().getCode() == 200) {
+            return NetService.CODE_OK;
+        }
+        return NetService.CODE_FAILED;
+    }
+
+    public int callNext(String token, int queueId) {
+        Response<ResponseBase<Void>> response;
+        try {
+            response = queueApi.callNext(token, queueId).execute();
+        } catch (IOException e) {
+            return NetService.CODE_FAILED;
+        }
+        if (response.isSuccess() && response.body().getCode() == 200) {
+            return NetService.CODE_OK;
+        }
+        return NetService.CODE_FAILED;
+    }
+
+//    public Employer getEmployer(long id) {
+//        Response<Employer> response;
+//        try {
+//            response = queueApi.getEmployer(id).execute();
+//        } catch (IOException e) {
+//            return null;
+//        }
+//        if (response.isSuccess()) {
+//            return response.body();
+//        }
+//        return null;
+//    }
+//
+//    public Vacancy getVacancy(int id) {
+//        Response<Vacancy> response;
+//        try {
+//            response = queueApi.getVacancy(id).execute();
+//        } catch (IOException e) {
+//            return null;
+//        }
+//        if (response.isSuccess()) {
+//            return response.body();
+//        }
+//        return null;
+//    }
+//
+//    public SearchResults makeSearch(String text, int areaId, String experienceApiId, ArrayList<String> employmentApiIds, ArrayList<String> scheduleApiIds, int page) {
+//        Response<SearchResults> response;
+//        try {
+//            response = queueApi.makeSearch(text, areaId, experienceApiId, employmentApiIds, scheduleApiIds, page).execute();
+//        } catch (IOException e) {
+//            return null;
+//        }
+//        if (response.isSuccess()) {
+//            SearchResults results = response.body();
+////            context.getContentResolver().delete(CONTENT_SEARCH_RESULTS_URI, null, null);
+//
+//            ContentValues contentValues = new ContentValues();
+//
+//            for (VacancyShort vacancy : results.getItems()) {
+//                contentValues.put(SearchResultContract.SearchResultEntry.COLUMN_NAME_VACANCY_ID, vacancy.getId());
+//                contentValues.put(SearchResultContract.SearchResultEntry.COLUMN_NAME_NAME, vacancy.getName());
+//                contentValues.put(SearchResultContract.SearchResultEntry.COLUMN_NAME_EMPLOYER_NAME, vacancy.getEmployer().getName());
+//
+//                context.getContentResolver().insert(CONTENT_SEARCH_RESULTS_URI, contentValues);
+//            }
+//            return results;
+//        }
+//        return null;
+//    }
 }

@@ -24,6 +24,9 @@ public class NetService extends IntentService {
 
 //    Actions
     public static final String ACTION_CREATE_QUEUE = QueueApplication.prefix + ".action.CREATE_QUEUE";
+    public static final String ACTION_GET_QUEUE = QueueApplication.prefix + ".action.GET_QUEUE";
+    public static final String ACTION_SAVE_QUEUE = QueueApplication.prefix + ".action.SAVE_QUEUE";
+    public static final String ACTION_CALL_NEXT = QueueApplication.prefix + ".action.CALL_NEXT";
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
 //    public static final String ACTION_MAKE_SEARCH = QueueApplication.prefix + ".action.MAKE_SEARCH";
@@ -31,7 +34,8 @@ public class NetService extends IntentService {
 
 //    Data extras names
     public static final String EXTRA_TOKEN = QueueApplication.prefix + ".extra.TOKEN";
-    public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.TOKEN";
+    public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.QUEUE_ID";
+    public static final String EXTRA_QUEUE = QueueApplication.prefix + ".extra.QUEUE";
 
 //    public static final String EXTRA_EMPLOYER_ID = QueueApplication.prefix + ".extra.EMPLOYER_ID";
 //    public static final String EXTRA_SEARCH_TEXT = QueueApplication.prefix + ".extra.SEARCH_TEXT";
@@ -47,6 +51,7 @@ public class NetService extends IntentService {
     public static final String RETURN_DATA_SEARCH_RESULTS = QueueApplication.prefix + ".return.SEARCH_RESULTS";
 
     private Processor processor;
+    private ResultReceiver receiver;
 
     public NetService() {
         super("NetService");
@@ -61,12 +66,32 @@ public class NetService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
-            final ResultReceiver receiver = intent.getParcelableExtra(EXTRA_RECEIVER);
+            receiver = intent.getParcelableExtra(EXTRA_RECEIVER);
             final String action = intent.getAction();
 
-            if (action.equals(ACTION_CREATE_QUEUE)) {
-                final String token = intent.getStringExtra(EXTRA_TOKEN);
-                handleCreateQueue(receiver, token);
+            switch (action) {
+                case ACTION_CREATE_QUEUE: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleCreateQueue(token);
+                    break;
+                }
+                case ACTION_GET_QUEUE: {
+                    final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
+                    handleGetQueue(queueId);
+                    break;
+                }
+                case ACTION_SAVE_QUEUE: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    final Queue queue = (Queue) intent.getSerializableExtra(EXTRA_QUEUE);
+                    handleSaveQueue(token, queue);
+                    break;
+                }
+                case ACTION_CALL_NEXT: {
+                    final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleCallNext(token, queueId);
+                    break;
+                }
             }
 
 
@@ -106,7 +131,12 @@ public class NetService extends IntentService {
 //    ============== Private methods to handle actions ==============
 //    ===============================================================
 
-    private void handleCreateQueue(ResultReceiver receiver, String token) {
+    private void handleCreateQueue(String token) {
+        if (token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
         Queue queue = processor.createQueue(token);
         if (queue != null) {
             Bundle bundle = new Bundle();
@@ -115,6 +145,42 @@ public class NetService extends IntentService {
         } else {
             receiver.send(CODE_FAILED, null);
         }
+    }
+
+    private void handleGetQueue(int queueId) {
+        if (queueId == -1) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Queue queue = processor.getQueue(queueId);
+        if (queue != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(RETURN_QUEUE, queue);
+            receiver.send(CODE_OK, bundle);
+        } else {
+            receiver.send(CODE_FAILED, null);
+        }
+    }
+
+    private void handleSaveQueue(String token, Queue queue) {
+        if (queue == null || token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        int result = processor.saveQueue(token, queue);
+        receiver.send(result, null);
+    }
+
+    private void handleCallNext(String token, int queueId) {
+        if (token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        int result = processor.callNext(token, queueId);
+        receiver.send(result, null);
     }
 
 //    private void handleGetEmployer(ResultReceiver receiver, long id) {
