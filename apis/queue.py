@@ -156,3 +156,19 @@ def call():
         }
     }
     return json.dumps(response)
+
+@queue_api.route("/find/", methods=['GET'])
+def find():
+    query = request.args.get('str')
+    if query is None:
+        return json.dumps(responses.BAD_REQUEST)
+    queues = Queue.query.filter(Queue.name.like("%" + str(query) + "%")).all()
+    q = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in queues]
+
+    response = {
+        'code': 200,
+        'body': {
+            'queues': q
+        }
+    }
+    return json.dumps(response)
