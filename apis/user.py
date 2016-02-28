@@ -1,5 +1,6 @@
 # coding=utf-8
 from flask import request, Blueprint
+from sqlalchemy.orm.exc import NoResultFound
 from models import db, User, Session
 from datetime import datetime, timedelta
 import json
@@ -43,8 +44,7 @@ def update():
 
     session = Session.query.filter_by(token=token).first()
     if not session:
-        response = {'code': 403, 'body': {'error': 'bad token'}}
-        return json.dumps(response)
+        return json.dumps(responses.INVALID_TOKEN)
     
     user = session.user
     # username
@@ -84,8 +84,7 @@ def details():
 
     session = Session.query.filter_by(token=token).first()
     if not session or int((datetime.utcnow()-session.act_date).total_seconds()) > SESSION_TIME:
-        response = {'code': 403, 'body': {'error': 'bad token'}}
-        return json.dumps(response)
+        return json.dumps(responses.INVALID_TOKEN)
     
     user = session.user
 
@@ -94,6 +93,37 @@ def details():
         'body': {
             'username': user.username,
             'email': user.email,
+        }
+    }
+    return json.dumps(response)
+
+
+@user_api.route("/vkauth/", methods=['POST'])
+def vkauth():
+    try:
+        vkuid = int(request.form['vkuid'])
+    except (KeyError, TypeError, ValueError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = User.query.filter_by(vkuid=vkuid).one()
+    except NoResultFound:
+        try:
+            user_id = User.query.order_by(User.id.desc()).first().id + 1
+        except AttributeError:
+            user_id = 1
+        user = User('anonym'+str(user_id))
+        user.vkuid = vkuid
+        db.session.add(user)
+    # session
+    session = Session(user)
+    db.session.add(session)
+    db.session.commit()
+
+    response = {
+        'code': 200,
+        'body': {
+            'token': session.token,
+            'uid': user.id
         }
     }
     return json.dumps(response)
