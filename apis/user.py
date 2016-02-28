@@ -69,8 +69,8 @@ def create():
     return json.dumps(response)
 
 
-@user_api.route("/auth/", methods=['POST'])
-def auth():
+@user_api.route("/login/", methods=['POST'])
+def login():
 
     try:
         email = request.form['email']
@@ -99,6 +99,28 @@ def auth():
             'email': user.email,
             'uid': user.id,
         }
+    }
+    return json.dumps(response)
+
+
+@user_api.route("/logout/", methods=['POST'])
+def logout():
+
+    try:
+        token = request.form['token']
+    except KeyError:
+        return json.dumps(responses.BAD_REQUEST)
+    
+    session = Session.query.filter_by(token=token).first()
+    if session:
+        db.session.delete(session)
+        db.session.commit()
+    else:
+        return json.dumps(responses.INVALID_TOKEN)
+
+    response = {
+        'code': 200,
+        'body': {}
     }
     return json.dumps(response)
 
