@@ -2,17 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_search"
-            android:title="asdasd" />
-        <item android:id="@+id/nav_results"
-            android:title="45tdf" />
+        <item android:id="@+id/nav_create_queue"
+            android:title="Создать очередь" />
+        <item android:id="@+id/nav_find_queue"
+            android:title="Найти очередь" />
+        <item android:id="@+id/nav_my_queues"
+            android:title="Мои очереди" />
     </group>
 
     <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_manage"
-            android:title="jhgfd" />
+        <item android:id="@+id/nav_login"
+            android:title="Войти" />
         <item android:id="@+id/nav_about"
-            android:title="jhgfd" />
+            android:title="Регистрация" />
     </group>
 
 </menu>

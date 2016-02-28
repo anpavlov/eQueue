@@ -39,29 +39,33 @@ public interface QueueApi {
 //    Call<Vacancy> getVacancy(@Path("id") int id);
 
     @FormUrlEncoded
-    @POST("/queue/create")
-    Call<ResponseBase<Queue>> createQueue(@Field("token") String token);
-
-    @FormUrlEncoded
-    @POST("/user/create")
+    @POST("/api/user/create/")
     Call<ResponseBase<User>> createUser(@Field("token") String token);
 
-    @GET("/queue/info")
+    @FormUrlEncoded
+    @POST("/api/queue/create/")
+    Call<ResponseBase<Queue>> createQueue(@Field("token") String token);
+
+    @GET("/api/queue/info/")
     Call<ResponseBase<Queue>> getQueue(@Query("qid") int qid);
 
     @FormUrlEncoded
-    @POST("/queue/update")
+    @POST("/api/queue/update/")
     Call<ResponseBase<Void>> saveQueue(@Field("token") String token, @Field("qid") int qid,
                                        @Field("name") String name, @Field("description") String description);
 
     @FormUrlEncoded
-    @POST("/queue/call")
+    @POST("/api/queue/call/")
     Call<ResponseBase<Void>> callNext(@Field("token") String token, @Field("qid") int qid);
 
-    @GET("/queue/find")
+    @GET("/api/queue/find/")
     Call<ResponseBase<QueueList>> findQueue();
 
     @FormUrlEncoded
-    @POST("/queue/join")
+    @POST("/api/queue/join/")
     Call<ResponseBase<Void>> joinQueue(@Field("token") String token, @Field("qid") int qid);
+
+    @FormUrlEncoded
+    @POST("/api/queue/my/")
+    Call<ResponseBase<QueueList>> myQueues(@Field("token") String token);
 }

@@ -1,6 +1,7 @@
 package com.sudo.equeue.activities;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -99,31 +100,50 @@ public class MainActivity extends NetBaseActivity implements StartFragment.Start
 
         if (!item.isChecked()) {
             switch (item.getItemId()) {
-                case R.id.nav_search:
-//                    getFragmentManager().beginTransaction()
-//                            .replace(R.id.main_content_frame, mSearchFormFragment)
-//                            .commit();
-//                    currentFragmentKey = searchFormFragmentKey;
+                case R.id.nav_create_queue: {
+                    Intent intent = new Intent(this, QueueAdminActivity.class);
+                    intent.putExtra(QueueAdminActivity.EXTRA_IS_NEW_QUEUE, true);
+                    startActivity(intent);
                     break;
+                }
+                case R.id.nav_find_queue: {
+                    queueListFragment = (QueueListFragment) getFragmentManager().findFragmentByTag(QueueListFragment.TAG);
+                    if (queueListFragment == null) {
+                        queueListFragment = new QueueListFragment();
+                    }
 
-                case R.id.nav_results:
-//                    getFragmentManager().beginTransaction()
-//                            .replace(R.id.main_content_frame, mSearchResultsFragment)
-//                            .commit();
-//                    currentFragmentKey = searchResultsFragmentKey;
+                    Bundle args = new Bundle();
+                    args.putBoolean(QueueListFragment.ARGS_IS_MY, false);
+                    queueListFragment.setArguments(args);
+
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.main_content_frame, queueListFragment)
+                            .addToBackStack(null)
+                            .commit();
                     break;
-                case R.id.nav_manage:
-//                    getFragmentManager().beginTransaction()
-//                            .replace(R.id.main_content_frame, mPrefFragment)
-//                            .commit();
-//                    currentFragmentKey = prefFragmentKey;
+                }
+                case R.id.nav_my_queues: {
+                    queueListFragment = (QueueListFragment) getFragmentManager().findFragmentByTag(QueueListFragment.TAG);
+                    if (queueListFragment == null) {
+                        queueListFragment = new QueueListFragment();
+                    }
+
+                    Bundle args = new Bundle();
+                    args.putBoolean(QueueListFragment.ARGS_IS_MY, true);
+                    queueListFragment.setArguments(args);
+
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.main_content_frame, queueListFragment)
+                            .addToBackStack(null)
+                            .commit();
                     break;
-                case R.id.nav_about:
-//                    getFragmentManager().beginTransaction()
-//                            .replace(R.id.main_content_frame, mAboutFragment)
-//                            .commit();
-//                    currentFragmentKey = aboutFragmentKey;
-                    break;
+                }
+//                case R.id.nav_about:
+////                    getFragmentManager().beginTransaction()
+////                            .replace(R.id.main_content_frame, mAboutFragment)
+////                            .commit();
+////                    currentFragmentKey = aboutFragmentKey;
+//                    break;
             }
         }
 
@@ -177,6 +197,11 @@ public class MainActivity extends NetBaseActivity implements StartFragment.Start
         if (queueListFragment == null) {
             queueListFragment = new QueueListFragment();
         }
+
+        Bundle args = new Bundle();
+        args.putBoolean(QueueListFragment.ARGS_IS_MY, false);
+        queueListFragment.setArguments(args);
+
         getFragmentManager().beginTransaction()
                 .replace(R.id.main_content_frame, queueListFragment)
                 .addToBackStack(null)

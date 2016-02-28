@@ -7,6 +7,7 @@ import android.support.v4.os.ResultReceiver;
 
 import com.sudo.equeue.models.basic.Queue;
 import com.sudo.equeue.models.basic.QueueList;
+import com.sudo.equeue.models.basic.User;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.Processor;
 
@@ -30,6 +31,9 @@ public class NetService extends IntentService {
     public static final String ACTION_SAVE_QUEUE = QueueApplication.prefix + ".action.SAVE_QUEUE";
     public static final String ACTION_CALL_NEXT = QueueApplication.prefix + ".action.CALL_NEXT";
     public static final String ACTION_FIND_QUEUE = QueueApplication.prefix + ".action.FIND_QUEUE";
+    public static final String ACTION_JOIN_QUEUE = QueueApplication.prefix + ".action.JOIN_QUEUE";
+    public static final String ACTION_CREATE_USER = QueueApplication.prefix + ".action.CREATE_USER";
+    public static final String ACTION_MY_QUEUES = QueueApplication.prefix + ".action.MY_QUEUES";
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
 //    public static final String ACTION_MAKE_SEARCH = QueueApplication.prefix + ".action.MAKE_SEARCH";
@@ -52,6 +56,7 @@ public class NetService extends IntentService {
     //    Return extras
     public static final String RETURN_QUEUE = QueueApplication.prefix + ".return.QUEUE";
     public static final String RETURN_QUEUE_LIST = QueueApplication.prefix + ".return.QUEUE_LIST";
+    public static final String RETURN_USER = QueueApplication.prefix + ".return.USER";
 //    public static final String RETURN_DATA_SEARCH_RESULTS = QueueApplication.prefix + ".return.SEARCH_RESULTS";
 
     private Processor processor;
@@ -100,6 +105,20 @@ public class NetService extends IntentService {
                     handleFindQueue();
                     break;
                 }
+                case ACTION_JOIN_QUEUE: {
+                    final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleJoinQueue(token, queueId);
+                    break;
+                }
+                case ACTION_CREATE_USER: {
+                    handleCreateUser();
+                    break;
+                }
+                case ACTION_MY_QUEUES:
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleMyQueues(token);
+                    break;
             }
 
 
@@ -138,6 +157,17 @@ public class NetService extends IntentService {
 //    ===============================================================
 //    ============== Private methods to handle actions ==============
 //    ===============================================================
+
+    private void handleCreateUser() {
+        User user = processor.createUser(null);
+        if (user != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(RETURN_USER, user);
+            receiver.send(CODE_OK, bundle);
+        } else {
+            receiver.send(CODE_FAILED, null);
+        }
+    }
 
     private void handleCreateQueue(String token) {
         if (token == null || token.equals("")) {
@@ -182,7 +212,7 @@ public class NetService extends IntentService {
     }
 
     private void handleCallNext(String token, int queueId) {
-        if (token == null || token.equals("")) {
+        if (token == null || token.equals("") || queueId == -1) {
             receiver.send(CODE_FAILED, null);
             return;
         }
@@ -200,6 +230,32 @@ public class NetService extends IntentService {
         } else {
             receiver.send(CODE_FAILED, null);
         }
+    }
+
+    private void handleMyQueues(String token) {
+        if (token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        QueueList queues = processor.myQueues(token);
+        if (queues != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(RETURN_QUEUE_LIST, queues);
+            receiver.send(CODE_OK, bundle);
+        } else {
+            receiver.send(CODE_FAILED, null);
+        }
+    }
+
+    private void handleJoinQueue(String token, int queueId) {
+        if (token == null || token.equals("") || queueId == -1) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        int result = processor.joinQueue(token, queueId);
+        receiver.send(result, null);
     }
 
 //    private void handleGetEmployer(ResultReceiver receiver, long id) {

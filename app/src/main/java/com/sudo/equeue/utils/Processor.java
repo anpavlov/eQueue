@@ -1,6 +1,5 @@
 package com.sudo.equeue.utils;
 
-import android.content.ContentValues;
 import android.net.Uri;
 
 //import com.example.alex.headhunter.content.contracts.SearchResultContract;
@@ -10,19 +9,12 @@ import android.net.Uri;
 //import com.example.alex.headhunter.models.VacancyShort;
 
 import com.sudo.equeue.NetService;
-import com.sudo.equeue.content.contracts.SearchResultContract;
-import com.sudo.equeue.models.CreateQueueResponse;
-import com.sudo.equeue.models.Employer;
 import com.sudo.equeue.models.basic.Queue;
-import com.sudo.equeue.models.SearchResults;
-import com.sudo.equeue.models.Vacancy;
-import com.sudo.equeue.models.VacancyShort;
 import com.sudo.equeue.models.basic.QueueList;
 import com.sudo.equeue.models.basic.ResponseBase;
 import com.sudo.equeue.models.basic.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
@@ -121,7 +113,7 @@ public class Processor {
     public int saveQueue(String token, Queue queue) {
         Response<ResponseBase<Void>> response;
         try {
-            response = queueApi.saveQueue(token, queue.getQueueId(), queue.getName(), queue.getDescription()).execute();
+            response = queueApi.saveQueue(token, queue.getQid(), queue.getName(), queue.getDescription()).execute();
         } catch (IOException e) {
             return NetService.CODE_FAILED;
         }
@@ -155,6 +147,32 @@ public class Processor {
             return response.body().getBody();
         }
         return null;
+    }
+
+    public QueueList myQueues(String token) {
+        Response<ResponseBase<QueueList>> response;
+        try {
+            response = queueApi.myQueues(token).execute();
+        } catch (IOException e) {
+            return null;
+        }
+        if (response.isSuccess() && response.body().getCode() == 200) {
+            return response.body().getBody();
+        }
+        return null;
+    }
+
+    public int joinQueue(String token, int queueId) {
+        Response<ResponseBase<Void>> response;
+        try {
+            response = queueApi.joinQueue(token, queueId).execute();
+        } catch (IOException e) {
+            return NetService.CODE_FAILED;
+        }
+        if (response.isSuccess() && response.body().getCode() == 200) {
+            return NetService.CODE_OK;
+        }
+        return NetService.CODE_FAILED;
     }
 
 //    public Employer getEmployer(long id) {

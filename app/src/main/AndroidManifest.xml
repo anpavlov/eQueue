@@ -36,6 +36,8 @@
 
         <activity android:name=".activities.QueueAdminActivity" >
         </activity>
+        <activity android:name=".activities.QueueViewerActivity" >
+        </activity>
     </application>
 
 </manifest>

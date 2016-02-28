@@ -7,7 +7,16 @@ import java.io.Serializable;
  */
 public class User extends PossibleError implements Serializable {
 
+    private int uid;
     private String token;
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
 
     public String getToken() {
         return token;

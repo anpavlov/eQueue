@@ -16,8 +16,6 @@ import com.sudo.equeue.models.basic.Queue;
 
 public class ServiceHelper implements ServiceCallbackListener {
 
-    private static final String TOKEN_KEY = "com.sudo.equeue.preferences.token";
-
     private ArrayList<ServiceCallbackListener> currentListeners = new ArrayList<>();
     private AtomicInteger idCounter = new AtomicInteger();
     private Application application;
@@ -64,20 +62,28 @@ public class ServiceHelper implements ServiceCallbackListener {
 //    ===============================================================
 //    ================= Fields for caching results ==================
 //    ===============================================================
-    private int searchRequestId;
-    private SearchResults searchResults;
-    private Intent searchIntent;
+//    private int searchRequestId;
+//    private SearchResults searchResults;
+//    private Intent searchIntent;
 
 //    ===============================================================
 //    ======= Public custom methods to call from activities =========
 //    ===============================================================
 
 
+    public int createUser() {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_CREATE_USER, requestId);
+
+        application.startService(i);
+        return requestId;
+    }
+
     public int createQueue() {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_CREATE_QUEUE, requestId);
 
-        String token = prefs.getString(TOKEN_KEY, null);
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
         i.putExtra(NetService.EXTRA_TOKEN, token);
 
         application.startService(i);
@@ -100,7 +106,7 @@ public class ServiceHelper implements ServiceCallbackListener {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_SAVE_QUEUE, requestId);
 
-        String token = prefs.getString(TOKEN_KEY, null);
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
         i.putExtra(NetService.EXTRA_TOKEN, token);
         i.putExtra(NetService.EXTRA_QUEUE, queue);
 
@@ -112,7 +118,7 @@ public class ServiceHelper implements ServiceCallbackListener {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_CALL_NEXT, requestId);
 
-        String token = prefs.getString(TOKEN_KEY, null);
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
         i.putExtra(NetService.EXTRA_TOKEN, token);
         i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
 
@@ -122,7 +128,30 @@ public class ServiceHelper implements ServiceCallbackListener {
 
     public int findQueue() {
         final int requestId = createId();
-        Intent i = createIntent(NetService.ACTION_CALL_NEXT, requestId);
+        Intent i = createIntent(NetService.ACTION_FIND_QUEUE, requestId);
+
+        application.startService(i);
+        return requestId;
+    }
+
+    public int myQueues() {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_MY_QUEUES, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+
+        application.startService(i);
+        return requestId;
+    }
+
+    public int joinQueue(int queueId) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_JOIN_QUEUE, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
 
         application.startService(i);
         return requestId;
@@ -182,10 +211,10 @@ public class ServiceHelper implements ServiceCallbackListener {
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-        if (requestId == searchRequestId) {
-            if (resultCode == NetService.CODE_OK) {
-                searchResults = (SearchResults) data.getSerializable(NetService.RETURN_DATA_SEARCH_RESULTS);
-            }
-        }
+//        if (requestId == searchRequestId) {
+//            if (resultCode == NetService.CODE_OK) {
+//                searchResults = (SearchResults) data.getSerializable(NetService.RETURN_DATA_SEARCH_RESULTS);
+//            }
+//        }
     }
 }

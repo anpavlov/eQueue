@@ -22,7 +22,7 @@ public class Queue extends PossibleError implements Serializable {
         this.users = userlist;
     }
 
-    public int getQueueId() {
+    public int getQid() {
         return qid;
     }
 

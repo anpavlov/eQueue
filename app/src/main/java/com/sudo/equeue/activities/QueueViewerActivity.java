@@ -13,44 +13,39 @@ import com.sudo.equeue.R;
 import com.sudo.equeue.models.basic.Queue;
 import com.sudo.equeue.utils.QueueApplication;
 
-public class QueueAdminActivity extends NetBaseActivity {
+public class QueueViewerActivity extends NetBaseActivity {
 
-    public static final String EXTRA_IS_NEW_QUEUE = QueueApplication.prefix + ".extra.is_new_queue";
+//    public static final String EXTRA_IS_NEW_QUEUE = QueueApplication.prefix + ".extra.is_new_queue";
     public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.queue_id";
 
-    private int createRequestId;
+//    private int createRequestId;
     private int getQueueRequestId;
-    private int saveInfoRequestId;
-    private int callRequestId;
+//    private int saveInfoRequestId;
+    private int joinRequestId;
 
     private Queue queueInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_queue_admin);
+        setContentView(R.layout.activity_queue_viewer);
 
         if (savedInstanceState == null) {
-            if (getIntent().getBooleanExtra(EXTRA_IS_NEW_QUEUE, false)) {
-                createRequestId = getServiceHelper().createQueue();
-            } else {
-                getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
-            }
+            getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
         }
 
-        findViewById(R.id.btn_save_info).setOnClickListener(v -> saveInfo());
-        findViewById(R.id.btn_next).setOnClickListener(v -> callNext());
+        findViewById(R.id.btn_join).setOnClickListener(v -> join());
     }
 
-    private void saveInfo() {
-        queueInfo.setName(((EditText) findViewById(R.id.name_field)).getText().toString());
-        queueInfo.setDescription(((EditText) findViewById(R.id.description_field)).getText().toString());
-        saveInfoRequestId = getServiceHelper().saveQueueInfo(queueInfo);
-    }
+//    private void saveInfo() {
+//        queueInfo.setName(((EditText) findViewById(R.id.name_field)).getText().toString());
+//        queueInfo.setDescription(((EditText) findViewById(R.id.description_field)).getText().toString());
+//        saveInfoRequestId = getServiceHelper().saveQueueInfo(queueInfo);
+//    }
 
-    private void callNext() {
+    private void join() {
         if (queueInfo != null) {
-            callRequestId = getServiceHelper().callNext(queueInfo.getQid());
+            joinRequestId = getServiceHelper().joinQueue(queueInfo.getQid());
         }
     }
 
@@ -60,7 +55,7 @@ public class QueueAdminActivity extends NetBaseActivity {
 
         LinearLayout list = (LinearLayout) findViewById(R.id.list);
         list.removeAllViews();
-        if (queueInfo.getUserlist() != null && !queueInfo.getUserlist().isEmpty()) {
+        if (!queueInfo.getUserlist().isEmpty()) {
             for (Integer userId : queueInfo.getUserlist()) {
                 TextView userTextView = (TextView) getLayoutInflater().inflate(R.layout.queue_list_element, null);
                 userTextView.setText(userId.toString());
@@ -74,7 +69,7 @@ public class QueueAdminActivity extends NetBaseActivity {
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-        if (requestId == createRequestId || requestId == getQueueRequestId) {
+        if (requestId == getQueueRequestId) {
             if (resultCode == NetService.CODE_OK) {
                 queueInfo = (Queue) data.getSerializable(NetService.RETURN_QUEUE);
                 updateQueueView();
@@ -82,9 +77,14 @@ public class QueueAdminActivity extends NetBaseActivity {
                 Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
             }
         } else
-        if (requestId == saveInfoRequestId || requestId == callRequestId) {
+        if (requestId == joinRequestId) {
             if (resultCode == NetService.CODE_OK) {
                 Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
+                TextView userTextView = new TextView(this);
+                userTextView.setText("me");
+                findViewById(R.id.list).setVisibility(View.VISIBLE);
+                findViewById(R.id.empty_lbl).setVisibility(View.GONE);
+                ((LinearLayout) findViewById(R.id.list)).addView(userTextView);
             } else {
                 Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
             }
