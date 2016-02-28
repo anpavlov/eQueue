@@ -60,10 +60,44 @@ def create():
     response = {
         'code': 200,
         'body': {
-            'token': token,
+            'token': str(token),
             'uid': user.id,
             'email': user.email,
             'username': user.username,
+        }
+    }
+    return json.dumps(response)
+
+
+@user_api.route("/auth/", methods=['POST'])
+def auth():
+
+    try:
+        email = request.form['email']
+        password = request.form['password']
+    except KeyError:
+        return json.dumps(responses.BAD_REQUEST)
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return json.dumps(responses.ACCESS_DENIED)
+
+    if werkzeug.security.check_password_hash(user.password, password):
+        session = Session(user)
+        db.session.add(session)
+        token = session.token
+        db.session.commit()
+    else:
+        return json.dumps(responses.ACCESS_DENIED)
+        
+
+    response = {
+        'code': 200,
+        'body': {
+            'token': str(token),
+            'username': user.username,
+            'email': user.email,
+            'uid': user.id,
         }
     }
     return json.dumps(response)
@@ -106,7 +140,6 @@ def update():
     response = {
         'code': 200,
         'body': {
-            'username': user.username,
             'email': user.email,
             'uid': user.id,
             'username': user.username,
