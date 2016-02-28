@@ -3,6 +3,7 @@ from flask import request, Blueprint
 from sqlalchemy.orm.exc import NoResultFound
 from models import db, User, Session
 from datetime import datetime, timedelta
+import werkzeug
 import json
 import responses
 
@@ -11,23 +12,58 @@ SESSION_TIME = 24*60*60
 
 @user_api.route("/create/", methods=['POST'])
 def create():
-    # user
+    
     try:
-        user_id = User.query.order_by(User.id.desc()).first().id + 1
-    except AttributeError:
-        user_id = 1
-    user = User('anonym'+str(user_id))
+        token = request.form['token']
+    except KeyError:
+        token = None
+
+    try:
+        email = request.form['email']
+        if User.query.filter_by(email=email).first():
+            return json.dumps(responses.EMAIL_BUSY)
+        password = request.form['password']
+        password = werkzeug.security.generate_password_hash(password, method='pbkdf2:sha256:2400', salt_length=8)
+    except KeyError:
+        email = None
+
+    user = User()
+
+    if token:
+        try:
+            user = User.get_user_by_token(token)
+            if email and not user.email:
+                user.email = email
+                user.password = password
+            else:
+                return json.dumps(responses.BAD_REQUEST)
+        except NoResultFound:
+            return json.dumps(responses.INVALID_TOKEN)
+    else:
+        if email:
+            user.email = email
+            user.password = password
+                
+    try:
+        username = request.form['username']
+        user.username = username
+    except KeyError:
+        pass
+
     db.session.add(user)
-    # session
-    session = Session(user)
-    db.session.add(session)
+    if not token:
+        session = Session(user)
+        db.session.add(session)
+        token = session.token
     db.session.commit()
 
     response = {
         'code': 200,
         'body': {
-            'token': session.token,
-            'uid': user_id
+            'token': token,
+            'uid': user.id,
+            'email': user.email,
+            'username': user.username,
         }
     }
     return json.dumps(response)
@@ -35,18 +71,17 @@ def create():
 
 @user_api.route("/update/", methods=['POST'])
 def update():
-    token = None    
 
     try:
         token = request.form['token']
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
 
-    session = Session.query.filter_by(token=token).first()
-    if not session:
+    try:
+        user = User.get_user_by_token(token)
+    except NoResultFound:
         return json.dumps(responses.INVALID_TOKEN)
-    
-    user = session.user
+
     # username
     try:
         username = request.form['username']
@@ -55,13 +90,16 @@ def update():
         pass
     # email
     try:
-        username = request.form['email']
-        user.email = username
+        email = request.form['email']
+        if user.email != email and User.query.filter_by(email=email).first():
+            return json.dumps(responses.EMAIL_BUSY)
+        user.email = email
     except KeyError:
         pass
 
-    db.session.add(user)
+    session = Session.query.filter_by(token=token).first()
     session.act_date = datetime.utcnow()
+    db.session.add(user)
     db.session.add(session)
     db.session.commit()
 
@@ -70,6 +108,8 @@ def update():
         'body': {
             'username': user.username,
             'email': user.email,
+            'uid': user.id,
+            'username': user.username,
         }
     }
     return json.dumps(response)
@@ -93,6 +133,7 @@ def details():
         'body': {
             'username': user.username,
             'email': user.email,
+            'uid': user.id,
         }
     }
     return json.dumps(response)

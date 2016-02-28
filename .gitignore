@@ -2,3 +2,7 @@ venv/
 *.iml
 .idea/
 *.pyc
+
+# tarantool
+*.snap
+*.xlog
