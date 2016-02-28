@@ -25,7 +25,7 @@ def create():
     try:
         name = request.form['name']
     except KeyError:
-        name = ''
+        name = 'Queue'
     try:
         user = User.get_user_by_token(token)
     except NoResultFound:
@@ -88,6 +88,7 @@ def info():
     response = {
         'code': 200,
         'body': {
+            'qid': q.id,
             'name': q.name,
             'description': q.description,
             'date_opened': int((q.created - datetime(1970, 1, 1)).total_seconds()),
@@ -159,10 +160,36 @@ def call():
 
 @queue_api.route("/find/", methods=['GET'])
 def find():
-    query = request.args.get('str')
-    if query is None:
+    # query = request.args.get('str')
+    # if query is None:
+    #     return json.dumps(responses.BAD_REQUEST)
+    # queues = Queue.query.filter(Queue.name.like("%" + str(query) + "%")).all()
+    queues = Queue.query.all()
+    q = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in queues]
+
+    response = {
+        'code': 200,
+        'body': {
+            'queues': q
+        }
+    }
+    return json.dumps(response)
+
+
+@queue_api.route("/my/", methods=['POST'])
+def my():
+    try:
+        token = request.form['token']
+    except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
-    queues = Queue.query.filter(Queue.name.like("%" + str(query) + "%")).all()
+    try:
+        user = User.get_user_by_token(token)
+    except NoResultFound:
+        return json.dumps(responses.INVALID_TOKEN)
+    if user is None:
+        return json.dumps(responses.INVALID_TOKEN)
+
+    queues = Queue.query.filter(Queue.user_id == user.id).all()
     q = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in queues]
 
     response = {

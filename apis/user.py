@@ -22,7 +22,13 @@ def create():
     db.session.add(session)
     db.session.commit()
 
-    response = {'code': 200, 'body': {'token': session.token}}
+    response = {
+        'code': 200,
+        'body': {
+            'token': session.token,
+            'uid': user_id
+        }
+    }
     return json.dumps(response)
 
 
