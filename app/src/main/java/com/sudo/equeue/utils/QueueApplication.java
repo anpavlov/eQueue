@@ -9,6 +9,7 @@ public class QueueApplication extends Application {
     public static final String APP_PREFS = "com.sudo.equeue.preferences";
     public static final String PREFS_USER_ID_KEY = "com.sudo.equeue.preferences.user_id";
     public static final String PREFS_USER_TOKEN_KEY = "com.sudo.equeue.preferences.user_token";
+    public static final String PREFS_USER_IS_LOGGED_IN = "com.sudo.equeue.preferences.is_logged_in";
 
     private ServiceHelper serviceHelper;
 

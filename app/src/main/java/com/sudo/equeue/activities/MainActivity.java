@@ -1,13 +1,16 @@
 package com.sudo.equeue.activities;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -25,6 +28,8 @@ import com.sudo.equeue.fragments.QueueListFragment;
 import com.sudo.equeue.fragments.StartFragment;
 import com.sudo.equeue.models.basic.Queue;
 import com.sudo.equeue.models.basic.QueueList;
+import com.sudo.equeue.models.basic.User;
+import com.sudo.equeue.utils.QueueApplication;
 //import com.sudo.equeue.utils.ThemeUtils;
 
 import java.util.ArrayList;
@@ -37,8 +42,11 @@ public class MainActivity extends NetBaseActivity implements StartFragment.Start
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private QueueListFragment queueListFragment;
+    private NavigationView navigationView;
+    private SharedPreferences prefs;
 
     private int findQueuesRequestId;
+    private int createUserRequestId;
 
 //    private Map<String, Fragment> fragmentMap;
 //    private final Fragment mSearchFormFragment = new SearchFormFragment();
@@ -90,9 +98,110 @@ public class MainActivity extends NetBaseActivity implements StartFragment.Start
                     .commit();
         }
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(item -> navigationItemClicked(item));
 
+        prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        updateMenu();
+    }
+
+    private void updateMenu() {
+        Menu menu = navigationView.getMenu();
+
+        if (prefs.getBoolean(QueueApplication.PREFS_USER_IS_LOGGED_IN, false)) {
+            menu.findItem(R.id.nav_login).setVisible(false);
+            menu.findItem(R.id.nav_register).setVisible(false);
+            menu.findItem(R.id.nav_logout).setVisible(true);
+        } else {
+            menu.findItem(R.id.nav_login).setVisible(true);
+            menu.findItem(R.id.nav_register).setVisible(true);
+            menu.findItem(R.id.nav_logout).setVisible(false);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+//    @Override
+//    public void onSearchButtonClick() {
+//        getFragmentManager().beginTransaction()
+//                .replace(R.id.main_content_frame, mSearchResultsFragment)
+//                .commit();
+////        ((SearchResultsFragment) mSearchResultsFragment).onLoaderReset(null);
+//    }
+
+    @Override
+    public void onServiceCallback(int requestId, int resultCode, Bundle data) {
+        if (requestId == findQueuesRequestId) {
+            if (resultCode == NetService.CODE_OK) {
+                if (queueListFragment != null) {
+                    queueListFragment.updateQueueList((QueueList) data.getSerializable(NetService.RETURN_QUEUE_LIST));
+                }
+            } else {
+                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if (requestId == createUserRequestId) {
+            if (resultCode == NetService.CODE_OK) {
+                User user = (User) data.getSerializable(NetService.RETURN_USER);
+                if (user != null && user.getToken() != null && !user.getToken().equals("")) {
+                    prefs.edit()
+                            .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
+                            .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
+                            .commit();
+                } else {
+                    Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void findQueueButtonCallback() {
+        queueListFragment = (QueueListFragment) getFragmentManager().findFragmentByTag(QueueListFragment.TAG);
+        if (queueListFragment == null) {
+            queueListFragment = new QueueListFragment();
+        }
+
+        Bundle args = new Bundle();
+        args.putBoolean(QueueListFragment.ARGS_IS_MY, false);
+        queueListFragment.setArguments(args);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.main_content_frame, queueListFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void saveFindRequestId(int id) {
+        findQueuesRequestId = id;
     }
 
     private boolean navigationItemClicked(MenuItem item) {
@@ -138,79 +247,26 @@ public class MainActivity extends NetBaseActivity implements StartFragment.Start
                             .commit();
                     break;
                 }
-//                case R.id.nav_about:
-////                    getFragmentManager().beginTransaction()
-////                            .replace(R.id.main_content_frame, mAboutFragment)
-////                            .commit();
-////                    currentFragmentKey = aboutFragmentKey;
-//                    break;
+                case R.id.nav_login: {
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                case R.id.nav_register: {
+                    Intent intent = new Intent(this, RegisterActivity.class);
+                    startActivity(intent);
+                    break;
+                }
+                case R.id.nav_logout: {
+                    prefs.edit().remove(QueueApplication.PREFS_USER_IS_LOGGED_IN).remove(QueueApplication.PREFS_USER_TOKEN_KEY).remove(QueueApplication.PREFS_USER_ID_KEY).commit();
+                    createUserRequestId = getServiceHelper().createUser(null, null, false);
+                    updateMenu();
+                    break;
+                }
             }
         }
 
         return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
-
-//    @Override
-//    public void onSearchButtonClick() {
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.main_content_frame, mSearchResultsFragment)
-//                .commit();
-////        ((SearchResultsFragment) mSearchResultsFragment).onLoaderReset(null);
-//    }
-
-    @Override
-    public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-        if (requestId == findQueuesRequestId) {
-            if (resultCode == NetService.CODE_OK) {
-                if (queueListFragment != null) {
-                    queueListFragment.updateQueueList((QueueList) data.getSerializable(NetService.RETURN_QUEUE_LIST));
-                }
-            } else {
-                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
-    @Override
-    public void findQueueButtonCallback() {
-        queueListFragment = (QueueListFragment) getFragmentManager().findFragmentByTag(QueueListFragment.TAG);
-        if (queueListFragment == null) {
-            queueListFragment = new QueueListFragment();
-        }
-
-        Bundle args = new Bundle();
-        args.putBoolean(QueueListFragment.ARGS_IS_MY, false);
-        queueListFragment.setArguments(args);
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.main_content_frame, queueListFragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void saveFindRequestId(int id) {
-        findQueuesRequestId = id;
     }
 
 //    @Override

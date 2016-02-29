@@ -29,7 +29,7 @@ public class StartActivity extends NetBaseActivity {
 
         String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
         if (token == null || token.equals("")) {
-            createUserRequestId = getServiceHelper().createUser();
+            createUserRequestId = getServiceHelper().createUser(null, null, false);
         } else {
             startApp();
         }
@@ -50,8 +50,11 @@ public class StartActivity extends NetBaseActivity {
         if (requestId == createUserRequestId) {
             if (resultCode == NetService.CODE_OK) {
                 User user = (User) data.getSerializable(NetService.RETURN_USER);
-                if (user != null && user.getToken() != null && user.getToken() != "") {
-                    prefs.edit().putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken()).putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid()).commit();
+                if (user != null && user.getToken() != null && !user.getToken().equals("")) {
+                    prefs.edit()
+                         .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
+                         .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
+                         .commit();
                     startApp();
                 } else {
                     Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();

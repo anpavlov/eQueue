@@ -15,6 +15,7 @@ import com.sudo.equeue.models.basic.ResponseBase;
 import com.sudo.equeue.models.basic.User;
 
 import java.io.IOException;
+import java.net.UnknownServiceException;
 
 import retrofit.GsonConverterFactory;
 import retrofit.Response;
@@ -29,7 +30,7 @@ public class Processor {
     public Processor(QueueApplication context) {
         this.context = context;
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:5000")
+                .baseUrl("http://37.139.24.20:5789")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -81,10 +82,36 @@ public class Processor {
         return null;
     }
 
-    public User createUser(String token) {
+    public User createUser(String email, String password, String token) {
         Response<ResponseBase<User>> response;
         try {
-            response = queueApi.createUser(token).execute();
+            response = queueApi.createUser(email, password, token).execute();
+        } catch (IOException e) {
+            return null;
+        }
+        if (response.isSuccess()) {
+            return response.body().getBody();
+        }
+        return null;
+    }
+
+    public User loginVk(int vkuid) {
+        Response<ResponseBase<User>> response;
+        try {
+            response = queueApi.loginVk(vkuid).execute();
+        } catch (IOException e) {
+            return null;
+        }
+        if (response.isSuccess()) {
+            return response.body().getBody();
+        }
+        return null;
+    }
+
+    public User loginEmail(String email, String password) {
+        Response<ResponseBase<User>> response;
+        try {
+            response = queueApi.loginEmail(email, password).execute();
         } catch (IOException e) {
             return null;
         }

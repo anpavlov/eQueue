@@ -33,10 +33,15 @@
 
         <activity android:name=".activities.MainActivity" >
         </activity>
-
         <activity android:name=".activities.QueueAdminActivity" >
         </activity>
         <activity android:name=".activities.QueueViewerActivity" >
+        </activity>
+        <activity android:name=".activities.LoginActivity" >
+        </activity>
+        <activity android:name=".activities.RegisterActivity" >
+        </activity>
+        <activity android:name=".activities.WebViewActivity" >
         </activity>
     </application>
 

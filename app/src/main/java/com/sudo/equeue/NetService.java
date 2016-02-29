@@ -34,6 +34,8 @@ public class NetService extends IntentService {
     public static final String ACTION_JOIN_QUEUE = QueueApplication.prefix + ".action.JOIN_QUEUE";
     public static final String ACTION_CREATE_USER = QueueApplication.prefix + ".action.CREATE_USER";
     public static final String ACTION_MY_QUEUES = QueueApplication.prefix + ".action.MY_QUEUES";
+    public static final String ACTION_LOGIN_VK = QueueApplication.prefix + ".action.LOGIN_VK";
+    public static final String ACTION_LOGIN_EMAIL = QueueApplication.prefix + ".action.LOGIN_EMAIL";
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
 //    public static final String ACTION_MAKE_SEARCH = QueueApplication.prefix + ".action.MAKE_SEARCH";
@@ -43,6 +45,9 @@ public class NetService extends IntentService {
     public static final String EXTRA_TOKEN = QueueApplication.prefix + ".extra.TOKEN";
     public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.QUEUE_ID";
     public static final String EXTRA_QUEUE = QueueApplication.prefix + ".extra.QUEUE";
+    public static final String EXTRA_VKUID = QueueApplication.prefix + ".extra.VKUID";
+    public static final String EXTRA_EMAIL = QueueApplication.prefix + ".extra.EMAIL";
+    public static final String EXTRA_PASSWORD = QueueApplication.prefix + ".extra.PASSWORD";
 
 //    public static final String EXTRA_EMPLOYER_ID = QueueApplication.prefix + ".extra.EMPLOYER_ID";
 //    public static final String EXTRA_SEARCH_TEXT = QueueApplication.prefix + ".extra.SEARCH_TEXT";
@@ -112,13 +117,28 @@ public class NetService extends IntentService {
                     break;
                 }
                 case ACTION_CREATE_USER: {
-                    handleCreateUser();
+                    final String email = intent.getStringExtra(EXTRA_EMAIL);
+                    final String password = intent.getStringExtra(EXTRA_PASSWORD);
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleCreateUser(email, password, token);
                     break;
                 }
-                case ACTION_MY_QUEUES:
+                case ACTION_MY_QUEUES: {
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     handleMyQueues(token);
                     break;
+                }
+                case ACTION_LOGIN_VK: {
+                    final int vkuid = intent.getIntExtra(EXTRA_VKUID, -1);
+                    handleLoginVk(vkuid);
+                    break;
+                }
+                case ACTION_LOGIN_EMAIL: {
+                    final String email = intent.getStringExtra(EXTRA_EMAIL);
+                    final String password = intent.getStringExtra(EXTRA_PASSWORD);
+                    handleLoginEmail(email, password);
+                    break;
+                }
             }
 
 
@@ -158,8 +178,44 @@ public class NetService extends IntentService {
 //    ============== Private methods to handle actions ==============
 //    ===============================================================
 
-    private void handleCreateUser() {
-        User user = processor.createUser(null);
+    private void handleCreateUser(String email, String password, String token) {
+        if (email != null && email.equals("") || password != null && password.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+        User user = processor.createUser(email, password, token);
+        if (user != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(RETURN_USER, user);
+            receiver.send(CODE_OK, bundle);
+        } else {
+            receiver.send(CODE_FAILED, null);
+        }
+    }
+
+    private void handleLoginVk(int vkuid) {
+        if (vkuid == -1) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        User user = processor.loginVk(vkuid);
+        if (user != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(RETURN_USER, user);
+            receiver.send(CODE_OK, bundle);
+        } else {
+            receiver.send(CODE_FAILED, null);
+        }
+    }
+
+    private void handleLoginEmail(String email, String password) {
+        if (email == null || email.equals("") || password == null || password.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        User user = processor.loginEmail(email, password);
         if (user != null) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(RETURN_USER, user);

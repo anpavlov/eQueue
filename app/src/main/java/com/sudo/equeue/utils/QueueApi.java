@@ -40,7 +40,19 @@ public interface QueueApi {
 
     @FormUrlEncoded
     @POST("/api/user/create/")
-    Call<ResponseBase<User>> createUser(@Field("token") String token);
+    Call<ResponseBase<User>> createUser(@Field("email") String email, @Field("password") String password, @Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("/api/user/login/")
+    Call<ResponseBase<User>> loginEmail(@Field("email") String token, @Field("password") String password);
+
+    @FormUrlEncoded
+    @POST("/api/user/logout/")
+    Call<ResponseBase<Void>> logout();
+
+    @FormUrlEncoded
+    @POST("/api/user/vkauth/")
+    Call<ResponseBase<User>> loginVk(@Field("vkuid") int token);
 
     @FormUrlEncoded
     @POST("/api/queue/create/")

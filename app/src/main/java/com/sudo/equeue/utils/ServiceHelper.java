@@ -71,9 +71,39 @@ public class ServiceHelper implements ServiceCallbackListener {
 //    ===============================================================
 
 
-    public int createUser() {
+    public int createUser(String email, String password, boolean needToken) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_CREATE_USER, requestId);
+
+        if (email != null && !email.equals("") && password != null && !password.equals("")) {
+            i.putExtra(NetService.EXTRA_EMAIL, email);
+            i.putExtra(NetService.EXTRA_PASSWORD, password);
+        }
+        if (needToken) {
+            String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+            i.putExtra(NetService.EXTRA_TOKEN, token);
+        }
+
+        application.startService(i);
+        return requestId;
+    }
+
+    public int loginVk(int vkuid) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_LOGIN_VK, requestId);
+
+        i.putExtra(NetService.EXTRA_VKUID, vkuid);
+
+        application.startService(i);
+        return requestId;
+    }
+
+    public int loginEmail(String email, String password) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_LOGIN_EMAIL, requestId);
+
+        i.putExtra(NetService.EXTRA_EMAIL, email);
+        i.putExtra(NetService.EXTRA_PASSWORD, password);
 
         application.startService(i);
         return requestId;
