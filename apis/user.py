@@ -203,11 +203,11 @@ def vkauth():
     try:
         user = User.query.filter_by(vkuid=vkuid).one()
     except NoResultFound:
-        try:
-            user_id = User.query.order_by(User.id.desc()).first().id + 1
-        except AttributeError:
-            user_id = 1
-        user = User('anonym'+str(user_id))
+        # try:
+        #     user_id = User.query.order_by(User.id.desc()).first().id + 1
+        # except AttributeError:
+        #     user_id = 1
+        user = User()
         user.vkuid = vkuid
         db.session.add(user)
     # session
