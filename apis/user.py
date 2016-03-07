@@ -19,6 +19,11 @@ def create():
         token = None
 
     try:
+        gcmid = request.form['gcmid']
+    except KeyError:
+        gcmid = None
+
+    try:
         email = request.form['email']
         if User.query.filter_by(email=email).first():
             return json.dumps(responses.EMAIL_BUSY)
@@ -50,6 +55,8 @@ def create():
     except KeyError:
         pass
 
+    user.gcmid = gcmid
+
     db.session.add(user)
     if not token:
         session = Session(user)
@@ -67,6 +74,28 @@ def create():
         }
     }
     return json.dumps(response)
+
+
+@user_api.route("/updategcm/", methods=['POST'])
+def update_gcmid():
+    try:
+        gcmid = request.form['gcmid']
+        token = request.form['token']
+    except KeyError:
+        return json.dumps(responses.BAD_REQUEST)
+    user = User.get_user_by_token(token)
+    user.gcmid = gcmid
+    db.session.add(user)
+    db.session.commit()
+
+    response = {
+        'code': 200,
+        'body': {
+            'ok': 'ok'
+        }
+    }
+    return json.dumps(response)
+
 
 
 @user_api.route("/login/", methods=['POST'])

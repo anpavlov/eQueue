@@ -8,6 +8,7 @@ import tarantool
 import settings
 import responses
 import time
+from gcm import *
 
 queue_api = Blueprint('queue', __name__)
 

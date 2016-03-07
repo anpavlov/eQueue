@@ -11,6 +11,7 @@ class User(db.Model):
     password = db.Column(db.String(92))
     username = db.Column(db.String(80))
     vkuid = db.Column(db.Integer)
+    gcmid = db.Column(db.String(200))
 
     def __repr__(self):
         return '<User %r>' % self.username
