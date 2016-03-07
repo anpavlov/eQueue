@@ -146,7 +146,7 @@ def call():
         return json.dumps(responses.QUEUE_NOT_FOUND)
 
     # get info for mysql stats
-    user = standings.select(qid, index='secondary', limit=1, iterator=1)
+    user = standings.select(qid, index='secondary', limit=1, iterator=0)
     if not user:
         return json.dumps(responses.EMPTY_QUEUE)
     standings.delete((qid, user[0][1]))
