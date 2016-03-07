@@ -1,7 +1,7 @@
 # eQueue
 
 dependencies:
-`pip install flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql`
+`pip install flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql python-gcm`
 
 
 #API Documentation
