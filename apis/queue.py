@@ -149,6 +149,12 @@ def call():
     user = standings.select(qid, index='secondary', limit=1, iterator=0)
     if not user:
         return json.dumps(responses.EMPTY_QUEUE)
+    # push notification
+    gcm = GCM(settings.GCM_SERVER_ID)
+    data = {'call': 'true', 'param2': 'value2'}
+    reg_id = user.gcmid
+    gcm.plaintext_request(registration_id=reg_id, data=data)
+    
     standings.delete((qid, user[0][1]))
 
     response = {
