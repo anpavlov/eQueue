@@ -152,8 +152,10 @@ def call():
     # push notification
     gcm = GCM(settings.GCM_SERVER_ID)
     data = {'call': 'true', 'param2': 'value2'}
-    reg_id = user.gcmid
-    gcm.plaintext_request(registration_id=reg_id, data=data)
+    out_user = User.query.get(user[0][1])
+    reg_id = out_user.gcmid
+    if reg_id:
+        gcm.plaintext_request(registration_id=reg_id, data=data)
     
     standings.delete((qid, user[0][1]))
 
