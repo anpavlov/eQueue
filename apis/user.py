@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 import werkzeug
 import json
 import responses
+import taran
 
 user_api = Blueprint('user', __name__)
 SESSION_TIME = 24*60*60
@@ -63,6 +64,8 @@ def create():
         db.session.add(session)
         token = session.token
     db.session.commit()
+
+    res = taran.tarantool_manager.insert('users')
 
     response = {
         'code': 200,

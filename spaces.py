@@ -24,7 +24,7 @@ TARANTOOL_RAW = 4
 
 schema = [
     {
-        'name': 'user',
+        'name': 'users',
         'fields': [
             ('id', TARANTOOL_NUM64),  # primary
             ('email', TARANTOOL_STR),  # unique
@@ -35,7 +35,7 @@ schema = [
         ]
     },
     {
-        'name': 'session',
+        'name': 'sessions',
         'fields': [
             ('id', TARANTOOL_NUM64),  # primary
             ('token', TARANTOOL_STR),  # unique
