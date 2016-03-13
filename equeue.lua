@@ -14,7 +14,7 @@ users:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists 
 users:create_index('email', {type = 'tree', parts = {2, 'STR'}, unique = true, if_not_exists = true})
 users:truncate()
 
-local session = box.schema.space.create('session', {if_not_exists = true})
+local session = box.schema.space.create('sessions', {if_not_exists = true})
 session:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists = true})
 session:create_index('token', {type='tree', parts = {2, 'STR'}, if_not_exists = true})
 session:truncate()

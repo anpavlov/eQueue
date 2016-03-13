@@ -1,4 +1,9 @@
-import tarantool
+import uuid
+import time
+
+
+class NoResult(Exception):
+    pass
 
 
 class Manager():
@@ -9,15 +14,55 @@ class Manager():
     def get_space(self, space_name):
         return self.conn.space(space_name)
 
-    def insert(self, space_name, **kwargs):
-        return self.conn.call("auto_inc_insert", space_name, 'cdkecm', 'ueuergg')
+    def insert(self, space_name, info):
+        # form tuple from assoc values
+        data = self._get_default_entity(space_name)
+        for key, val in info.iteritems():
+            data[self._get_position_by_key(space_name, key)] = val
+        res = self.conn.call("auto_inc_insert", space_name, *data)
+        return self._make_assoc(space_name, res)[0]
 
-    def select_assoc(self, space_name, where_tuple, index, asc=True):
+    def select_assoc(self, space_name, where_tuple, index='primary', asc=True):
         iter = 0 if asc else 1
         res = self.get_space(space_name).select(where_tuple, index=index, iterator=iter)
-        # make it assoc
+        return self._make_assoc(space_name, res)
+
+    def get_user_by_token(self, token):
+        session = self.select_assoc('sessions', (token), index='token')
+        if not session[0]:
+            raise NoResult()
+        try:
+            user = self.select_assoc('users', (session['user_id']))
+        except KeyError:
+            raise NoResult()
+        if not user[0]:
+            raise NoResult()
+        return user[0]
+
+    def create_session(self, user):
+        session = {
+            'user_id': user['id'],
+            'token': str(uuid.uuid4()),
+            'act_date': int(time.time())
+        }
+        self.insert('sessions', session)
+        return session['token']
+
+    def _get_position_by_key(self, space_name, key):
+        for i, val in enumerate(self.schema[space_name]['fields']):
+            if val[0] == key:
+                return i - 1
+
+    def _get_default_entity(self, space_name):
+        data = []
+        for val in self.schema[space_name]['fields']:
+            if val[0] != 'id':
+                data.append(val[2])
+        return data
+
+    def _make_assoc(self, space_name, response):
         assoc = []
-        for k, row in enumerate(res):
+        for k, row in enumerate(response):
             x = {}
             for i, val in enumerate(row):
                 x[self.schema[space_name]['fields'][i][0]] = val

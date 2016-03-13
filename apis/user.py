@@ -6,10 +6,74 @@ from datetime import datetime, timedelta
 import werkzeug
 import json
 import responses
-import taran
+from taran import tarantool_manager
+from taran.helper import NoResult
 
 user_api = Blueprint('user', __name__)
 SESSION_TIME = 24*60*60
+
+@user_api.route("/createtaran/", methods=['POST'])
+def create_taran():
+
+    try:
+        token = request.form['token']
+    except KeyError:
+        token = None
+
+    try:
+        gcmid = request.form['gcmid']
+    except KeyError:
+        gcmid = None
+
+    try:
+        email = request.form['email']
+        res = tarantool_manager.select_assoc('users', (email), index='email')
+        if res:
+            return json.dumps(responses.EMAIL_BUSY)
+        password = request.form['password']
+        password = werkzeug.security.generate_password_hash(password, method='pbkdf2:sha256:2400', salt_length=8)
+    except KeyError:
+        email = None
+
+    user = {}
+
+    if token:
+        try:
+            user = tarantool_manager.get_user_by_token(token)
+            if email and not user['email']:
+                user['email'] = email
+                user['password'] = password
+            else:
+                return json.dumps(responses.BAD_REQUEST)
+        except NoResult:
+            return json.dumps(responses.INVALID_TOKEN)
+    else:
+        if email:
+            user['email'] = email
+            user['password'] = password
+
+    try:
+        username = request.form['username']
+        user['username'] = username
+    except KeyError:
+        pass
+
+    user['gcmid'] = gcmid
+
+    new_user = tarantool_manager.insert('users', user)
+    if not token:
+        token = tarantool_manager.create_session(new_user)
+
+    response = {
+        'code': 200,
+        'body': {
+            'token': str(token),
+            'uid': new_user['id'],
+            'email': new_user['email'],
+            'username': new_user['username'],
+        }
+    }
+    return json.dumps(response)
 
 @user_api.route("/create/", methods=['POST'])
 def create():
@@ -65,7 +129,7 @@ def create():
         token = session.token
     db.session.commit()
 
-    res = taran.tarantool_manager.insert('users')
+    res = tarantool_manager.insert('users')
 
     response = {
         'code': 200,

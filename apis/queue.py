@@ -9,12 +9,12 @@ import settings
 import responses
 import time
 from gcm import *
-import taran
+from taran import tarantool_manager
 
 queue_api = Blueprint('queue', __name__)
 
 
-standings = taran.tarantool_manager.get_space('standings')
+standings = tarantool_manager.get_space('standings')
 
 
 @queue_api.route("/create/", methods=['POST'])
