@@ -75,73 +75,6 @@ def create_taran():
     }
     return json.dumps(response)
 
-@user_api.route("/create/", methods=['POST'])
-def create():
-    
-    try:
-        token = request.form['token']
-    except KeyError:
-        token = None
-
-    try:
-        gcmid = request.form['gcmid']
-    except KeyError:
-        gcmid = None
-
-    try:
-        email = request.form['email']
-        if User.query.filter_by(email=email).first():
-            return json.dumps(responses.EMAIL_BUSY)
-        password = request.form['password']
-        password = werkzeug.security.generate_password_hash(password, method='pbkdf2:sha256:2400', salt_length=8)
-    except KeyError:
-        email = None
-
-    user = User()
-
-    if token:
-        try:
-            user = User.get_user_by_token(token)
-            if email and not user.email:
-                user.email = email
-                user.password = password
-            else:
-                return json.dumps(responses.BAD_REQUEST)
-        except NoResultFound:
-            return json.dumps(responses.INVALID_TOKEN)
-    else:
-        if email:
-            user.email = email
-            user.password = password
-                
-    try:
-        username = request.form['username']
-        user.username = username
-    except KeyError:
-        pass
-
-    user.gcmid = gcmid
-
-    db.session.add(user)
-    if not token:
-        session = Session(user)
-        db.session.add(session)
-        token = session.token
-    db.session.commit()
-
-    res = tarantool_manager.insert('users')
-
-    response = {
-        'code': 200,
-        'body': {
-            'token': str(token),
-            'uid': user.id,
-            'email': user.email,
-            'username': user.username,
-        }
-    }
-    return json.dumps(response)
-
 
 @user_api.route("/updategcm/", methods=['POST'])
 def update_gcmid():
@@ -150,10 +83,8 @@ def update_gcmid():
         token = request.form['token']
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
-    user = User.get_user_by_token(token)
-    user.gcmid = gcmid
-    db.session.add(user)
-    db.session.commit()
+    user = tarantool_manager.get_user_by_token(token)
+    tarantool_manager.simple_update('users', user['id'], {'gcmid': gcmid})
 
     response = {
         'code': 200,

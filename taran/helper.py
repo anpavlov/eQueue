@@ -27,12 +27,19 @@ class Manager():
         res = self.get_space(space_name).select(where_tuple, index=index, iterator=iter)
         return self._make_assoc(space_name, res)
 
+    def simple_update(self, space_name, key, values):
+        ops = []
+        for k, value in values.iteritems():
+            ops.append(('=', self._get_position_by_key(space_name, k) + 1, value))
+        res = self.get_space(space_name).update(key, ops)
+        return self._make_assoc(space_name, res)
+
     def get_user_by_token(self, token):
         session = self.select_assoc('sessions', (token), index='token')
-        if not session[0]:
+        if not session:
             raise NoResult()
         try:
-            user = self.select_assoc('users', (session['user_id']))
+            user = self.select_assoc('users', (session[0]['user_id']))
         except KeyError:
             raise NoResult()
         if not user[0]:
