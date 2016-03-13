@@ -42,7 +42,7 @@ public interface QueueApi {
 
     @FormUrlEncoded
     @POST("/api/user/update/")
-    Call<ResponseBase<User>> updateUser(@Field("email") String email, @Field("name") String name, @Field("token") String token);
+    Call<ResponseBase<User>> updateUser(@Field("email") String email, @Field("username") String name, @Field("token") String token);
 
     @FormUrlEncoded
     @POST("/api/user/login/")
@@ -73,7 +73,7 @@ public interface QueueApi {
     Call<ResponseBase<PossibleError>> callNext(@Field("token") String token, @Field("qid") int qid);
 
     @GET("/api/queue/find/")
-    Call<ResponseBase<QueueList>> findQueue();
+    Call<ResponseBase<QueueList>> findQueue(@Query("query") String query);
 
     @FormUrlEncoded
     @POST("/api/queue/join/")

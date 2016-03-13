@@ -45,6 +45,7 @@ public class NetService extends IntentService {
     public static final String EXTRA_EMAIL = QueueApplication.prefix + ".extra.EMAIL";
     public static final String EXTRA_NAME = QueueApplication.prefix + ".extra.NAME";
     public static final String EXTRA_PASSWORD = QueueApplication.prefix + ".extra.PASSWORD";
+    public static final String EXTRA_QUERY = QueueApplication.prefix + ".extra.QUERY";
 
 //    public static final String EXTRA_EMPLOYER_ID = QueueApplication.prefix + ".extra.EMPLOYER_ID";
 //    public static final String EXTRA_SEARCH_TEXT = QueueApplication.prefix + ".extra.SEARCH_TEXT";
@@ -106,7 +107,8 @@ public class NetService extends IntentService {
                     break;
                 }
                 case ACTION_FIND_QUEUE: {
-                    handleFindQueue();
+                    final String query = intent.getStringExtra(EXTRA_QUERY);
+                    handleFindQueue(query);
                     break;
                 }
                 case ACTION_JOIN_QUEUE: {
@@ -268,8 +270,8 @@ public class NetService extends IntentService {
         receiver.send(CODE_OK, bundle);
     }
 
-    private void handleFindQueue() {
-        Bundle bundle = processor.findQueue();
+    private void handleFindQueue(String query) {
+        Bundle bundle = processor.findQueue(query);
         receiver.send(CODE_OK, bundle);
     }
 

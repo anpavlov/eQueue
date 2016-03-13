@@ -12,7 +12,7 @@ public class MyStandingQueueListFragment extends QueueListAbstractFragment {
 
     @Override
     protected int makeRequest() {
-        return getServiceHelper().findQueue();
+        return getServiceHelper().findQueue(null);
     }
 
     @Override

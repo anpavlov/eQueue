@@ -113,8 +113,8 @@ public class Processor {
         return makeSimpleRequest(queueApi.callNext(token, queueId), null);
     }
 
-    public Bundle findQueue() {
-        return makeSimpleRequest(queueApi.findQueue(), NetService.RETURN_QUEUE_LIST);
+    public Bundle findQueue(String query) {
+        return makeSimpleRequest(queueApi.findQueue(query), NetService.RETURN_QUEUE_LIST);
     }
 
     public Bundle myQueues(String token) {

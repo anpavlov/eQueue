@@ -3,6 +3,7 @@ package com.sudo.equeue.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -52,8 +53,8 @@ public class ProfileFragment extends NetBaseFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getActivity().getActionBar() != null) {
-            getActivity().getActionBar().setTitle("Профиль");
+        if (((AppCompatActivity)getActivity()).getSupportActionBar() != null) {
+            ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Профиль");
         }
 
         emailEdit = (EditText) view.findViewById(R.id.field_email);

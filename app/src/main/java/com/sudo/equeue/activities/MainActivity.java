@@ -23,6 +23,7 @@ import com.sudo.equeue.R;
 //import com.sudo.equeue.fragments.PrefsFragment;
 //import com.sudo.equeue.fragments.SearchFormFragment;
 //import com.sudo.equeue.fragments.SearchResultsFragment;
+import com.sudo.equeue.fragments.FindQueueFragment;
 import com.sudo.equeue.fragments.LoginFragment;
 import com.sudo.equeue.fragments.MyQueuesFragment;
 //import com.sudo.equeue.fragments.StartFragment;
@@ -212,13 +213,13 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
 //                    break;
 //                }
                 case R.id.nav_find_queue: {
-                    MyQueuesFragment myQueuesFragment = (MyQueuesFragment) getSupportFragmentManager().findFragmentByTag(MyQueuesFragment.TAG);
-                    if (myQueuesFragment == null) {
-                        myQueuesFragment = new MyQueuesFragment();
+                    FindQueueFragment findQueueFragment = (FindQueueFragment) getSupportFragmentManager().findFragmentByTag(FindQueueFragment.TAG);
+                    if (findQueueFragment == null) {
+                        findQueueFragment = new FindQueueFragment();
                     }
 
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.main_content_frame, myQueuesFragment)
+                            .replace(R.id.main_content_frame, findQueueFragment)
                             .addToBackStack(null)
                             .commit();
                     break;

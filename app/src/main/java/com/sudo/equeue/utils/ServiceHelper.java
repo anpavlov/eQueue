@@ -197,9 +197,13 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
-    public int findQueue() {
+    public int findQueue(String query) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_FIND_QUEUE, requestId);
+
+        if (query != null && !query.equals("")) {
+            i.putExtra(NetService.EXTRA_QUERY, query);
+        }
 
         application.startService(i);
         return requestId;

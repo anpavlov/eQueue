@@ -28,7 +28,7 @@ public abstract class QueueListAbstractFragment extends NetBaseFragment {
 //    public static final String TAG = QueueApplication.prefix + ".fragments.QueueListAbstractFragment";
     public static final String ARGS_IS_MY = QueueApplication.prefix + ".fragments.args.is_my";
 
-    private int getQueueRequestId = -1;
+    protected int getQueueRequestId = -1;
 
     private ArrayAdapter<String> adapter;
     protected List<String> queueNamesList = new ArrayList<>();
@@ -84,6 +84,7 @@ public abstract class QueueListAbstractFragment extends NetBaseFragment {
 
     public void updateQueueList(QueueList queues) {
         queueList = queues.getQueues();
+        queueNamesList.clear();
         for (Queue queue : queueList) {
             queueNamesList.add(queue.getName());
         }
