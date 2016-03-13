@@ -10,4 +10,5 @@ class Manager():
         return self.conn.space(space_name)
 
     def insert(self, space_name, **kwargs):
-        return self.conn.call("insert_to_space", 'test')
+        # return self.conn.call("box.space.users:auto_increment", ["uvgybgn"])
+        return self.conn.call("auto_inc_insert", space_name, 'cdkecm', 'ueuergg')

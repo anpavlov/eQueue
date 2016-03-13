@@ -31,8 +31,9 @@ session:truncate()
 
 
 -- functions area:
-function insert_to_space(space_name)
-    return 'hello'
+function auto_inc_insert(space_name, tuple)
+    local res = box.space[space_name]:auto_increment{tuple}
+    return res
 end
 
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})
