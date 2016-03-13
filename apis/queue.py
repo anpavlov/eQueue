@@ -171,7 +171,7 @@ def call():
 def find():
     query = request.args.get('query')
     if query:
-        queues = Queue.query.filter(Queue.name.like("%" + str(query) + "%")).all()
+        queues = Queue.query.filter(Queue.name.like("%" + u' '.join(query).encode('utf-8') + "%")).all()
     else:
         queues = Queue.query.all()
         
