@@ -8,6 +8,7 @@ import json
 import responses
 from taran import tarantool_manager
 from taran.helper import NoResult
+import time
 
 user_api = Blueprint('user', __name__)
 SESSION_TIME = 24*60*60
@@ -162,37 +163,40 @@ def update():
         return json.dumps(responses.BAD_REQUEST)
 
     try:
-        user = User.get_user_by_token(token)
+        user = tarantool_manager.get_user_by_token(token)
     except NoResultFound:
         return json.dumps(responses.INVALID_TOKEN)
+
+    to_update = {}
 
     # username
     try:
         username = request.form['username']
-        user.username = username
+        to_update['username'] = username
+        user['username'] = username
     except KeyError:
         pass
     # email
     try:
         email = request.form['email']
-        if user.email != email and User.query.filter_by(email=email).first():
+        if user['email'] != email and tarantool_manager.select_assoc('users', (email), index='email'):
             return json.dumps(responses.EMAIL_BUSY)
-        user.email = email
+        to_update['email'] = email
+        user['email'] = email
     except KeyError:
         pass
 
-    session = Session.query.filter_by(token=token).first()
-    session.act_date = datetime.utcnow()
-    db.session.add(user)
-    db.session.add(session)
-    db.session.commit()
+    if len(to_update) > 0:
+        tarantool_manager.simple_update('users', user['id'], to_update)
+    session = tarantool_manager.select_assoc('sessions', (token), index='token')[0]
+    tarantool_manager.simple_update('sessions', session['id'], {'act_date': time.time()})
 
     response = {
         'code': 200,
         'body': {
-            'email': user.email,
-            'uid': user.id,
-            'username': user.username,
+            'email': user['email'],
+            'uid': user['id'],
+            'username': user['username'],
         }
     }
     return json.dumps(response)
