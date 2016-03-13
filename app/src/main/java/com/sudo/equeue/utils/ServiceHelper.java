@@ -7,12 +7,17 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.os.ResultReceiver;
+import android.widget.Toast;
+
 import com.sudo.equeue.NetService;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.sudo.equeue.models.SearchResults;
-import com.sudo.equeue.models.basic.Queue;
+//import com.sudo.equeue.models.SearchResults;
+import com.sudo.equeue.R;
+import com.sudo.equeue.models.Queue;
 
 public class ServiceHelper implements ServiceCallbackListener {
 
@@ -70,14 +75,37 @@ public class ServiceHelper implements ServiceCallbackListener {
 //    ======= Public custom methods to call from activities =========
 //    ===============================================================
 
+    public interface HandleCallbackIntf {
+        void call(Serializable obj);
+    }
 
-    public int createUser(String email, String password, boolean needToken) {
+    public void handleResponse(Context context, int resultCode, Bundle data, HandleCallbackIntf callback, String returnKey) {
+        if (resultCode == NetService.CODE_OK) {
+            if (data.getInt(NetService.RETURN_CODE) == NetService.CODE_OK) {
+                if (returnKey != null) {
+                    callback.call(data.getSerializable(returnKey));
+                } else {
+                    callback.call(null);
+                }
+            } else {
+                Toast.makeText(context, data.getString(NetService.ERROR_MSG, context.getString(R.string.error_msg_unknown)), Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Toast.makeText(context, "Error in arguments", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    public int createUser(String email, String password, String name, boolean needToken) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_CREATE_USER, requestId);
 
         if (email != null && !email.equals("") && password != null && !password.equals("")) {
             i.putExtra(NetService.EXTRA_EMAIL, email);
             i.putExtra(NetService.EXTRA_PASSWORD, password);
+        }
+        if (name != null && !name.equals("")) {
+            i.putExtra(NetService.EXTRA_NAME, name);
         }
         if (needToken) {
             String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
@@ -104,6 +132,19 @@ public class ServiceHelper implements ServiceCallbackListener {
 
         i.putExtra(NetService.EXTRA_EMAIL, email);
         i.putExtra(NetService.EXTRA_PASSWORD, password);
+
+        application.startService(i);
+        return requestId;
+    }
+
+    public int updateUser(String email, String name) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_UPDATE_USER, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_EMAIL, email);
+        i.putExtra(NetService.EXTRA_NAME, name);
 
         application.startService(i);
         return requestId;

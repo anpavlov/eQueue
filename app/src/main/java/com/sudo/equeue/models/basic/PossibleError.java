@@ -1,17 +1,16 @@
 package com.sudo.equeue.models.basic;
 
-/**
- * Created by orange on 24.02.16.
- */
-public class PossibleError {
+import java.io.Serializable;
 
-    private String message;
+public class PossibleError implements Serializable {
 
-    public String getMessage() {
-        return message;
+    private String error;
+
+    public String getError() {
+        return error;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setError(String error) {
+        this.error = error;
     }
 }

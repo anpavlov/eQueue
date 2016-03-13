@@ -1,7 +1,7 @@
 package com.sudo.equeue.models.basic;
 
 
-public class ResponseBase<T> {
+public class ResponseBase<T extends PossibleError> {
 
     private int code;
     private T body;

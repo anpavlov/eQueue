@@ -7,6 +7,8 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.sudo.equeue.activities.RegisterActivity">
 
+    <!-- TODO: insert toolbar-->
+
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -22,11 +24,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/field_name"
+        android:layout_below="@id/field_email"
+        android:layout_centerHorizontal="true"
+        android:hint="Name" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/field_password_one"
         android:hint="Пароль"
-        android:layout_below="@+id/field_email"
+        android:layout_below="@id/field_name"
         android:layout_centerHorizontal="true" />
 
     <EditText
@@ -37,7 +50,7 @@
         android:ems="10"
         android:id="@+id/field_password_two"
         android:hint="Еще раз"
-        android:layout_below="@+id/field_password_one"
+        android:layout_below="@id/field_password_one"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -46,10 +59,10 @@
         android:layout_marginTop="10dp"
         android:text="Зарегистрироваться"
         android:id="@+id/btn_register"
-        android:layout_below="@+id/field_password_two"
-        android:layout_alignLeft="@+id/field_password_one"
-        android:layout_alignStart="@+id/field_password_one"
-        android:layout_alignRight="@+id/field_password_one"
-        android:layout_alignEnd="@+id/field_password_one" />
+        android:layout_below="@id/field_password_two"
+        android:layout_alignLeft="@id/field_password_one"
+        android:layout_alignStart="@id/field_password_one"
+        android:layout_alignRight="@id/field_password_one"
+        android:layout_alignEnd="@id/field_password_one" />
 
 </RelativeLayout>

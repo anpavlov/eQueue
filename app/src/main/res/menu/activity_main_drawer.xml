@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:checkableBehavior="single">
-        <item android:id="@+id/nav_create_queue"
-            android:title="Создать очередь" />
+    <group android:id="@+id/g1" android:checkableBehavior="single">
+        <!--<item android:id="@+id/nav_create_queue"-->
+            <!--android:title="Создать очередь" />-->
         <item android:id="@+id/nav_find_queue"
+            android:icon="@drawable/ic_search_black_36dp"
             android:title="Найти очередь" />
         <item android:id="@+id/nav_my_queues"
+            android:icon="@drawable/ic_list_black_36dp"
             android:title="Мои очереди" />
-        <item android:id="@+id/nav_login"
-            android:title="Войти" />
-        <item android:id="@+id/nav_register"
-            android:title="Регистрация" />
-        <item android:id="@+id/nav_logout"
-            android:title="Выйти" />
+        <!--<item android:id="@+id/nav_login"-->
+            <!--android:title="Войти" />-->
+        <!--<item android:id="@+id/nav_register"-->
+            <!--android:title="Регистрация" />-->
+        <!--<item android:id="@+id/nav_logout"-->
+            <!--android:title="Выйти" />-->
+
+    </group>
+
+    <group android:checkableBehavior="none"
+        android:enabled="false">
+        <item android:id="@+id/nav_btn"
+            app:actionLayout="@layout/nav_btn"
+            android:title="" />
     </group>
 
 </menu>

@@ -13,7 +13,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Create Queue"
-            android:id="@+id/btn_create_queue"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="167dp" />
@@ -22,8 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Find Queue"
-            android:id="@+id/btn_find_queue"
-            android:layout_below="@id/btn_create_queue"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="69dp" />
 

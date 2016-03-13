@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
-import com.sudo.equeue.models.basic.Queue;
+import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.utils.QueueApplication;
 
 public class QueueAdminActivity extends NetBaseActivity {
@@ -75,19 +75,15 @@ public class QueueAdminActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == createRequestId || requestId == getQueueRequestId) {
-            if (resultCode == NetService.CODE_OK) {
-                queueInfo = (Queue) data.getSerializable(NetService.RETURN_QUEUE);
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
+                queueInfo = (Queue) obj;
                 updateQueueView();
-            } else {
-                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-            }
+            }, NetService.RETURN_QUEUE);
         } else
         if (requestId == saveInfoRequestId || requestId == callRequestId) {
-            if (resultCode == NetService.CODE_OK) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
                 Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-            }
+            }, null);
         }
     }
 }

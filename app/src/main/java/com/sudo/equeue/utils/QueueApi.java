@@ -4,23 +4,21 @@ package com.sudo.equeue.utils;
 //import com.example.alex.headhunter.models.SearchResults;
 //import com.example.alex.headhunter.models.Vacancy;
 
-import com.sudo.equeue.models.CreateQueueResponse;
-import com.sudo.equeue.models.Employer;
-import com.sudo.equeue.models.basic.Queue;
-import com.sudo.equeue.models.SearchResults;
-import com.sudo.equeue.models.Vacancy;
-import com.sudo.equeue.models.basic.QueueList;
+//import com.sudo.equeue.models.CreateQueueResponse;
+//import com.sudo.equeue.models.Employer;
+import com.sudo.equeue.models.basic.PossibleError;
+import com.sudo.equeue.models.Queue;
+//import com.sudo.equeue.models.SearchResults;
+//import com.sudo.equeue.models.Vacancy;
+import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.models.basic.ResponseBase;
-import com.sudo.equeue.models.basic.User;
-
-import java.util.List;
+import com.sudo.equeue.models.User;
 
 import retrofit.Call;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
-import retrofit.http.Path;
 import retrofit.http.Query;
 
 public interface QueueApi {
@@ -43,12 +41,16 @@ public interface QueueApi {
     Call<ResponseBase<User>> createUser(@Field("email") String email, @Field("password") String password, @Field("token") String token);
 
     @FormUrlEncoded
+    @POST("/api/user/update/")
+    Call<ResponseBase<User>> updateUser(@Field("email") String email, @Field("name") String name, @Field("token") String token);
+
+    @FormUrlEncoded
     @POST("/api/user/login/")
     Call<ResponseBase<User>> loginEmail(@Field("email") String token, @Field("password") String password);
 
     @FormUrlEncoded
     @POST("/api/user/logout/")
-    Call<ResponseBase<Void>> logout();
+    Call<ResponseBase<PossibleError>> logout();
 
     @FormUrlEncoded
     @POST("/api/user/vkauth/")
@@ -63,19 +65,19 @@ public interface QueueApi {
 
     @FormUrlEncoded
     @POST("/api/queue/update/")
-    Call<ResponseBase<Void>> saveQueue(@Field("token") String token, @Field("qid") int qid,
+    Call<ResponseBase<PossibleError>> saveQueue(@Field("token") String token, @Field("qid") int qid,
                                        @Field("name") String name, @Field("description") String description);
 
     @FormUrlEncoded
     @POST("/api/queue/call/")
-    Call<ResponseBase<Void>> callNext(@Field("token") String token, @Field("qid") int qid);
+    Call<ResponseBase<PossibleError>> callNext(@Field("token") String token, @Field("qid") int qid);
 
     @GET("/api/queue/find/")
     Call<ResponseBase<QueueList>> findQueue();
 
     @FormUrlEncoded
     @POST("/api/queue/join/")
-    Call<ResponseBase<Void>> joinQueue(@Field("token") String token, @Field("qid") int qid);
+    Call<ResponseBase<PossibleError>> joinQueue(@Field("token") String token, @Field("qid") int qid);
 
     @FormUrlEncoded
     @POST("/api/queue/my/")

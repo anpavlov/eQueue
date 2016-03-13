@@ -1,4 +1,6 @@
-package com.sudo.equeue.models.basic;
+package com.sudo.equeue.models;
+
+import com.sudo.equeue.models.basic.PossibleError;
 
 import java.io.Serializable;
 import java.util.List;
@@ -6,7 +8,7 @@ import java.util.List;
 /**
  * Created by orange on 24.02.16.
  */
-public class Queue extends PossibleError implements Serializable {
+public class Queue extends PossibleError {
 
     private int qid;
     private String name;

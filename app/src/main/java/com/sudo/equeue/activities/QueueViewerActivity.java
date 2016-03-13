@@ -2,7 +2,6 @@ package com.sudo.equeue.activities;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,7 +9,7 @@ import android.widget.Toast;
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
-import com.sudo.equeue.models.basic.Queue;
+import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.utils.QueueApplication;
 
 public class QueueViewerActivity extends NetBaseActivity {
@@ -70,24 +69,39 @@ public class QueueViewerActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getQueueRequestId) {
-            if (resultCode == NetService.CODE_OK) {
-                queueInfo = (Queue) data.getSerializable(NetService.RETURN_QUEUE);
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
+                queueInfo = (Queue) obj;
                 updateQueueView();
-            } else {
-                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-            }
+            }, NetService.RETURN_QUEUE);
+
+//            if (resultCode == NetService.CODE_OK) {
+//                queueInfo = (Queue) data.getSerializable(NetService.RETURN_QUEUE);
+//                updateQueueView();
+//            } else {
+//                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+//            }
         } else
         if (requestId == joinRequestId) {
-            if (resultCode == NetService.CODE_OK) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
+//                TODO: переделать
                 Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
                 TextView userTextView = new TextView(this);
                 userTextView.setText("me");
                 findViewById(R.id.list).setVisibility(View.VISIBLE);
                 findViewById(R.id.empty_lbl).setVisibility(View.GONE);
                 ((LinearLayout) findViewById(R.id.list)).addView(userTextView);
-            } else {
-                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-            }
+            }, NetService.RETURN_QUEUE);
+
+//            if (resultCode == NetService.CODE_OK) {
+//                Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
+//                TextView userTextView = new TextView(this);
+//                userTextView.setText("me");
+//                findViewById(R.id.list).setVisibility(View.VISIBLE);
+//                findViewById(R.id.empty_lbl).setVisibility(View.GONE);
+//                ((LinearLayout) findViewById(R.id.list)).addView(userTextView);
+//            } else {
+//                Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+//            }
         }
     }
 }

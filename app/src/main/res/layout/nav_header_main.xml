@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="20dp"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:layout_height="80dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark"
     android:orientation="vertical"
-    android:background="#000000"
-    android:gravity="bottom"
-    android:weightSum="1">
+    android:background="@color/colorPrimary"
+    android:gravity="bottom">
+
+    <Button
+        android:id="@+id/btn_auth"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Войти"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:gravity="left|center"
+        android:background="?attr/selectableItemBackground"
+        android:paddingLeft="20dp" />
+        <!--android:background="@drawable/login_button" />-->
 
     <!--<ImageView-->
         <!--android:layout_width="wrap_content"-->

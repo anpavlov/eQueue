@@ -5,18 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.os.ResultReceiver;
 
-import com.sudo.equeue.models.basic.Queue;
-import com.sudo.equeue.models.basic.QueueList;
-import com.sudo.equeue.models.basic.User;
+import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.Processor;
 
-import com.sudo.equeue.models.Employer;
-import com.sudo.equeue.models.SearchResults;
-import com.sudo.equeue.models.Vacancy;
-
-import java.util.ArrayList;
-import java.util.List;
+//import com.sudo.equeue.models.Employer;
+//import com.sudo.equeue.models.SearchResults;
+//import com.sudo.equeue.models.Vacancy;
 
 public class NetService extends IntentService {
 
@@ -33,6 +28,7 @@ public class NetService extends IntentService {
     public static final String ACTION_FIND_QUEUE = QueueApplication.prefix + ".action.FIND_QUEUE";
     public static final String ACTION_JOIN_QUEUE = QueueApplication.prefix + ".action.JOIN_QUEUE";
     public static final String ACTION_CREATE_USER = QueueApplication.prefix + ".action.CREATE_USER";
+    public static final String ACTION_UPDATE_USER = QueueApplication.prefix + ".action.UPDATE_USER";
     public static final String ACTION_MY_QUEUES = QueueApplication.prefix + ".action.MY_QUEUES";
     public static final String ACTION_LOGIN_VK = QueueApplication.prefix + ".action.LOGIN_VK";
     public static final String ACTION_LOGIN_EMAIL = QueueApplication.prefix + ".action.LOGIN_EMAIL";
@@ -47,6 +43,7 @@ public class NetService extends IntentService {
     public static final String EXTRA_QUEUE = QueueApplication.prefix + ".extra.QUEUE";
     public static final String EXTRA_VKUID = QueueApplication.prefix + ".extra.VKUID";
     public static final String EXTRA_EMAIL = QueueApplication.prefix + ".extra.EMAIL";
+    public static final String EXTRA_NAME = QueueApplication.prefix + ".extra.NAME";
     public static final String EXTRA_PASSWORD = QueueApplication.prefix + ".extra.PASSWORD";
 
 //    public static final String EXTRA_EMPLOYER_ID = QueueApplication.prefix + ".extra.EMPLOYER_ID";
@@ -59,6 +56,8 @@ public class NetService extends IntentService {
 //    public static final String EXTRA_VACANCY_ID = QueueApplication.prefix + ".extra.VACANCY_ID";
 
     //    Return extras
+    public static final String RETURN_CODE = QueueApplication.prefix + ".return.CODE";
+    public static final String ERROR_MSG = QueueApplication.prefix + ".return.ERROR_MSG";
     public static final String RETURN_QUEUE = QueueApplication.prefix + ".return.QUEUE";
     public static final String RETURN_QUEUE_LIST = QueueApplication.prefix + ".return.QUEUE_LIST";
     public static final String RETURN_USER = QueueApplication.prefix + ".return.USER";
@@ -123,6 +122,13 @@ public class NetService extends IntentService {
                     handleCreateUser(email, password, token);
                     break;
                 }
+                case ACTION_UPDATE_USER: {
+                    final String email = intent.getStringExtra(EXTRA_EMAIL);
+                    final String name = intent.getStringExtra(EXTRA_NAME);
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleUpdateUser(email, name, token);
+                    break;
+                }
                 case ACTION_MY_QUEUES: {
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     handleMyQueues(token);
@@ -183,14 +189,21 @@ public class NetService extends IntentService {
             receiver.send(CODE_FAILED, null);
             return;
         }
-        User user = processor.createUser(email, password, token);
-        if (user != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(RETURN_USER, user);
-            receiver.send(CODE_OK, bundle);
-        } else {
+        Bundle bundle = processor.createUser(email, password, token);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleUpdateUser(String email, String name, String token) {
+        if (email != null && email.equals("") || name != null && name.equals("")) {
             receiver.send(CODE_FAILED, null);
+            return;
         }
+        if (token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+        Bundle bundle = processor.updateUser(email, name, token);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleLoginVk(int vkuid) {
@@ -199,14 +212,8 @@ public class NetService extends IntentService {
             return;
         }
 
-        User user = processor.loginVk(vkuid);
-        if (user != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(RETURN_USER, user);
-            receiver.send(CODE_OK, bundle);
-        } else {
-            receiver.send(CODE_FAILED, null);
-        }
+        Bundle bundle = processor.loginVk(vkuid);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleLoginEmail(String email, String password) {
@@ -215,14 +222,8 @@ public class NetService extends IntentService {
             return;
         }
 
-        User user = processor.loginEmail(email, password);
-        if (user != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(RETURN_USER, user);
-            receiver.send(CODE_OK, bundle);
-        } else {
-            receiver.send(CODE_FAILED, null);
-        }
+        Bundle bundle = processor.loginEmail(email, password);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleCreateQueue(String token) {
@@ -231,14 +232,8 @@ public class NetService extends IntentService {
             return;
         }
 
-        Queue queue = processor.createQueue(token);
-        if (queue != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(RETURN_QUEUE, queue);
-            receiver.send(CODE_OK, bundle);
-        } else {
-            receiver.send(CODE_FAILED, null);
-        }
+        Bundle bundle = processor.createQueue(token);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleGetQueue(int queueId) {
@@ -247,14 +242,8 @@ public class NetService extends IntentService {
             return;
         }
 
-        Queue queue = processor.getQueue(queueId);
-        if (queue != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(RETURN_QUEUE, queue);
-            receiver.send(CODE_OK, bundle);
-        } else {
-            receiver.send(CODE_FAILED, null);
-        }
+        Bundle bundle = processor.getQueue(queueId);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleSaveQueue(String token, Queue queue) {
@@ -263,8 +252,9 @@ public class NetService extends IntentService {
             return;
         }
 
-        int result = processor.saveQueue(token, queue);
-        receiver.send(result, null);
+        Bundle bundle = processor.saveQueue(token, queue);
+//        receiver.send(result, null);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleCallNext(String token, int queueId) {
@@ -273,19 +263,14 @@ public class NetService extends IntentService {
             return;
         }
 
-        int result = processor.callNext(token, queueId);
-        receiver.send(result, null);
+        Bundle bundle = processor.callNext(token, queueId);
+//        receiver.send(result, null);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleFindQueue() {
-        QueueList queues = processor.findQueue();
-        if (queues != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(RETURN_QUEUE_LIST, queues);
-            receiver.send(CODE_OK, bundle);
-        } else {
-            receiver.send(CODE_FAILED, null);
-        }
+        Bundle bundle = processor.findQueue();
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleMyQueues(String token) {
@@ -294,14 +279,8 @@ public class NetService extends IntentService {
             return;
         }
 
-        QueueList queues = processor.myQueues(token);
-        if (queues != null) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(RETURN_QUEUE_LIST, queues);
-            receiver.send(CODE_OK, bundle);
-        } else {
-            receiver.send(CODE_FAILED, null);
-        }
+        Bundle bundle = processor.myQueues(token);
+        receiver.send(CODE_OK, bundle);
     }
 
     private void handleJoinQueue(String token, int queueId) {
@@ -310,39 +289,9 @@ public class NetService extends IntentService {
             return;
         }
 
-        int result = processor.joinQueue(token, queueId);
-        receiver.send(result, null);
+        Bundle bundle = processor.joinQueue(token, queueId);
+//        receiver.send(result, null);
+        receiver.send(CODE_OK, bundle);
     }
 
-//    private void handleGetEmployer(ResultReceiver receiver, long id) {
-//        Employer employer = processor.getEmployer(id);
-//        if (employer != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("employer", employer);
-//            receiver.send(CODE_OK, bundle);
-//        } else {
-//            receiver.send(CODE_FAILED, null);
-//        }
-//    }
-//
-//    private void handleGetVacancy(ResultReceiver receiver, int id) {
-//        Vacancy vacancy = processor.getVacancy(id);
-//        if (vacancy != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("vacancy", vacancy);
-//            receiver.send(CODE_OK, bundle);
-//        } else {
-//            receiver.send(CODE_FAILED, null);
-//        }
-//    }
-//
-//    private void handleSearch(ResultReceiver receiver, SearchResults results) {
-//        if (results != null) {
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable(RETURN_DATA_SEARCH_RESULTS, results);
-//            receiver.send(CODE_OK, bundle);
-//        } else {
-//            receiver.send(CODE_FAILED, null);
-//        }
-//    }
 }
