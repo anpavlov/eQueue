@@ -15,3 +15,32 @@ import tarantool
 #           }
 #     }
 # }
+
+# types
+TARANTOOL_STR = 1
+TARANTOOL_NUM = 2
+TARANTOOL_NUM64 = 3
+TARANTOOL_RAW = 4
+
+schema = [
+    {
+        'name': 'user',
+        'fields': [
+            ('id', TARANTOOL_NUM64),  # primary
+            ('email', TARANTOOL_STR),  # unique
+            ('password', TARANTOOL_STR),
+            ('username', TARANTOOL_STR),
+            ('vkuid', TARANTOOL_NUM),
+            ('gcmid', TARANTOOL_STR)
+        ]
+    },
+    {
+        'name': 'session',
+        'fields': [
+            ('id', TARANTOOL_NUM64),  # primary
+            ('token', TARANTOOL_STR),  # unique
+            ('act_date', TARANTOOL_NUM),
+            ('user_id', TARANTOOL_NUM)
+        ]
+    }
+]
