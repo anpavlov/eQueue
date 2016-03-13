@@ -21,18 +21,9 @@ session:truncate()
 --box.schema.user.grant('guest', 'read,write', 'space', 'standings')
 
 
-
--- auth testing: access control
---if not box.schema.user.exists('test') then
---    box.schema.user.create('test', {password = 'test'})
---    box.schema.user.grant('test', 'read,write,execute', 'universe')
---end
---
-
-
 -- functions area:
-function auto_inc_insert(space_name, tuple)
-    local res = box.space[space_name]:auto_increment{tuple}
+function auto_inc_insert(space_name, ...)
+    local res = box.space[space_name]:auto_increment{...}
     return res
 end
 
