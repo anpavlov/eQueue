@@ -34,6 +34,9 @@ class Manager():
         res = self.get_space(space_name).update(key, ops)
         return self._make_assoc(space_name, res)
 
+    def delete(self, space_name, key):
+        self.get_space(space_name).delete(key)
+
     def get_user_by_token(self, token):
         session = self.select_assoc('sessions', (token), index='token')
         if not session:

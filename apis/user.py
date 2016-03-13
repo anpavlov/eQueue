@@ -83,7 +83,10 @@ def update_gcmid():
         token = request.form['token']
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
-    user = tarantool_manager.get_user_by_token(token)
+    try:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
+        return json.dumps(responses.BAD_REQUEST)
     tarantool_manager.simple_update('users', user['id'], {'gcmid': gcmid})
 
     response = {
@@ -135,11 +138,11 @@ def logout():
         token = request.form['token']
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
-    
-    session = Session.query.filter_by(token=token).first()
+
+    session = tarantool_manager.select_assoc('sessions', (token), index='token')
     if session:
-        db.session.delete(session)
-        db.session.commit()
+        session = session[0]
+        tarantool_manager.delete('sessions', session['id'])
     else:
         return json.dumps(responses.INVALID_TOKEN)
 
