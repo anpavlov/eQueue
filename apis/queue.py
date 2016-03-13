@@ -169,10 +169,10 @@ def call():
 
 @queue_api.route("/find/", methods=['GET'])
 def find():
-    try:
-        query = request.args.get('query')
+    query = request.args.get('query')
+    if query:
         queues = Queue.query.filter(Queue.name.like("%" + str(query) + "%")).all()
-    except KeyError:
+    else:
         queues = Queue.query.all()
         
     q = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in queues]
