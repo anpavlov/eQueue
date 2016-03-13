@@ -12,8 +12,8 @@ from taran.helper import NoResult
 user_api = Blueprint('user', __name__)
 SESSION_TIME = 24*60*60
 
-@user_api.route("/createtaran/", methods=['POST'])
-def create_taran():
+@user_api.route("/create/", methods=['POST'])
+def create():
 
     try:
         token = request.form['token']
@@ -105,26 +105,24 @@ def login():
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
 
-    user = User.query.filter_by(email=email).first()
+    user = tarantool_manager.select_assoc('users', (email), index='email')
     if not user:
         return json.dumps(responses.ACCESS_DENIED)
+    user = user[0]
 
-    if werkzeug.security.check_password_hash(user.password, password):
-        session = Session(user)
-        db.session.add(session)
-        token = session.token
-        db.session.commit()
+    if werkzeug.security.check_password_hash(user['password'], password):
+        token = tarantool_manager.create_session(user)
     else:
         return json.dumps(responses.ACCESS_DENIED)
-        
+
 
     response = {
         'code': 200,
         'body': {
             'token': str(token),
-            'username': user.username,
-            'email': user.email,
-            'uid': user.id,
+            'username': user['username'],
+            'email': user['email'],
+            'uid': user['id'],
         }
     }
     return json.dumps(response)
