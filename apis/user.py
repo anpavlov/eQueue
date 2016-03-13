@@ -209,18 +209,22 @@ def details():
     if not token:
         return json.dumps(responses.BAD_REQUEST)
 
-    session = Session.query.filter_by(token=token).first()
-    if not session or int((datetime.utcnow()-session.act_date).total_seconds()) > SESSION_TIME:
+    session = tarantool_manager.select_assoc('sessions', (token), index='token')
+    if not session or int(time.time()-session[0]['act_date']) > SESSION_TIME:
         return json.dumps(responses.INVALID_TOKEN)
     
-    user = session.user
+    session = session[0]
+    user = tarantool_manager.select_assoc('users', (session['user_id']))
+    if not user:
+        return json.dumps(responses.ACCESS_DENIED)
+    user = user[0]
 
     response = {
         'code': 200,
         'body': {
-            'username': user.username,
-            'email': user.email,
-            'uid': user.id,
+            'username': user['username'],
+            'email': user['email'],
+            'uid': user['id'],
         }
     }
     return json.dumps(response)
