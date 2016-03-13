@@ -16,9 +16,8 @@ users:truncate()
 
 local session = box.schema.space.create('session', {if_not_exists = true})
 session:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists = true})
+session:create_index('token', {type='tree', parts = {2, 'STR'}, if_not_exists = true})
 session:truncate()
-
---box.schema.user.grant('guest', 'read,write', 'space', 'standings')
 
 
 -- functions area:

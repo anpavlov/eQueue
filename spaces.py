@@ -22,9 +22,8 @@ TARANTOOL_NUM = 2
 TARANTOOL_NUM64 = 3
 TARANTOOL_RAW = 4
 
-schema = [
-    {
-        'name': 'users',
+schema = {
+    'users': {
         'fields': [
             ('id', TARANTOOL_NUM64),  # primary
             ('email', TARANTOOL_STR),  # unique
@@ -34,8 +33,7 @@ schema = [
             ('gcmid', TARANTOOL_STR)
         ]
     },
-    {
-        'name': 'sessions',
+    'sessions': {
         'fields': [
             ('id', TARANTOOL_NUM64),  # primary
             ('token', TARANTOOL_STR),  # unique
@@ -43,4 +41,4 @@ schema = [
             ('user_id', TARANTOOL_NUM)
         ]
     }
-]
+}
