@@ -207,14 +207,12 @@ def my():
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
-        user = User.get_user_by_token(token)
-    except NoResultFound:
-        return json.dumps(responses.INVALID_TOKEN)
-    if user is None:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
 
-    queues = Queue.query.filter(Queue.user_id == user.id).all()
-    q = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in queues]
+    queues = tarantool_manager.select_assoc('queues', (user['id']), index='userid')
+    q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
 
     response = {
         'code': 200,
