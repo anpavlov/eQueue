@@ -14,7 +14,7 @@ schema = {
             ('password', TARANTOOL_STR, ''),
             ('username', TARANTOOL_STR, ''),
             ('vkuid', TARANTOOL_NUM, 0),
-            ('gcmid', TARANTOOL_STR, '')
+            ('gcmid', TARANTOOL_STR, None)
         ]
     },
     'sessions': {

@@ -143,15 +143,13 @@ def call():
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
-        user = User.get_user_by_token(token)
-    except NoResultFound:
-        return json.dumps(responses.INVALID_TOKEN)
-    if user is None:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
 
     try:
-        q = Queue.query.filter_by(id=qid, user=user).one()
-    except NoResultFound:
+        q = tarantool_manager.select_assoc('queues', (qid, user['id']), index='qid_user')
+    except NoResult:
         return json.dumps(responses.QUEUE_NOT_FOUND)
 
     # get info for mysql stats
@@ -161,8 +159,12 @@ def call():
     # push notification
     gcm = GCM(settings.GCM_SERVER_ID)
     data = {'call': 'true', 'param2': 'value2'}
-    out_user = User.query.get(user[0][1])
-    reg_id = out_user.gcmid
+    try:
+        out_user = tarantool_manager.select_assoc('users', (user[0][1]))
+    except NoResult:
+        return json.dumps(responses.ACCESS_DENIED)
+    out_user = out_user[0]
+    reg_id = out_user['gcmid']
     if reg_id:
         gcm.plaintext_request(registration_id=reg_id, data=data)
     
