@@ -21,6 +21,10 @@ session:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exist
 session:create_index('token', {type='tree', parts = {2, 'STR'}, if_not_exists = true})
 session:truncate()
 
+local queues = box.schema.space.create('queues', {if_not_exists = true})
+queues:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists = true})
+queues:truncate()
+
 
 -- functions area:
 function auto_inc_insert(space_name, ...)

@@ -29,16 +29,18 @@ def create():
     except KeyError:
         name = 'Queue'
     try:
-        user = User.get_user_by_token(token)
-    except NoResultFound:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
-    q = Queue(user, name)
-    db.session.add(q)
-    db.session.commit()
+    queue = {
+        'user_id': user['id'],
+        'name': name
+    }
+    q = tarantool_manager.insert('queues', queue)
     response = {
         'code': 200,
         'body': {
-            'qid': q.id
+            'qid': q['id']
         }
     }
     return json.dumps(response)
