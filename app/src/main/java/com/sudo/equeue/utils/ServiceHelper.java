@@ -116,6 +116,18 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
+    public int updateGcm(String gcmid) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_UPDATE_GCM, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_GCMID, gcmid);
+
+        application.startService(i);
+        return requestId;
+    }
+
     public int loginVk(int vkuid) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_LOGIN_VK, requestId);

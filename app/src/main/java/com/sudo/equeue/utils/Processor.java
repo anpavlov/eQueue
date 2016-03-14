@@ -129,4 +129,8 @@ public class Processor {
         return makeSimpleRequest(queueApi.joinQueue(token, queueId), null);
     }
 
+    public Bundle updateGcmId(String token, String gcmid) {
+        return makeSimpleRequest(queueApi.updateGcmId(token, gcmid), null);
+    }
+
 }

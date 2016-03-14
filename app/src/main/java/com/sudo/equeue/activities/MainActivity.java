@@ -55,6 +55,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+//        Log.i("regid", getRegistrationId(context);)
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {};

@@ -86,4 +86,8 @@ public interface QueueApi {
     @FormUrlEncoded
     @POST("/api/queue/in-queue/")
     Call<ResponseBase<QueueList>> meInQueues(@Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("/api/user/updategcm/")
+    Call<ResponseBase<QueueList>> updateGcmId(@Field("token") String token, @Field("gcmid") String gcmid);
 }

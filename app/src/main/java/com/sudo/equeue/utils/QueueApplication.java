@@ -11,6 +11,7 @@ public class QueueApplication extends Application {
     public static final String PREFS_USER_IS_LOGGED_IN = "com.sudo.equeue.preferences.is_logged_in";
     public static final String PREFS_USER_EMAIL = "com.sudo.equeue.preferences.user_email";
     public static final String PREFS_USER_NAME = "com.sudo.equeue.preferences.user_name";
+    public static final String PREFS_SENT_TOKEN = "com.sudo.equeue.preferences.sent_token";
 
     private ServiceHelper serviceHelper;
 

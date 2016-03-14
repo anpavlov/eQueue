@@ -33,6 +33,8 @@ public class NetService extends IntentService {
     public static final String ACTION_LOGIN_VK = QueueApplication.prefix + ".action.LOGIN_VK";
     public static final String ACTION_LOGIN_EMAIL = QueueApplication.prefix + ".action.LOGIN_EMAIL";
     public static final String ACTION_ME_IN_QUEUES = QueueApplication.prefix + ".action.ME_IN_QUEUES";
+    public static final String ACTION_UPDATE_GCM = QueueApplication.prefix + ".action.UPDATE_GCM";
+
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
 //    public static final String ACTION_MAKE_SEARCH = QueueApplication.prefix + ".action.MAKE_SEARCH";
@@ -47,6 +49,7 @@ public class NetService extends IntentService {
     public static final String EXTRA_NAME = QueueApplication.prefix + ".extra.NAME";
     public static final String EXTRA_PASSWORD = QueueApplication.prefix + ".extra.PASSWORD";
     public static final String EXTRA_QUERY = QueueApplication.prefix + ".extra.QUERY";
+    public static final String EXTRA_GCMID = QueueApplication.prefix + ".extra.GCMID";
 
 //    public static final String EXTRA_EMPLOYER_ID = QueueApplication.prefix + ".extra.EMPLOYER_ID";
 //    public static final String EXTRA_SEARCH_TEXT = QueueApplication.prefix + ".extra.SEARCH_TEXT";
@@ -151,6 +154,12 @@ public class NetService extends IntentService {
                     final String email = intent.getStringExtra(EXTRA_EMAIL);
                     final String password = intent.getStringExtra(EXTRA_PASSWORD);
                     handleLoginEmail(email, password);
+                    break;
+                }
+                case ACTION_UPDATE_GCM: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    final String gcmid = intent.getStringExtra(EXTRA_GCMID);
+                    handleUpdateGcm(token, gcmid);
                     break;
                 }
             }
@@ -309,6 +318,16 @@ public class NetService extends IntentService {
 
         Bundle bundle = processor.joinQueue(token, queueId);
 //        receiver.send(result, null);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleUpdateGcm(String token, String gcmid) {
+        if (token == null || token.equals("") || gcmid == null || gcmid.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.updateGcmId(token, gcmid);
         receiver.send(CODE_OK, bundle);
     }
 
