@@ -25,6 +25,8 @@ class Manager():
     def select_assoc(self, space_name, where_tuple, index='primary', asc=True):
         iter = 0 if asc else 1
         res = self.get_space(space_name).select(where_tuple, index=index, iterator=iter)
+        if not res:
+            raise NoResult
         return self._make_assoc(space_name, res)
 
     def simple_update(self, space_name, key, values):

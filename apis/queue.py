@@ -49,24 +49,30 @@ def create():
 def update():
     try:
         token = request.form['token']
-        qid = request.form['qid']
-    except KeyError:
+        qid = int(request.form['qid'])
+    except (KeyError, ValueError):
         return json.dumps(responses.BAD_REQUEST)
     name = request.form.get('name')
     description = request.form.get('description')
     try:
-        user = User.get_user_by_token(token)
-    except NoResultFound:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
     try:
-        q = Queue.query.filter_by(id=qid, user=user).one()
-    except NoResultFound:
+        q = tarantool_manager.select_assoc('queues', (qid, user['id']), index='qid_user')
+    except NoResult:
         return json.dumps(responses.QUEUE_NOT_FOUND)
+
+    q = q[0]
+    to_update = {}
     if name is not None:
-        q.name = name
+        to_update['name'] = name
     if description is not None:
-        q.description = description
-    db.session.commit()
+        to_update['description'] = description
+
+    if len(to_update) > 0:
+        tarantool_manager.simple_update('queues', q['id'], to_update)
+
     response = {
         'code': 200
     }
