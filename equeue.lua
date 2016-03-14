@@ -7,6 +7,7 @@ box.cfg{
 local s = box.schema.space.create('standings', {if_not_exists = true})
 s:create_index('primary', {type = 'tree', parts = {1, 'NUM', 2, 'NUM'}, if_not_exists = true})
 s:create_index('secondary', {type='tree', parts = {1, 'NUM', 5, 'NUM'}, if_not_exists = true})
+s:create_index('user_id', {type = 'tree', parts = {2, 'NUM'}, if_not_exists = true})
 s:truncate()
 
 local users = box.schema.space.create('users', {if_not_exists = true})

@@ -169,11 +169,15 @@ def call():
 
 @queue_api.route("/find/", methods=['GET'])
 def find():
-    # query = request.args.get('str')
-    # if query is None:
-    #     return json.dumps(responses.BAD_REQUEST)
-    # queues = Queue.query.filter(Queue.name.like("%" + str(query) + "%")).all()
-    queues = Queue.query.all()
+
+    query = request.args.get('query')
+    if query:
+        query = request.args.get('query')
+        queues = Queue.query.filter(Queue.name.like("%" + u' '.join(query).encode('utf-8') + "%")).all()
+    else:
+        queues = Queue.query.all()
+
+
     q = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in queues]
 
     response = {
@@ -205,6 +209,34 @@ def my():
         'code': 200,
         'body': {
             'queues': q
+        }
+    }
+    return json.dumps(response)
+
+
+@queue_api.route("/in-queue/", methods=['POST'])
+def in_queue():
+    try:
+        token = request.form['token']
+    except (KeyError, ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = User.get_user_by_token(token)
+    except NoResultFound:
+        return json.dumps(responses.INVALID_TOKEN)
+    if user is None:
+        return json.dumps(responses.INVALID_TOKEN)
+
+    queues = standings.select(user.id, index='user_id', iterator=0)
+    q = [queue[0] for queue in queues]
+    db_queues = Queue.query.filter(Queue.id.in_(q)).all()
+
+    info = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in db_queues]
+
+    response = {
+        'code': 200,
+        'body': {
+            'queues': info
         }
     }
     return json.dumps(response)
