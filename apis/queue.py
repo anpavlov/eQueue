@@ -34,7 +34,8 @@ def create():
         return json.dumps(responses.INVALID_TOKEN)
     queue = {
         'user_id': user['id'],
-        'name': name
+        'name': name,
+        'created': time.time()
     }
     q = tarantool_manager.insert('queues', queue)
     response = {
@@ -86,22 +87,22 @@ def info():
     except (ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
 
-    q = Queue.query.get(qid)
-    if q is None:
+    try:
+        q = tarantool_manager.select_assoc('queues', (qid))
+    except NoResult:
         return json.dumps(responses.QUEUE_NOT_FOUND)
 
+    q = q[0]
     stands = standings.select(qid)
     users = [u[1] for u in stands]
 
-    if q.created is None:
-        q.created = datetime(1970, 1, 1)
     response = {
         'code': 200,
         'body': {
-            'qid': q.id,
-            'name': q.name,
-            'description': q.description,
-            'date_opened': int((q.created - datetime(1970, 1, 1)).total_seconds()),
+            'qid': q['id'],
+            'name': q['name'],
+            'description': q['description'],
+            'date_opened': int(q['created']),
             'users': users
         }
     }
