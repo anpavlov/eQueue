@@ -1,6 +1,9 @@
 package com.sudo.equeue.activities;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,18 +25,34 @@ public class QueueViewerActivity extends NetBaseActivity {
 //    private int saveInfoRequestId;
     private int joinRequestId;
 
+    private int queueInitId;
     private Queue queueInfo;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue_viewer);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Просмотр очереди");
+        }
+
+        queueInitId = getIntent().getIntExtra(EXTRA_QUEUE_ID, -1);
+
         if (savedInstanceState == null) {
-            getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
+            getQueueRequestId = getServiceHelper().getQueue(queueInitId);
         }
 
         findViewById(R.id.btn_join).setOnClickListener(v -> join());
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_queue_view);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refresh();
+        });
     }
 
 //    private void saveInfo() {
@@ -41,6 +60,10 @@ public class QueueViewerActivity extends NetBaseActivity {
 //        queueInfo.setDescription(((EditText) findViewById(R.id.description_field)).getText().toString());
 //        saveInfoRequestId = getServiceHelper().saveQueueInfo(queueInfo);
 //    }
+
+    private void refresh() {
+        getQueueRequestId = getServiceHelper().getQueue(queueInitId);
+    }
 
     private void join() {
         if (queueInfo != null) {
@@ -64,6 +87,16 @@ public class QueueViewerActivity extends NetBaseActivity {
         } else {
             findViewById(R.id.empty_lbl).setVisibility(View.VISIBLE);
         }
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

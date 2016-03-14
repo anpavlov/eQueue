@@ -82,4 +82,8 @@ public interface QueueApi {
     @FormUrlEncoded
     @POST("/api/queue/my/")
     Call<ResponseBase<QueueList>> myQueues(@Field("token") String token);
+
+    @FormUrlEncoded
+    @POST("/api/queue/in-queue/")
+    Call<ResponseBase<QueueList>> meInQueues(@Field("token") String token);
 }

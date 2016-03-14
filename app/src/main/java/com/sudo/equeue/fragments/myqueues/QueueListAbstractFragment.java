@@ -30,6 +30,11 @@ public abstract class QueueListAbstractFragment extends NetBaseFragment {
 
     protected int getQueueRequestId = -1;
 
+    protected ListView getListView() {
+        return listView;
+    }
+
+    private ListView listView;
     private ArrayAdapter<String> adapter;
     protected List<String> queueNamesList = new ArrayList<>();
     protected List<Queue> queueList;
@@ -47,7 +52,7 @@ public abstract class QueueListAbstractFragment extends NetBaseFragment {
 
 //        isMy = getArguments().getBoolean(ARGS_IS_MY, false);
 
-        ListView listView = (ListView) view.findViewById(R.id.queue_list);
+        listView = (ListView) view.findViewById(R.id.queue_list);
 
         adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, queueNamesList);
         listView.setAdapter(adapter);

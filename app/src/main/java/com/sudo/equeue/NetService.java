@@ -32,6 +32,7 @@ public class NetService extends IntentService {
     public static final String ACTION_MY_QUEUES = QueueApplication.prefix + ".action.MY_QUEUES";
     public static final String ACTION_LOGIN_VK = QueueApplication.prefix + ".action.LOGIN_VK";
     public static final String ACTION_LOGIN_EMAIL = QueueApplication.prefix + ".action.LOGIN_EMAIL";
+    public static final String ACTION_ME_IN_QUEUES = QueueApplication.prefix + ".action.ME_IN_QUEUES";
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
 //    public static final String ACTION_MAKE_SEARCH = QueueApplication.prefix + ".action.MAKE_SEARCH";
@@ -134,6 +135,11 @@ public class NetService extends IntentService {
                 case ACTION_MY_QUEUES: {
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     handleMyQueues(token);
+                    break;
+                }
+                case ACTION_ME_IN_QUEUES: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleMeInQueues(token);
                     break;
                 }
                 case ACTION_LOGIN_VK: {
@@ -282,6 +288,16 @@ public class NetService extends IntentService {
         }
 
         Bundle bundle = processor.myQueues(token);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleMeInQueues(String token) {
+        if (token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.meInQueues(token);
         receiver.send(CODE_OK, bundle);
     }
 

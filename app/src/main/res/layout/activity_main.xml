@@ -12,25 +12,26 @@
         android:orientation="vertical">
 
         <!-- TODO: insert toolbar-->
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/main_toolbar"
-            android:layout_height="56dp"
-            android:layout_width="match_parent"
-            android:theme="@style/ToolbarTheme">
-        <!--android:elevation="4dp">-->
+        <include layout="@layout/toolbar" />
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/main_toolbar"-->
+            <!--android:layout_height="56dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:theme="@style/ToolbarTheme">-->
+        <!--&lt;!&ndash;android:elevation="4dp">&ndash;&gt;-->
 
 
 
-            <!--<ProgressBar-->
-                <!--android:id="@+id/toolbar_progress"-->
-                <!--android:layout_width="50dp"-->
-                <!--android:layout_height="50dp"-->
-                <!--android:layout_marginRight="10dp"-->
-                <!--android:indeterminate="true"-->
-                <!--android:layout_gravity="right"-->
-                <!--android:visibility="invisible" />-->
+            <!--&lt;!&ndash;<ProgressBar&ndash;&gt;-->
+                <!--&lt;!&ndash;android:id="@+id/toolbar_progress"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_width="50dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_height="50dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:indeterminate="true"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:layout_gravity="right"&ndash;&gt;-->
+                <!--&lt;!&ndash;android:visibility="invisible" />&ndash;&gt;-->
 
-        </android.support.v7.widget.Toolbar>
+        <!--</android.support.v7.widget.Toolbar>-->
 
 
         <FrameLayout

@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -69,7 +70,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_content_frame, findQueueFragment)
+                    .replace(R.id.main_content_frame, findQueueFragment, FindQueueFragment.TAG)
 //                    .addToBackStack(null)
                     .commit();
         }
@@ -139,7 +140,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_content_frame, loginFragment)
+                    .replace(R.id.main_content_frame, loginFragment, LoginFragment.TAG)
 //                    .addToBackStack(null)
                     .commit();
         } else {
@@ -149,7 +150,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_content_frame, profileFragment)
+                    .replace(R.id.main_content_frame, profileFragment, ProfileFragment.TAG)
 //                    .addToBackStack(null)
                     .commit();
         }
@@ -171,7 +172,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_content_frame, profileFragment)
+                .replace(R.id.main_content_frame, profileFragment, ProfileFragment.TAG)
 //                    .addToBackStack(null)
                 .commit();
     }
@@ -190,7 +191,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
         }
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_content_frame, loginFragment)
+                .replace(R.id.main_content_frame, loginFragment, LoginFragment.TAG)
 //                    .addToBackStack(null)
                 .commit();
     }
@@ -220,7 +221,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
                     }
 
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.main_content_frame, findQueueFragment)
+                            .replace(R.id.main_content_frame, findQueueFragment, FindQueueFragment.TAG)
 //                            .addToBackStack(null)
                             .commit();
                     break;
@@ -246,7 +247,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
                     }
 
                     getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.main_content_frame, myQueuesFragment)
+                            .replace(R.id.main_content_frame, myQueuesFragment, MyQueuesFragment.TAG)
 //                            .addToBackStack(null)
                             .commit();
                     break;

@@ -209,6 +209,17 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
+    public int meInQueues() {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_ME_IN_QUEUES, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+
+        application.startService(i);
+        return requestId;
+    }
+
     public int myQueues() {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_MY_QUEUES, requestId);

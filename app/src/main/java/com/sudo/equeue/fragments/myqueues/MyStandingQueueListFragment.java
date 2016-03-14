@@ -5,14 +5,14 @@ import android.content.Intent;
 import com.sudo.equeue.activities.QueueViewerActivity;
 import com.sudo.equeue.utils.QueueApplication;
 
-public class MyStandingQueueListFragment extends QueueListAbstractFragment {
+public class MyStandingQueueListFragment extends RefreshableQueueListAbstractFragment {
 
     public static final String TAG = QueueApplication.prefix + ".fragments.MyStandingQueueListFragment";
     public static final String TAB_NAME = "Standings";
 
     @Override
     protected int makeRequest() {
-        return getServiceHelper().findQueue(null);
+        return getServiceHelper().meInQueues();
     }
 
     @Override
