@@ -59,7 +59,7 @@ public class QueueAdminActivity extends NetBaseActivity {
     private void openTerminal() {
         Intent intent = new Intent(this, QueueTerminalActivity.class);
         intent.putExtra(QueueAdminActivity.EXTRA_IS_NEW_QUEUE, false);
-        intent.putExtra(QueueAdminActivity.EXTRA_QUEUE_ID, getQueueRequestId);
+        intent.putExtra(QueueAdminActivity.EXTRA_QUEUE_ID, queueInfo.getQid());
         startActivity(intent);
     }
 

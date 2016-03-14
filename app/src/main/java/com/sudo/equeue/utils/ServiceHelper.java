@@ -232,6 +232,17 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
+    public int joinQueueAnonym(int queueId, String token) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_JOIN_QUEUE, requestId);
+
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
+
+        application.startService(i);
+        return requestId;
+    }
+
 //    =============== old======================
 
 //    public int getEmployerInfo(long employerId) {

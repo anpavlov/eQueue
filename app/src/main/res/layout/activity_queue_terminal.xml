@@ -75,7 +75,7 @@
             android:textColor="#000"
             android:textStyle="bold"
             android:textSize="12pt"
-            android:text="123"
+            android:text=""
             android:id="@+id/current_field"/>
 
     </LinearLayout>
