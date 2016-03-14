@@ -155,7 +155,8 @@ def call():
     out_user = User.query.get(user[0][1])
     reg_id = out_user.gcmid
     if reg_id:
-        gcm.plaintext_request(registration_id=reg_id, data=data)
+        pass
+        #gcm.plaintext_request(registration_id=reg_id, data=data)
     
     standings.delete((qid, user[0][1]))
 
