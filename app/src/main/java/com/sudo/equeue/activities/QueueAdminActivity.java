@@ -1,5 +1,6 @@
 package com.sudo.equeue.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -40,6 +41,7 @@ public class QueueAdminActivity extends NetBaseActivity {
 
         findViewById(R.id.btn_save_info).setOnClickListener(v -> saveInfo());
         findViewById(R.id.btn_next).setOnClickListener(v -> callNext());
+        findViewById(R.id.btn_terminal).setOnClickListener(v -> openTerminal());
     }
 
     private void saveInfo() {
@@ -52,6 +54,13 @@ public class QueueAdminActivity extends NetBaseActivity {
         if (queueInfo != null) {
             callRequestId = getServiceHelper().callNext(queueInfo.getQid());
         }
+    }
+
+    private void openTerminal() {
+        Intent intent = new Intent(this, QueueTerminalActivity.class);
+        intent.putExtra(QueueAdminActivity.EXTRA_IS_NEW_QUEUE, false);
+        intent.putExtra(QueueAdminActivity.EXTRA_QUEUE_ID, queueInfo.getQid());
+        startActivity(intent);
     }
 
     private void updateQueueView() {
