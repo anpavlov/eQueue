@@ -51,7 +51,7 @@ def update():
     try:
         token = request.form['token']
         qid = int(request.form['qid'])
-    except (KeyError, ValueError):
+    except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     name = request.form.get('name')
     description = request.form.get('description')
@@ -117,14 +117,13 @@ def join():
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
-        user = User.get_user_by_token(token)
-    except NoResultFound:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
-    if user is None:
-        return json.dumps(responses.INVALID_TOKEN)
+
     # check if user had been already in queue
     try:
-        standings.insert((int(qid), int(user.id), None, None, int(time.time()), None, 0))
+        standings.insert((int(qid), int(user['id']), None, None, int(time.time()), None, 0))
     except tarantool.DatabaseError:
         return json.dumps(responses.ALREADY_IN_QUEUE)
     response = {
