@@ -237,25 +237,21 @@ def vkauth():
     except (KeyError, TypeError, ValueError):
         return json.dumps(responses.BAD_REQUEST)
     try:
-        user = User.query.filter_by(vkuid=vkuid).one()
-    except NoResultFound:
+        user = tarantool_manager.select_assoc('users', (vkuid), 'vkuid')[0]
+    except (NoResult, KeyError, AttributeError, IndexError):
         # try:
         #     user_id = User.query.order_by(User.id.desc()).first().id + 1
         # except AttributeError:
         #     user_id = 1
-        user = User()
-        user.vkuid = vkuid
-        db.session.add(user)
+        user = tarantool_manager.insert('users', {'vkuid': vkuid})
     # session
-    session = Session(user)
-    db.session.add(session)
-    db.session.commit()
+    token = tarantool_manager.create_session(user)
 
     response = {
         'code': 200,
         'body': {
-            'token': session.token,
-            'uid': user.id
+            'token': token,
+            'uid': user['id']
         }
     }
     return json.dumps(response)
