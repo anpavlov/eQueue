@@ -25,12 +25,12 @@
 
     </ListView>
 
-    <TextView
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Пусто"
-        android:padding="15dp"
-        android:textStyle="italic" />
+    <!--<TextView-->
+        <!--android:id="@android:id/empty"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:text="Пусто"-->
+        <!--android:padding="15dp"-->
+        <!--android:textStyle="italic" />-->
 </LinearLayout>

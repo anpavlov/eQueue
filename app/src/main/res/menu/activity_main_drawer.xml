@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <group android:id="@+id/g1" android:checkableBehavior="single">
+    <group android:id="@+id/g1" android:checkableBehavior="none">
         <!--<item android:id="@+id/nav_create_queue"-->
             <!--android:title="Создать очередь" />-->
         <item android:id="@+id/nav_find_queue"

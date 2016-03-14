@@ -63,13 +63,14 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
         prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
 
         if (savedInstanceState == null) {
-            MyQueuesFragment myQueuesFragment = (MyQueuesFragment) getSupportFragmentManager().findFragmentByTag(MyQueuesFragment.TAG);
-            if (myQueuesFragment == null) {
-                myQueuesFragment = new MyQueuesFragment();
+            FindQueueFragment findQueueFragment = (FindQueueFragment) getSupportFragmentManager().findFragmentByTag(FindQueueFragment.TAG);
+            if (findQueueFragment == null) {
+                findQueueFragment = new FindQueueFragment();
             }
 
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.main_content_frame, myQueuesFragment)
+                    .replace(R.id.main_content_frame, findQueueFragment)
+//                    .addToBackStack(null)
                     .commit();
         }
 
@@ -220,7 +221,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
 
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.main_content_frame, findQueueFragment)
-                            .addToBackStack(null)
+//                            .addToBackStack(null)
                             .commit();
                     break;
 //                    queueListFragment = (QueueListFragment) getFragmentManager().findFragmentByTag(QueueListFragment.TAG);
@@ -246,7 +247,7 @@ public class MainActivity extends NetBaseActivity implements /*StartFragment.Sta
 
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.main_content_frame, myQueuesFragment)
-                            .addToBackStack(null)
+//                            .addToBackStack(null)
                             .commit();
                     break;
                 }
