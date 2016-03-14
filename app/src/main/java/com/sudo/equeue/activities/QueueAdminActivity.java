@@ -2,6 +2,9 @@ package com.sudo.equeue.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -25,6 +28,7 @@ public class QueueAdminActivity extends NetBaseActivity {
     private int callRequestId;
 
     private Queue queueInfo;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +43,25 @@ public class QueueAdminActivity extends NetBaseActivity {
             }
         }
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Управление очередью");
+        }
+
         findViewById(R.id.btn_save_info).setOnClickListener(v -> saveInfo());
         findViewById(R.id.btn_next).setOnClickListener(v -> callNext());
         findViewById(R.id.btn_terminal).setOnClickListener(v -> openTerminal());
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_queue_view);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            refresh();
+        });
+    }
+
+    private void refresh() {
+        getQueueRequestId = getServiceHelper().getQueue(queueInfo.getQid());
     }
 
     private void saveInfo() {
@@ -76,9 +96,20 @@ public class QueueAdminActivity extends NetBaseActivity {
                 list.addView(userTextView);
             }
             list.setVisibility(View.VISIBLE);
+            findViewById(R.id.empty_lbl).setVisibility(View.GONE);
         } else {
             findViewById(R.id.empty_lbl).setVisibility(View.VISIBLE);
         }
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
