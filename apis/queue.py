@@ -230,17 +230,21 @@ def in_queue():
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
-        user = User.get_user_by_token(token)
-    except NoResultFound:
-        return json.dumps(responses.INVALID_TOKEN)
-    if user is None:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
 
-    queues = standings.select(user.id, index='user_id', iterator=0)
+    queues = standings.select(user['id'], index='user_id', iterator=0)
     q = [queue[0] for queue in queues]
-    db_queues = Queue.query.filter(Queue.id.in_(q)).all()
 
-    info = [{'qid': queue.id, 'name': queue.name, 'description': queue.description} for queue in db_queues]
+    info = []
+    for q_id in q:
+        try:
+            queue = tarantool_manager.select_assoc('queues', (q_id))
+        except NoResult:
+            return json.dumps(responses.ACCESS_DENIED)
+        info.append({'qid': queue['id'], 'name': queue['name'], 'description': queue['description']})
+
 
     response = {
         'code': 200,
