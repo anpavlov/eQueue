@@ -36,6 +36,9 @@
         </activity>
         <activity android:name=".activities.QueueAdminActivity" >
         </activity>
+        <activity android:name=".activities.QueueTerminalActivity"
+            android:screenOrientation="landscape">
+        </activity>
         <activity android:name=".activities.QueueViewerActivity" >
         </activity>
         <activity android:name=".activities.LoginActivity" >
