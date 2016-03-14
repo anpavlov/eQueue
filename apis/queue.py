@@ -10,6 +10,7 @@ import responses
 import time
 from gcm import *
 from taran import tarantool_manager
+from taran.helper import NoResult
 
 queue_api = Blueprint('queue', __name__)
 
