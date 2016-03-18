@@ -5,3 +5,4 @@ ALREADY_IN_QUEUE = {'code': 400, 'body': {'error': 'you have been already in thi
 EMPTY_QUEUE = {'code': 400, 'body': {'error': 'empty queue'}}
 EMAIL_BUSY = {'code': 403, 'body': {'error': 'email is busy'}}
 ACCESS_DENIED = {'code': 403, 'body': {'error': 'wrong pair email/password'}}
+UNDEFINED_USER = {'code': 200, 'body': {'error': 'undefined user'}}

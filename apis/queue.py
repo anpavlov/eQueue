@@ -160,11 +160,12 @@ def call():
     try:
         out_user = tarantool_manager.select_assoc('users', (user[0][1]))
     except NoResult:
-        return json.dumps(responses.ACCESS_DENIED)
+        return json.dumps(responses.UNDEFINED_USER)
     out_user = out_user[0]
     reg_id = out_user['gcmid']
     if reg_id:
-        gcm.plaintext_request(registration_id=reg_id, data=data)
+        #gcm.plaintext_request(registration_id=reg_id, data=data)
+        pass
     
     standings.delete((qid, user[0][1]))
 
