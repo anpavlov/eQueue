@@ -242,7 +242,7 @@ def in_queue():
             queue = tarantool_manager.select_assoc('queues', (q_id))
         except NoResult:
             return json.dumps(responses.ACCESS_DENIED)
-        info.append({'qid': queue['id'], 'name': queue['name'], 'description': queue['description']})
+        info.append({'qid': queue[0]['id'], 'name': queue[0]['name'], 'description': queue[0]['description']})
 
 
     response = {
