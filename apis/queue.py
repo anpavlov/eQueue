@@ -185,12 +185,13 @@ def find():
         query = request.args.get('query')
         queues = tarantool_manager.select_by_like('queues', 'name', 'name', query)
     else:
-        queues = tarantool_manager.select_assoc('queues', ())
+        try:
+            queues = tarantool_manager.select_assoc('queues', ())
+        except NoResult:
+            q = []
 
-    if queues[0]:
-        q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
-    else:
-        q = []
+    q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
+
     response = {
         'code': 200,
         'body': {
