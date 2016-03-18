@@ -190,8 +190,10 @@ def find():
         except NoResult:
             queues = []
 
-    q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
-
+    if queues[0]:
+        q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
+    else:
+        q = []
     response = {
         'code': 200,
         'body': {
