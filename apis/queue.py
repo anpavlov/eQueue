@@ -91,7 +91,7 @@ def info():
         return json.dumps(responses.QUEUE_NOT_FOUND)
 
     q = q[0]
-    stands = standings.select(qid)
+    stands = standings.select(qid, index='qid')
     users = [u[1] for u in stands]
 
     response = {
