@@ -188,7 +188,13 @@ def find():
         try:
             queues = tarantool_manager.select_assoc('queues', ())
         except NoResult:
-            queues = []
+            response = {
+                'code': 200,
+                'body': {
+                    'queues': []
+                }
+            }
+            return json.dumps(response)
 
     if queues[0]:
         q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
