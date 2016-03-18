@@ -29,6 +29,11 @@ class Manager():
             raise NoResult
         return self._make_assoc(space_name, res)
 
+    def select_by_like(self, space_name, index_name, field, value):
+        col_number = self._get_position_by_key(space_name, field) + 2
+        res = self.conn.call("search_by_like", space_name, index_name, col_number, value)
+        return self._make_assoc(space_name, res)
+
     def simple_update(self, space_name, key, values):
         ops = []
         for k, value in values.iteritems():
