@@ -188,7 +188,7 @@ def find():
         try:
             queues = tarantool_manager.select_assoc('queues', ())
         except NoResult:
-            q = []
+            queues = []
 
     q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
 
