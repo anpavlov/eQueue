@@ -28,7 +28,10 @@ def create():
 
     try:
         email = request.form['email']
-        res = tarantool_manager.select_assoc('users', (email), index='email')
+        try:
+            res = tarantool_manager.select_assoc('users', (email), index='email')
+        except NoResult:
+            res = None
         if res:
             return json.dumps(responses.EMAIL_BUSY)
         password = request.form['password']
@@ -109,7 +112,10 @@ def login():
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
 
-    user = tarantool_manager.select_assoc('users', (email), index='email')
+    try:
+        user = tarantool_manager.select_assoc('users', (email), index='email')
+    except NoResult:
+        user = None
     if not user:
         return json.dumps(responses.ACCESS_DENIED)
     user = user[0]
@@ -140,7 +146,10 @@ def logout():
     except KeyError:
         return json.dumps(responses.BAD_REQUEST)
 
-    session = tarantool_manager.select_assoc('sessions', (token), index='token')
+    try:
+        session = tarantool_manager.select_assoc('sessions', (token), index='token')
+    except NoResult:
+        session = None
     if session:
         session = session[0]
         tarantool_manager.delete('sessions', session['id'])
@@ -179,7 +188,12 @@ def update():
     # email
     try:
         email = request.form['email']
-        if user['email'] != email and tarantool_manager.select_assoc('users', (email), index='email'):
+        try:
+            tarantool_manager.select_assoc('users', (email), index='email')
+            email_busy = False
+        except NoResult:
+            email_busy = True
+        if user['email'] != email and email_busy:
             return json.dumps(responses.EMAIL_BUSY)
         to_update['email'] = email
         user['email'] = email
@@ -209,12 +223,18 @@ def details():
     if not token:
         return json.dumps(responses.BAD_REQUEST)
 
-    session = tarantool_manager.select_assoc('sessions', (token), index='token')
+    try:
+        session = tarantool_manager.select_assoc('sessions', (token), index='token')
+    except NoResult:
+        session =  None
     if not session or int(time.time()-session[0]['act_date']) > SESSION_TIME:
         return json.dumps(responses.INVALID_TOKEN)
     
     session = session[0]
-    user = tarantool_manager.select_assoc('users', (session['user_id']))
+    try:
+        user = tarantool_manager.select_assoc('users', (session['user_id']))
+    except NoResult:
+        user = None
     if not user:
         return json.dumps(responses.ACCESS_DENIED)
     user = user[0]
