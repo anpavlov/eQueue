@@ -25,6 +25,7 @@ local queues = box.schema.space.create('queues', {if_not_exists = true})
 queues:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists = true})
 queues:create_index('qid_user', {type = 'tree', parts = {1, 'NUM', 2, 'NUM'}, if_not_exists = true})
 queues:create_index('userid', {type = 'tree', parts = {2, 'NUM'}, unique = false, if_not_exists = true})
+queues:create_index('name', {type = 'tree', parts = {3, 'STR'}, unique = false, if_not_exists = true})
 --queues:truncate()
 
 
@@ -32,6 +33,24 @@ queues:create_index('userid', {type = 'tree', parts = {2, 'NUM'}, unique = false
 function auto_inc_insert(space_name, ...)
     local res = box.space[space_name]:auto_increment{...}
     return res
+end
+
+function search_by_like(space_name, index_name, col_number, value)
+    local space_values = box.space[space_name].index[index_name]:select{}
+    local first_in = false
+    local result = {}
+    local k = 1
+    for i,v in ipairs(space_values) do
+        local res = string.match(string.lower(tostring(v[col_number])), '%w*' .. string.lower(value) .. '%w*')
+        if res ~= nil and res ~= '' then
+            first_in = true
+            result[k] = v
+            k = k + 1
+        elseif first_in == true then
+            break
+        end
+    end
+    return result
 end
 
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})

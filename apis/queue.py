@@ -1,8 +1,6 @@
 # coding=utf-8
 from flask import request, Blueprint
 from models import db, User, Queue
-from sqlalchemy.orm.exc import NoResultFound
-from datetime import datetime
 import json
 import tarantool
 import settings
