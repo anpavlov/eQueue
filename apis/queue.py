@@ -220,7 +220,10 @@ def my():
     except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
 
-    queues = tarantool_manager.select_assoc('queues', (user['id']), index='userid')
+    try:
+        queues = tarantool_manager.select_assoc('queues', (user['id']), index='userid')
+    except NoResult:
+        queues = []
     q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
 
     response = {
