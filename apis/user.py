@@ -190,9 +190,9 @@ def update():
         email = request.form['email']
         try:
             tarantool_manager.select_assoc('users', (email), index='email')
-            email_busy = False
-        except NoResult:
             email_busy = True
+        except NoResult:
+            email_busy = False
         if user['email'] != email and email_busy:
             return json.dumps(responses.EMAIL_BUSY)
         to_update['email'] = email
