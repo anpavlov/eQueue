@@ -156,16 +156,15 @@ def call():
         return json.dumps(responses.EMPTY_QUEUE)
     # push notification
     gcm = GCM(settings.GCM_SERVER_ID)
-    data = {'call': 'true', 'param2': 'value2'}
+    data = {'notification': {'body': 'true', 'title': 'value2'}}
     try:
         out_user = tarantool_manager.select_assoc('users', (user[0][1]))
     except NoResult:
         return json.dumps(responses.UNDEFINED_USER)
     out_user = out_user[0]
     reg_id = out_user['gcmid']
-    if reg_id:
-        #gcm.plaintext_request(registration_id=reg_id, data=data)
-        pass
+    if reg_id != '':
+        gcm.plaintext_request(registration_id=reg_id, data=data)
     
     standings.delete((qid, user[0][1]))
 
