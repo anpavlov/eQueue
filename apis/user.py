@@ -226,7 +226,7 @@ def details():
     try:
         session = tarantool_manager.select_assoc('sessions', (token), index='token')
     except NoResult:
-        session =  None
+        session = None
     if not session or int(time.time()-session[0]['act_date']) > SESSION_TIME:
         return json.dumps(responses.INVALID_TOKEN)
     

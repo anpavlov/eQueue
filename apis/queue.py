@@ -163,7 +163,7 @@ def call():
         return json.dumps(responses.UNDEFINED_USER)
     out_user = out_user[0]
     reg_id = out_user['gcmid']
-    if reg_id != '':
+    if reg_id != '' and reg_id is not None:
         gcm.plaintext_request(registration_id=reg_id, data=data)
     
     standings.delete((qid, user[0][1]))
