@@ -1,11 +1,17 @@
 package com.example.alex.inqueue;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class QueuesActivity extends AppCompatActivity {
@@ -20,6 +26,16 @@ public class QueuesActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Очереди");
         }
+
+        Button addQueue = (Button) findViewById(R.id.addQueue);
+        if(addQueue != null) {
+            addQueue.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openBottomSheet();
+                }
+            });
+        }
     }
 
     @Override
@@ -33,8 +49,7 @@ public class QueuesActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add:
-                Toast.makeText(this, "Add selected", Toast.LENGTH_SHORT)
-                        .show();
+                openBottomSheet();
                 break;
             default:
                 break;
@@ -43,5 +58,37 @@ public class QueuesActivity extends AppCompatActivity {
         return true;
     }
 
+    public void openBottomSheet() {
+        View view = getLayoutInflater().inflate (R.layout.bottom_sheet, null);
+        TextView txtBackup = (TextView)view.findViewById( R.id.qr_code);
+        TextView txtDetail = (TextView)view.findViewById( R.id.enter_id);
 
+        final Dialog mBottomSheetDialog = new Dialog (QueuesActivity.this,
+                R.style.MaterialDialogSheet);
+        mBottomSheetDialog.setContentView(view);
+        mBottomSheetDialog.setCancelable(true);
+        mBottomSheetDialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
+        mBottomSheetDialog.show();
+
+
+        txtBackup.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(QueuesActivity.this,"QR",Toast.LENGTH_SHORT).show();
+                mBottomSheetDialog.dismiss();
+            }
+        });
+
+        txtDetail.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(QueuesActivity.this,"Enter ID",Toast.LENGTH_SHORT).show();
+                mBottomSheetDialog.dismiss();
+            }
+        });
+    }
 }

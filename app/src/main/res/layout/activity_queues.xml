@@ -44,5 +44,6 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:shadowRadius="0"
+        android:textColor="@android:color/white"
         android:background="@drawable/button_custom"/>
 </RelativeLayout>
