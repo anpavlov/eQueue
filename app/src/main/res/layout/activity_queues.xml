@@ -4,14 +4,8 @@
     android:layout_height="match_parent"
     tools:context="com.example.alex.inqueue.QueuesActivity"
     android:background="#FFFFFF">
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/main_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ToolbarTheme">
 
-
-    </android.support.v7.widget.Toolbar>
+    <include layout="@layout/toolbar" />
 
     <ImageView
         android:layout_width="128dp"

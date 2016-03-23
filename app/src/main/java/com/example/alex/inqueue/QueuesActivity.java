@@ -1,6 +1,7 @@
 package com.example.alex.inqueue;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -60,8 +61,8 @@ public class QueuesActivity extends AppCompatActivity {
 
     public void openBottomSheet() {
         View view = getLayoutInflater().inflate (R.layout.bottom_sheet, null);
-        TextView txtBackup = (TextView)view.findViewById( R.id.qr_code);
-        TextView txtDetail = (TextView)view.findViewById( R.id.enter_id);
+        TextView txtQR = (TextView)view.findViewById( R.id.qr_code);
+        TextView txtID = (TextView)view.findViewById( R.id.enter_id);
 
         final Dialog mBottomSheetDialog = new Dialog (QueuesActivity.this,
                 R.style.MaterialDialogSheet);
@@ -73,7 +74,7 @@ public class QueuesActivity extends AppCompatActivity {
         mBottomSheetDialog.show();
 
 
-        txtBackup.setOnClickListener(new View.OnClickListener() {
+        txtQR.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -82,11 +83,12 @@ public class QueuesActivity extends AppCompatActivity {
             }
         });
 
-        txtDetail.setOnClickListener(new View.OnClickListener() {
+        txtID.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                Toast.makeText(QueuesActivity.this,"Enter ID",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(QueuesActivity.this, FindQueue.class);
+                startActivity(intent);
                 mBottomSheetDialog.dismiss();
             }
         });
