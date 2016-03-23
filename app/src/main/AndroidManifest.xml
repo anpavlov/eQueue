@@ -24,14 +24,16 @@
         </activity>
         <activity
             android:name=".QueuesActivity"
-            android:theme="@style/AppTheme"
-            >
+            android:theme="@style/AppTheme" >
         </activity>
-        <activity android:name=".FindQueue"
-            android:parentActivityName=".QueuesActivity">
+        <activity
+            android:name=".FindQueue"
+            android:parentActivityName=".QueuesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".QueuesActivity" />
+        </activity>
+        <activity android:name=".QueueActivity" >
         </activity>
     </application>
 

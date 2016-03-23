@@ -21,7 +21,7 @@ public class QueuesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queues);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+//        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
