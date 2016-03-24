@@ -9,6 +9,7 @@ import time
 from gcm import *
 from taran import tarantool_manager
 from taran.helper import NoResult
+from gcm.gcm import GCMNotRegisteredException
 
 queue_api = Blueprint('queue', __name__)
 
@@ -164,7 +165,10 @@ def call():
     out_user = out_user[0]
     reg_id = out_user['gcmid']
     if reg_id != '' and reg_id is not None:
-        gcm.plaintext_request(registration_id=reg_id, data=data)
+        try:
+            gcm.plaintext_request(registration_id=reg_id, data=data)
+        except GCMNotRegisteredException:
+            pass
     
     standings.delete((qid, user[0][1]))
 
