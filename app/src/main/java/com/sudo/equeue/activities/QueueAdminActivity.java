@@ -2,6 +2,7 @@ package com.sudo.equeue.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -22,10 +23,16 @@ public class QueueAdminActivity extends NetBaseActivity {
     public static final String EXTRA_IS_NEW_QUEUE = QueueApplication.prefix + ".extra.is_new_queue";
     public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.queue_id";
 
-    private int createRequestId;
-    private int getQueueRequestId;
-    private int saveInfoRequestId;
-    private int callRequestId;
+    private static final String SAVED_STATE_QUEUE = QueueApplication.prefix + ".QueueAdminActivity.saved.queue";
+    private static final String SAVED_STATE_ID_CREATE = QueueApplication.prefix + ".QueueAdminActivity.saved.id_create";
+    private static final String SAVED_STATE_ID_GET_QUEUE = QueueApplication.prefix + ".QueueAdminActivity.saved.id_get_queue";
+    private static final String SAVED_STATE_ID_SAVE = QueueApplication.prefix + ".QueueAdminActivity.saved.id_save";
+    private static final String SAVED_STATE_ID_CALL = QueueApplication.prefix + ".QueueAdminActivity.saved.id_call";
+
+    private int createRequestId = -1;
+    private int getQueueRequestId = -1;
+    private int saveInfoRequestId = -1;
+    private int callRequestId = -1;
 
     private Queue queueInfo;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -41,6 +48,12 @@ public class QueueAdminActivity extends NetBaseActivity {
             } else {
                 getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
             }
+        } else {
+            queueInfo = (Queue) savedInstanceState.getSerializable(SAVED_STATE_QUEUE);
+            createRequestId = savedInstanceState.getInt(SAVED_STATE_ID_CREATE, -1);
+            callRequestId = savedInstanceState.getInt(SAVED_STATE_ID_CALL, -1);
+            getQueueRequestId = savedInstanceState.getInt(SAVED_STATE_ID_GET_QUEUE, -1);
+            saveInfoRequestId = savedInstanceState.getInt(SAVED_STATE_ID_SAVE, -1);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
@@ -110,6 +123,16 @@ public class QueueAdminActivity extends NetBaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable(SAVED_STATE_QUEUE, queueInfo);
+        outState.putInt(SAVED_STATE_ID_CREATE, createRequestId);
+        outState.putInt(SAVED_STATE_ID_CALL, callRequestId);
+        outState.putInt(SAVED_STATE_ID_GET_QUEUE, getQueueRequestId);
+        outState.putInt(SAVED_STATE_ID_SAVE, saveInfoRequestId);
     }
 
     @Override
