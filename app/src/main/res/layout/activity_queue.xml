@@ -1,16 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.alex.inqueue.QueueActivity"
-    android:background="@color/mainColor">
-    <LinearLayout
-        android:layout_width="350dp"
-        android:layout_height="425dp"
-        android:orientation="vertical"
-        android:background="@drawable/post"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp">
+    android:background="@color/mainColor"
+    android:orientation="vertical">
 
-    </LinearLayout>
-</RelativeLayout>
+    <include layout="@layout/toolbar" />
+
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scrollView" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="324dp">
+            <ImageView
+                android:layout_width="300dp"
+                android:layout_height="324dp"
+                android:src="@drawable/ticket"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitXY"
+                />
+            <TextView
+                android:id="@+id/ticket_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="F17"
+                android:textColor="@color/mainColor"
+                android:layout_marginTop="80dp"
+                android:layout_centerHorizontal="true"
+                android:textSize="25pt" />
+            <TextView
+                android:id="@+id/ticket_body"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="90dp"
+                android:text="2016 03/02 12:34"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/ticket_header"/>
+        </RelativeLayout>
+    </ScrollView>
+
+
+</LinearLayout>
