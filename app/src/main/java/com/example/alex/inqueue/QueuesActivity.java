@@ -61,8 +61,9 @@ public class QueuesActivity extends AppCompatActivity {
 
     public void openBottomSheet() {
         View view = getLayoutInflater().inflate (R.layout.bottom_sheet, null);
-        TextView txtQR = (TextView)view.findViewById( R.id.qr_code);
-        TextView txtID = (TextView)view.findViewById( R.id.enter_id);
+        TextView txtQR = (TextView)view.findViewById(R.id.qr_code);
+        TextView txtID = (TextView)view.findViewById(R.id.enter_id);
+        TextView txtNearby = (TextView)view.findViewById(R.id.findNearby);
 
         final Dialog mBottomSheetDialog = new Dialog (QueuesActivity.this,
                 R.style.MaterialDialogSheet);
@@ -75,22 +76,30 @@ public class QueuesActivity extends AppCompatActivity {
 
 
         txtQR.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                Toast.makeText(QueuesActivity.this,"QR",Toast.LENGTH_SHORT).show();
+                Toast.makeText(QueuesActivity.this, "QR", Toast.LENGTH_SHORT).show();
                 mBottomSheetDialog.dismiss();
             }
         });
 
         txtID.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(QueuesActivity.this, FindQueue.class);
+                Intent intent = new Intent(QueuesActivity.this, FindQueueActivity.class);
                 startActivity(intent);
                 mBottomSheetDialog.dismiss();
             }
         });
+
+        txtNearby.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // search nearby queues
+                mBottomSheetDialog.dismiss();
+            }
+        });
+
+
     }
 }

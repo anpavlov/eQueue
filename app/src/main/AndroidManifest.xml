@@ -27,7 +27,7 @@
             android:theme="@style/AppTheme" >
         </activity>
         <activity
-            android:name=".FindQueue"
+            android:name=".FindQueueActivity"
             android:parentActivityName=".QueuesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

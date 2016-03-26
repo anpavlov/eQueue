@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-public class FindQueue extends AppCompatActivity {
+public class FindQueueActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class FindQueue extends AppCompatActivity {
             queueId.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(FindQueue.this, QueueActivity.class);
+                    Intent intent = new Intent(FindQueueActivity.this, QueueActivity.class);
                     startActivity(intent);
                 }
             });

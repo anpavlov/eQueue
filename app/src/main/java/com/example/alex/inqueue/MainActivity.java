@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 finally
                 {
-                    //Goes to Activity  StartingPoint.java(STARTINGPOINT)
                     Intent intent = new Intent(MainActivity.this, QueuesActivity.class);
                     startActivity(intent);
                 }
