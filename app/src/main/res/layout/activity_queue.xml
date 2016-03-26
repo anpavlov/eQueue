@@ -8,16 +8,31 @@
 
     <include layout="@layout/toolbar" />
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Встать в эту очередь"
+        android:id="@+id/enter"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:shadowRadius="0"
+        android:textColor="@color/mainColor"
+        android:background="@drawable/button_white"/>
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollView" >
+        android:id="@+id/scrollTicket" >
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:minHeight="324dp">
+            android:minHeight="324dp"
+            android:id="@+id/ticket"
+            android:visibility="gone">
             <ImageView
                 android:layout_width="300dp"
                 android:layout_height="324dp"
