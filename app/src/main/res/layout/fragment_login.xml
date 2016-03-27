@@ -82,6 +82,11 @@
             android:layout_below="@id/logo"
             style="@style/FullWidthEditText"/>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"/>
+
         <EditText
             android:id="@+id/field_password"
             android:layout_width="match_parent"
