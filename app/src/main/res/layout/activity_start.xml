@@ -4,7 +4,8 @@
     android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".StartActivity">
+    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".StartActivity"
+    android:background="#291545">
 
 
     <ImageView
@@ -13,6 +14,7 @@
         android:id="@+id/imageView"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/logo"
-        android:layout_marginLeft="50dp" />
+        android:src="@drawable/trans_eq"
+        android:minHeight="512dp"
+        android:minWidth="512dp" />
 </RelativeLayout>

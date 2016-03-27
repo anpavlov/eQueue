@@ -45,6 +45,8 @@ public class StartActivity extends NetBaseActivity {
             startApp();
         }
 
+
+
 //        new Handler().postDelayed(() -> {
 //
 //        }, 1500);
