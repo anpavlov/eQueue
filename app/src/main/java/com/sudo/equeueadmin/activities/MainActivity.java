@@ -7,9 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
@@ -67,6 +69,14 @@ public class MainActivity extends NetBaseActivity {
 
     public void updateQueueList(QueueList queues) {
         queueList = queues.getQueues();
+        RelativeLayout no_queues = (RelativeLayout) findViewById(R.id.no_queue_layout);
+        if(queueList.size() != 0) {
+            no_queues.setVisibility(View.GONE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
+        } else {
+            no_queues.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.GONE);
+        }
         queueNamesList.clear();
         for (Queue queue : queueList) {
             queueNamesList.add(queue.getName());

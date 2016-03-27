@@ -1,19 +1,59 @@
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/main_layout"
-    android:weightSum="1">
+    android:id="@+id/main_layout">
 
     <include layout="@layout/toolbar" />
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/no_queue_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:id="@+id/queueImg"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/people_pur"
+            android:maxHeight="64dp"
+            android:maxWidth="64dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вы еще не создали ни одной очереди"
+            android:textColor="@color/mainColor"
+            android:id="@+id/noQueues"
+            android:layout_below="@+id/queueImg"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"/>
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Добавить"
+            android:id="@+id/add_queue"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:shadowRadius="0"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_custom"/>
+    </RelativeLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh_queue_list"
         android:layout_width="match_parent"
         android:layout_height="345dp"
-        android:layout_weight="0.90">
+        android:layout_weight="0.90"
+        android:visibility="gone">
 
         <ListView
             android:layout_width="match_parent"
@@ -26,11 +66,5 @@
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="dobavit"
-        android:id="@+id/add_queue"
-        android:layout_gravity="center_horizontal" />
 
-</LinearLayout>
+</RelativeLayout>
