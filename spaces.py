@@ -3,6 +3,7 @@ TARANTOOL_STR = 1
 TARANTOOL_NUM = 2
 TARANTOOL_NUM64 = 3
 TARANTOOL_RAW = 4
+TARANTOOL_ARRAY = 5
 
 # structure: (NAME, TYPE, DEFAULT)
 
@@ -33,7 +34,8 @@ schema = {
             ('description', TARANTOOL_STR, ''),
             ('current', TARANTOOL_NUM64, 0),
             ('created', TARANTOOL_NUM, 0),
-            ('closed', TARANTOOL_NUM, 0)
+            ('closed', TARANTOOL_NUM, 0),
+            ('coords', TARANTOOL_ARRAY, [])
         ]
     }
 }

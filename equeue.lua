@@ -1,7 +1,7 @@
 box.cfg{
     listen = 3301,
-    wal_dir='xlog',
-    snap_dir='snap',
+--    wal_dir='xlog',
+--    snap_dir='snap',
 }
 
 local s = box.schema.space.create('standings', {if_not_exists = true})
@@ -27,6 +27,7 @@ queues:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists
 queues:create_index('qid_user', {type = 'tree', parts = {1, 'NUM', 2, 'NUM'}, if_not_exists = true})
 queues:create_index('userid', {type = 'tree', parts = {2, 'NUM'}, unique = false, if_not_exists = true})
 queues:create_index('name', {type = 'tree', parts = {3, 'STR'}, unique = false, if_not_exists = true})
+queues:create_index('coords', {type = 'rtree', parts = {8, 'array'}, unique = false, if_not_exists = true})
 --queues:truncate()
 
 
@@ -51,6 +52,11 @@ function search_by_like(space_name, index_name, col_number, value)
             break
         end
     end
+    return result
+end
+
+function search_by_coords(space_name, index_name, value)
+    local result = box.space[space_name].index[index_name]:select(value, {iterator='overlaps'})
     return result
 end
 

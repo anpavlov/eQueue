@@ -34,6 +34,10 @@ class Manager():
         res = self.conn.call("search_by_like", space_name, index_name, col_number, value)
         return self._make_assoc(space_name, res)
 
+    def select_by_coords(self, space_name, index_name, value):
+        res = self.conn.call("search_by_coords", space_name, index_name, value)
+        return self._make_assoc(space_name, res)
+
     def simple_update(self, space_name, key, values):
         ops = []
         for k, value in values.iteritems():

@@ -1,4 +1,6 @@
 # coding=utf-8
+import random
+
 from flask import request, Blueprint
 from models import db, User, Queue
 import json
@@ -34,7 +36,8 @@ def create():
     queue = {
         'user_id': user['id'],
         'name': name,
-        'created': time.time()
+        'created': time.time(),
+        'coords': [0, 0]
     }
     q = tarantool_manager.insert('queues', queue)
     response = {
@@ -52,12 +55,21 @@ def update():
         qid = int(request.form['qid'])
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
+
+    try:
+        coords = request.form.get('coords')
+        coords = coords.split(",")
+        coords = [float(coords[0]), float(coords[1])]
+    except (KeyError, ValueError, TypeError, AttributeError, IndexError):
+        coords = None
+
     name = request.form.get('name')
     description = request.form.get('description')
     try:
         user = tarantool_manager.get_user_by_token(token)
     except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
+
     try:
         q = tarantool_manager.select_assoc('queues', (qid, user['id']), index='qid_user')
     except NoResult:
@@ -69,6 +81,9 @@ def update():
         to_update['name'] = name
     if description is not None:
         to_update['description'] = description
+    if coords:
+        to_update['coords'] = coords
+
 
     if len(to_update) > 0:
         tarantool_manager.simple_update('queues', q['id'], to_update)
@@ -102,9 +117,13 @@ def info():
             'name': q['name'],
             'description': q['description'],
             'date_opened': int(q['created']),
-            'users': users
+            'users': users,
         }
     }
+
+    if q['coords'] != [0, 0]:
+        response['body']['coords'] = q['coords']
+
     return json.dumps(response)
 
 
@@ -201,6 +220,41 @@ def find():
 
     if queues[0]:
         q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description']} for queue in queues]
+    else:
+        q = []
+    response = {
+        'code': 200,
+        'body': {
+            'queues': q
+        }
+    }
+    return json.dumps(response)
+
+
+@queue_api.route("/find_near/", methods=['GET'])
+def find_near():
+    try:
+        coords = request.args.get('coords')
+        coords = coords.split(",")
+        coords = [float(coords[0]), float(coords[1])]
+    except (KeyError, ValueError, TypeError, AttributeError, IndexError):
+        coords = None
+
+    if coords:
+        border = 0.02
+        coords = [coords[0] - border, coords[1] - border, coords[0] + border, coords[1] + border]
+        queues = tarantool_manager.select_by_coords('queues', 'coords', coords)
+    else:
+        response = {
+            'code': 200,
+            'body': {
+                'queues': []
+            }
+        }
+        return json.dumps(response)
+
+    if queues[0]:
+        q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description'], 'coords': queue['coords']} for queue in queues]
     else:
         q = []
     response = {
