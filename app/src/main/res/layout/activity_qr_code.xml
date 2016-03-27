@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    tools:context="com.example.alex.inqueue.FindQueueActivity">
+
+    <include layout="@layout/toolbar"/>
+
+    <FrameLayout
+        android:id="@+id/cameraPreview"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="65dp"
+        android:background="@drawable/button_custom"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:id="@+id/scanText"
+        android:text="@string/scan_process_label"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@android:color/black"
+        android:layout_below="@id/cameraPreview"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Добавить"
+        android:id="@+id/btn_find_queue"
+        android:layout_below="@id/scanText"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:shadowRadius="0"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_custom"
+        android:layout_centerHorizontal="true"/>
+
+    <include layout="@layout/overlay"/>
+
+
+</RelativeLayout>

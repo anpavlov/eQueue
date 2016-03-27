@@ -157,7 +157,8 @@ public class MainActivity extends NetBaseActivity {
 
 
         txtQR.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "QR", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, QRCodeActivity.class);
+            startActivity(intent);
             mBottomSheetDialog.dismiss();
         });
 

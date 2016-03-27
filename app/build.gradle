@@ -38,6 +38,9 @@ dependencies {
     compile 'com.google.code.gson:gson:2.5'
 
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
+
+
+    compile files('libs/zbar.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'

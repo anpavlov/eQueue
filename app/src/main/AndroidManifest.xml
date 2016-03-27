@@ -8,6 +8,11 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <uses-permission android:name="com.sudo.equeue.permission.C2D_MESSAGE" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <permission android:name="com.sudo.equeue.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
 
@@ -55,6 +60,9 @@
         <activity android:name=".activities.FindQueueActivity" >
         </activity>
 
+        <activity android:name=".activities.QRCodeActivity" >
+        </activity>
+
         <activity android:name=".activities.QueueActivity">
         </activity>
 
@@ -65,6 +73,14 @@
         </activity>
 
         <activity android:name=".activities.WebViewActivity" >
+        </activity>
+
+        <activity
+            android:name=".activities.QRActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
         </activity>
 
         <service
