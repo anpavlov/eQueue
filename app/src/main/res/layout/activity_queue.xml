@@ -8,24 +8,76 @@
 
     <include layout="@layout/toolbar" />
 
-    <Button
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Встать в эту очередь"
-        android:id="@+id/btn_join_queue"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:shadowRadius="0"
-        android:textColor="@color/mainColor"
-        android:background="@drawable/button_white"/>
+        android:orientation="vertical">
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Встать в эту очередь"
+            android:id="@+id/btn_join_queue"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:shadowRadius="0"
+            android:textColor="@color/mainColor"
+            android:background="@drawable/button_white"
+            android:visibility="visible"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:id="@+id/queue_stats">
+            <TextView
+                android:id="@+id/inqueue"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/grid_box"
+                android:text="в очереди\n0"
+                android:textColor="@android:color/white"
+                android:layout_alignParentLeft="true"
+                android:drawableTop="@drawable/in_queue"
+                android:drawablePadding="9dp"
+                android:paddingTop="14dp"
+                android:gravity="center_horizontal"/>
+            <TextView
+                android:id="@+id/out_quantity"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/grid_box"
+                android:text="прошло\n0"
+                android:textColor="@android:color/white"
+                android:layout_centerHorizontal="true"
+                android:drawableTop="@drawable/arrow"
+                android:drawablePadding="9dp"
+                android:paddingTop="14dp"
+                android:gravity="center_horizontal"/>
+            <TextView
+                android:id="@+id/total_time"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/grid_box"
+                android:text="15:34"
+                android:textColor="@android:color/white"
+                android:layout_alignParentRight="true"
+                android:drawableTop="@drawable/clock"
+                android:drawablePadding="15dp"
+                android:paddingTop="14dp"
+                android:gravity="center_horizontal"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+
 
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/scrollTicket" >
+        android:id="@+id/scrollTicket"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="fill_parent"

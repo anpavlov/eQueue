@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -39,6 +40,7 @@ import com.sudo.equeue.models.User;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.RVAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 //import com.sudo.equeue.fragments.AboutFragment;
@@ -61,8 +63,10 @@ public class MainActivity extends NetBaseActivity {
     private int getMyQueuesRequestId = -1;
 
     private QueueList queueList;
+    private List<Queue> queues;
     private RVAdapter adapter;
     private FrameLayout progressBarHolder;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,12 +86,13 @@ public class MainActivity extends NetBaseActivity {
         } else {
             queueList = (QueueList) savedInstanceState.getSerializable(SAVED_STATE_QUEUE_LIST);
         }
+        queues = new ArrayList<>(queueList.getQueues());
 
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        adapter = new RVAdapter(queueList.getQueues(), queue -> onItemClick(queue));
+        adapter = new RVAdapter(queueList.getQueues(), this::onItemClick);
         rv.setAdapter(adapter);
 
         updateView();
@@ -98,6 +103,9 @@ public class MainActivity extends NetBaseActivity {
         }
 
         progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_queue_list);
+        swipeRefreshLayout.setOnRefreshListener(() -> getMyQueuesRequestId = getServiceHelper().meInQueues());
     }
 
     private void onItemClick(Queue queue) {
@@ -118,6 +126,13 @@ public class MainActivity extends NetBaseActivity {
             noQueuesView.setVisibility(View.GONE);
             queueListView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void updateQueueList(QueueList queueList) {
+        this.queueList = queueList;
+        queues.clear();
+        queues.addAll(queueList.getQueues());
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -200,9 +215,9 @@ public class MainActivity extends NetBaseActivity {
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-//        if (requestId == createUserRequestId) {
-//            getServiceHelper().handleResponse(this, resultCode, data, obj -> initUserPref((User) obj), NetService.RETURN_USER);
-//        }
+        if (requestId == getMyQueuesRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> updateQueueList((QueueList) obj), NetService.RETURN_QUEUE_LIST);
+        }
     }
 
 //    private void onAddCLick() {

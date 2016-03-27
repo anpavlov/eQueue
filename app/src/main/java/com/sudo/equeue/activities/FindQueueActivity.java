@@ -3,6 +3,7 @@ package com.sudo.equeue.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
@@ -58,7 +59,8 @@ public class FindQueueActivity extends NetBaseActivity {
 
     private void searchForQueue() {
         String queueHash = ((EditText) findViewById(R.id.queue_hash_field)).getText().toString();
-        searchQueueRequestId = getServiceHelper().getQueue(1);
+        Integer aa = Integer.getInteger(queueHash);
+        searchQueueRequestId = getServiceHelper().getQueue(aa == null ? 1 : aa);
         loadingStart();
     }
 
@@ -73,9 +75,26 @@ public class FindQueueActivity extends NetBaseActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == searchQueueRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> gotQueue((Queue) obj), NetService.RETURN_QUEUE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
     }
 }
