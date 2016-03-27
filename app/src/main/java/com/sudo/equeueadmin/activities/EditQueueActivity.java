@@ -30,7 +30,7 @@ public class EditQueueActivity extends NetBaseActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Создать очередь");
+            getSupportActionBar().setTitle("Параметры очереди");
         }
 
         if (savedInstanceState == null) {

@@ -18,46 +18,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Название"
-                android:id="@+id/name_lbl" />
+                android:src="@drawable/manage"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/name" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Описание"
-                android:id="@+id/description_lbl"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/description" />
+                android:id="@+id/name"
+                android:layout_gravity="center"/>
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="В очереди"
-                android:id="@+id/inqueue_lbl"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="14sp"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:id="@+id/inqueue" />
+                android:id="@+id/description"
+                android:layout_gravity="center"/>
+
+
 
             <Button
                 android:layout_width="match_parent"
@@ -68,6 +55,49 @@
                 android:shadowRadius="0"
                 android:textColor="@android:color/white"
                 android:background="@drawable/button_custom"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp">
+                <TextView
+                    android:id="@+id/inqueue"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/grid_box"
+                    android:text="в очереди\n0"
+                    android:textColor="@android:color/white"
+                    android:layout_alignParentLeft="true"
+                    android:drawableTop="@drawable/in_queue"
+                    android:drawablePadding="9dp"
+                    android:paddingTop="14dp"
+                    android:gravity="center_horizontal"/>
+                <TextView
+                    android:id="@+id/out_quantity"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/grid_box"
+                    android:text="прошло\n0"
+                    android:textColor="@android:color/white"
+                    android:layout_centerHorizontal="true"
+                    android:drawableTop="@drawable/arrow"
+                    android:drawablePadding="9dp"
+                    android:paddingTop="14dp"
+                    android:gravity="center_horizontal"/>
+                <TextView
+                    android:id="@+id/total_time"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/grid_box"
+                    android:text="15:34"
+                    android:textColor="@android:color/white"
+                    android:layout_alignParentRight="true"
+                    android:drawableTop="@drawable/clock"
+                    android:drawablePadding="15dp"
+                    android:paddingTop="14dp"
+                    android:gravity="center_horizontal"/>
+            </RelativeLayout>
+
 
         </LinearLayout>
 
