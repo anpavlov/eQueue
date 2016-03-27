@@ -39,4 +39,11 @@
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
+    <style name="FullWidthEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:padding">20dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/mainColor</item>
+    </style>
+
 </resources>
