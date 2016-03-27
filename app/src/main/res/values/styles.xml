@@ -1,38 +1,55 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">#291545</item>
+        <item name="colorPrimaryDark">#291545</item>
+        <item name="colorAccent">@color/mainColor</item>
+        <item name="colorButtonNormal">@color/mainColor</item>
+        <item name="android:textColor">@color/mainColor</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!--<item name="android:textColorPrimary">@color/primary_text_material_light</item>-->
     </style>
-    <!--<style name="AppTheme.NoActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">-->
-        <!--<item name="windowActionBar">false</item>-->
-        <!--<item name="windowNoTitle">true</item>-->
-    <!--</style>-->
-    <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-    <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
-
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:background">@color/mainColor</item>
+        <item name="android:textColor">@android:color/white</item>
         <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+    </style>
+
+    <style name="MaterialDialogSheet" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowAnimationStyle">@style/MaterialDialogSheetAnimation</item>
+        <item name="android:textColor">@color/mainColor</item>
+    </style>
+
+    <style name="MaterialDialogSheetAnimation">
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
+
+    <style name="FullWidthEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:padding">20dp</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/mainColor</item>
     </style>
 
     <style name="TabBarTheme" parent="Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/colorPrimary</item>
-        <item name="android:actionBarTabTextStyle">@style/tabtextcolor</item>
-    </style>
-
-    <style name="tabtextcolor" parent="TextAppearance.Design.Tab">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="NavigationTheme" parent="AppTheme">
-        <item name="android:listDivider">@android:color/transparent</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:listPreferredItemHeightSmall">60dp</item>
+        <item name="android:actionBarTabTextStyle">@android:color/white</item>
     </style>
 
 </resources>
