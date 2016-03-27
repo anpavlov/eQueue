@@ -52,7 +52,7 @@
         android:id="@+id/refresh_queue_list"
         android:layout_width="match_parent"
         android:layout_height="345dp"
-        android:layout_weight="0.90"
+        android:layout_marginTop="56dp"
         android:visibility="gone">
 
         <ListView
