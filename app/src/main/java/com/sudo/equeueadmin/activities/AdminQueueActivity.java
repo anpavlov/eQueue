@@ -88,7 +88,7 @@ public class AdminQueueActivity extends NetBaseActivity {
     private void updateQueueView() {
         ((TextView) findViewById(R.id.name)).setText(queueInfo.getName());
         ((TextView) findViewById(R.id.description)).setText(queueInfo.getDescription());
-        ((TextView) findViewById(R.id.inqueue)).setText(Integer.toString(queueInfo.getUserlist().size()));
+        ((TextView) findViewById(R.id.inqueue)).setText(Integer.toString(queueInfo.getUserlist() == null ? 0 : queueInfo.getUserlist().size()));
         swipeRefreshLayout.setRefreshing(false);
     }
 
