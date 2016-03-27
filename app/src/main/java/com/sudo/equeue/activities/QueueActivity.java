@@ -10,6 +10,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.R;
@@ -25,6 +26,7 @@ public class QueueActivity extends NetBaseActivity {
     private Queue queue;
     private Button joinButton;
     private FrameLayout progressBarHolder;
+    private RelativeLayout queueInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +49,12 @@ public class QueueActivity extends NetBaseActivity {
         }
 
         progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
+        queueInfo = (RelativeLayout) findViewById(R.id.queue_stats);
     }
 
     private void joinQueue() {
         joinButton.setVisibility(View.GONE);
+        queueInfo.setVisibility(View.GONE);
         joinQueueRequestId = getServiceHelper().joinQueue(queue.getQid());
         loadingStart();
     }
