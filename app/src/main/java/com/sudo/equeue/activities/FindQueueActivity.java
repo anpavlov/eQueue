@@ -59,7 +59,8 @@ public class FindQueueActivity extends NetBaseActivity {
 
     private void searchForQueue() {
         String queueHash = ((EditText) findViewById(R.id.queue_hash_field)).getText().toString();
-        searchQueueRequestId = getServiceHelper().getQueue(1);
+        Integer aa = Integer.getInteger(queueHash);
+        searchQueueRequestId = getServiceHelper().getQueue(aa == null ? 1 : aa);
         loadingStart();
     }
 
