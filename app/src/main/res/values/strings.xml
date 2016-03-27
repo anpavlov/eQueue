@@ -1,0 +1,26 @@
+<resources>
+    <string name="app_name">eQueue</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!--<string name="prefix">com.sudo.equeue</string>-->
+
+    <string name="server_ip">p30280.lab1.stud.tech-mail.ru</string>
+    <!--<string name="server_ip">10.0.2.2:5000</string>-->
+    <!--<string name="server_ip">192.168.0.101:5000</string>-->
+
+    <!-- Error messages (also for Toasts)-->
+    <string name="error_msg_server_timeout">Server timed out</string>
+    <string name="error_msg_conn_timeout">Connection timed out</string>
+    <string name="error_msg_server_error">Server error occurred. Please contact developers</string>
+    <string name="error_msg_unknown">Unknown error occurred. Please contact developers</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    <string name="asd"><font size="20">First line!</font>\n\<font size="10">Second line!</font></string>
+</resources>
