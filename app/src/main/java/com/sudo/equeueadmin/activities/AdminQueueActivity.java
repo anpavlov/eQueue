@@ -78,12 +78,13 @@ public class AdminQueueActivity extends NetBaseActivity {
         }
     }
 
-//    private void openTerminal() {
-//        Intent intent = new Intent(this, QueueTerminalActivity.class);
-//        intent.putExtra(AdminActivity.EXTRA_IS_NEW_QUEUE, false);
-//        intent.putExtra(AdminActivity.EXTRA_QUEUE_ID, queueInfo.getQid());
-//        startActivity(intent);
-//    }
+    private void openTerminal() {
+        if (queueInfo != null) {
+            Intent intent = new Intent(this, QueueTerminalActivity.class);
+            intent.putExtra(QueueTerminalActivity.EXTRA_QUEUE_ID, queueInfo.getQid());
+            startActivity(intent);
+        }
+    }
 
     private void updateQueueView() {
         ((TextView) findViewById(R.id.name)).setText(queueInfo.getName());
@@ -108,6 +109,8 @@ public class AdminQueueActivity extends NetBaseActivity {
             case R.id.menu_edit:
                 editQueue();
                 return true;
+            case R.id.menu_terminal:
+                openTerminal();
         }
         return super.onOptionsItemSelected(item);
     }

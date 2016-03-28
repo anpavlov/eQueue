@@ -35,6 +35,8 @@ dependencies {
 
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
+
+    compile files('libs/zxing_core.jar')
 }
 
 apply plugin: 'com.google.gms.google-services'
