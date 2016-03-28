@@ -28,7 +28,11 @@ def create():
     try:
         name = request.form['name']
     except KeyError:
-        name = 'Queue'
+        name = 'Без названия'
+    try:
+        description = request.form['description']
+    except KeyError:
+        description = ''
     try:
         user = tarantool_manager.get_user_by_token(token)
     except NoResult:
@@ -36,6 +40,7 @@ def create():
     queue = {
         'user_id': user['id'],
         'name': name,
+        'description': description,
         'created': time.time(),
         'coords': [0, 0]
     }
