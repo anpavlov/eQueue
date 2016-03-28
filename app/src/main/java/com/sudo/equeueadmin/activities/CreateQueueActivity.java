@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.sudo.equeueadmin.NetBaseActivity;
@@ -38,8 +39,10 @@ public class CreateQueueActivity extends NetBaseActivity {
     }
 
     private void createQueue() {
-//        TODO: pass name and description
-        createQueueRequestId = getServiceHelper().createQueue();
+//        ((EditText) findViewById(R.id.name_field)).getText().toString();
+        createQueueRequestId = getServiceHelper().createQueue(
+                ((EditText) findViewById(R.id.name_field)).getText().toString(),
+                ((EditText) findViewById(R.id.description_field)).getText().toString());
     }
 
     @Override

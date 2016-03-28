@@ -81,8 +81,8 @@ public class Processor {
         }
     }
 
-    public Bundle createQueue(String token) {
-        return makeSimpleRequest(queueApi.createQueue(token), NetService.RETURN_QUEUE);
+    public Bundle createQueue(String token, String name, String desc) {
+        return makeSimpleRequest(queueApi.createQueue(token, name, desc), NetService.RETURN_QUEUE);
     }
 
     public Bundle createUser(String email, String password, String token) {
@@ -119,6 +119,10 @@ public class Processor {
 
     public Bundle myQueues(String token) {
         return makeSimpleRequest(queueApi.myQueues(token), NetService.RETURN_QUEUE_LIST);
+    }
+
+    public Bundle checkToken(String token) {
+        return makeSimpleRequest(queueApi.checkToken(token), NetService.RETURN_IS_TOKEN_OK);
     }
 
     public Bundle meInQueues(String token) {

@@ -88,7 +88,7 @@ public class AdminQueueActivity extends NetBaseActivity {
     private void updateQueueView() {
         ((TextView) findViewById(R.id.name)).setText(queueInfo.getName());
         ((TextView) findViewById(R.id.description)).setText(queueInfo.getDescription());
-        ((TextView) findViewById(R.id.inqueue)).setText("в очереди\n" + Integer.toString(queueInfo.getUserlist() == null ? 0 : queueInfo.getUserlist().size()));
+        ((TextView) findViewById(R.id.inqueue)).setText("в очереди\n" + Integer.toString(queueInfo.getUsersQuantity()));
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -125,11 +125,11 @@ public class AdminQueueActivity extends NetBaseActivity {
 //        tvName.setText("Your name is " + name);
         if (requestCode == EDIT_QUEUE_REQ_ID) {
             if (data == null || resultCode != RESULT_OK) {
-                Toast.makeText(this, "Error while editing", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "Error while editing", Toast.LENGTH_SHORT).show();
             } else {
                 Queue queue = (Queue) data.getSerializableExtra(EXTRA_QUEUE);
                 if (queue == null) {
-                    Toast.makeText(this, "Error while editing", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Error while editing", Toast.LENGTH_SHORT).show();
                 } else {
                     queueInfo = queue;
                     updateQueueView();

@@ -7,6 +7,7 @@ package com.sudo.equeueadmin.utils;
 //import com.sudo.equeue.models.CreateQueueResponse;
 //import com.sudo.equeue.models.Employer;
 
+import com.sudo.equeueadmin.models.IsTokenOkModel;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.models.QueueList;
 import com.sudo.equeueadmin.models.User;
@@ -60,7 +61,7 @@ public interface QueueApi {
 
     @FormUrlEncoded
     @POST("/api/queue/create/")
-    Call<ResponseBase<Queue>> createQueue(@Field("token") String token);
+    Call<ResponseBase<Queue>> createQueue(@Field("token") String token, @Field("name") String name, @Field("description") String desc);
 
     @GET("/api/queue/info/")
     Call<ResponseBase<Queue>> getQueue(@Query("qid") int qid);
@@ -92,4 +93,8 @@ public interface QueueApi {
     @FormUrlEncoded
     @POST("/api/user/updategcm/")
     Call<ResponseBase<QueueList>> updateGcmId(@Field("token") String token, @Field("gcmid") String gcmid);
+
+    @FormUrlEncoded
+    @POST("/api/user/check-token/")
+    Call<ResponseBase<IsTokenOkModel>> checkToken(@Field("token") String token);
 }

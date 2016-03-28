@@ -15,6 +15,7 @@ import com.sudo.equeueadmin.models.Queue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 //import com.sudo.equeue.models.SearchResults;
@@ -76,14 +77,14 @@ public class ServiceHelper implements ServiceCallbackListener {
 //    ===============================================================
 
     public interface HandleCallbackIntf {
-        void call(Serializable obj);
+        void call(Object obj);
     }
 
     public void handleResponse(Context context, int resultCode, Bundle data, HandleCallbackIntf callback, String returnKey) {
         if (resultCode == NetService.CODE_OK) {
             if (data.getInt(NetService.RETURN_CODE) == NetService.CODE_OK) {
                 if (returnKey != null) {
-                    callback.call(data.getSerializable(returnKey));
+                    callback.call(data.get(returnKey));
                 } else {
                     callback.call(null);
                 }
@@ -162,11 +163,13 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
-    public int createQueue() {
+    public int createQueue(String name, String desc) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_CREATE_QUEUE, requestId);
 
         String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_NAME, name);
+        i.putExtra(NetService.EXTRA_DESCRIPTION, desc);
         i.putExtra(NetService.EXTRA_TOKEN, token);
 
         application.startService(i);
@@ -242,6 +245,18 @@ public class ServiceHelper implements ServiceCallbackListener {
         application.startService(i);
         return requestId;
     }
+
+    public int checkToken() {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_CHECK_TOKEN, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+
+        application.startService(i);
+        return requestId;
+    }
+
 
     public int joinQueue(int queueId) {
         final int requestId = createId();

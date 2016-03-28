@@ -13,15 +13,20 @@ public class Queue extends PossibleError {
     private String name;
     private String alias;
     private String description;
-    private List<Integer> users;
+//    private List<Integer> users;
+    private int users_quantity;
 
-    public List<Integer> getUserlist() {
-        return users;
+    public int getUsersQuantity() {
+        return users_quantity;
     }
 
-    public void setUserlist(List<Integer> userlist) {
-        this.users = userlist;
-    }
+//    public List<Integer> getUserlist() {
+//        return users;
+//    }
+//
+//    public void setUserlist(List<Integer> userlist) {
+//        this.users = userlist;
+//    }
 
     public int getQid() {
         return qid;

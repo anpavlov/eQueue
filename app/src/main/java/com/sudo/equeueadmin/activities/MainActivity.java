@@ -67,6 +67,13 @@ public class MainActivity extends NetBaseActivity {
         swipeRefreshLayout.setOnRefreshListener(() -> getQueueListRequestId = makeRequest());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getQueueListRequestId = makeRequest();
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
     public void updateQueueList(QueueList queues) {
         queueList = queues.getQueues();
         RelativeLayout no_queues = (RelativeLayout) findViewById(R.id.no_queue_layout);

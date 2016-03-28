@@ -12,6 +12,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
+import com.sudo.equeueadmin.models.IsTokenOkModel;
 import com.sudo.equeueadmin.models.User;
 import com.sudo.equeueadmin.push.RegistrationIntentService;
 import com.sudo.equeueadmin.utils.QueueApplication;
@@ -20,7 +21,8 @@ public class StartActivity extends NetBaseActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    private int createUserRequestId;
+    private int createUserRequestId = -1;
+    private int checkTokenRequestId = -1;
 
     private SharedPreferences prefs;
 
@@ -37,19 +39,12 @@ public class StartActivity extends NetBaseActivity {
             startService(intent);
         }
 
-//        TODO: if not null update and check on server
         String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
         if (token == null || token.equals("")) {
-            createUserRequestId = getServiceHelper().createUser(null, null, null, false);
+            startLogin();
         } else {
-            startApp();
+            checkTokenRequestId = getServiceHelper().checkToken();
         }
-
-
-
-//        new Handler().postDelayed(() -> {
-//
-//        }, 1500);
     }
 
     private boolean checkPlayServices() {
@@ -73,10 +68,24 @@ public class StartActivity extends NetBaseActivity {
         finish();
     }
 
+    private void startLogin() {
+        Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void isValidToken(IsTokenOkModel isValid) {
+        if (isValid.isValid()) {
+            startApp();
+        } else {
+            startLogin();
+        }
+    }
+
 //    TODO: вынести инициализацию юзера в Application
     private void initUserPref(User user) {
         if (user != null && user.getToken() != null && !user.getToken().equals("")) {
-            SharedPreferences prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
+            prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
             prefs.edit()
                     .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
                     .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
@@ -89,8 +98,8 @@ public class StartActivity extends NetBaseActivity {
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-        if (requestId == createUserRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> initUserPref((User) obj), NetService.RETURN_USER);
+        if (requestId == checkTokenRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> isValidToken((IsTokenOkModel) obj), NetService.RETURN_IS_TOKEN_OK);
         }
     }
 }

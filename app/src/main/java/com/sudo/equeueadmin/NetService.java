@@ -34,6 +34,7 @@ public class NetService extends IntentService {
     public static final String ACTION_LOGIN_EMAIL = QueueApplication.prefix + ".action.LOGIN_EMAIL";
     public static final String ACTION_ME_IN_QUEUES = QueueApplication.prefix + ".action.ME_IN_QUEUES";
     public static final String ACTION_UPDATE_GCM = QueueApplication.prefix + ".action.UPDATE_GCM";
+    public static final String ACTION_CHECK_TOKEN = QueueApplication.prefix + ".action.CHECK_TOKEN";
 
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
@@ -50,6 +51,7 @@ public class NetService extends IntentService {
     public static final String EXTRA_PASSWORD = QueueApplication.prefix + ".extra.PASSWORD";
     public static final String EXTRA_QUERY = QueueApplication.prefix + ".extra.QUERY";
     public static final String EXTRA_GCMID = QueueApplication.prefix + ".extra.GCMID";
+    public static final String EXTRA_DESCRIPTION = QueueApplication.prefix + ".extra.DESCRIPTION";
 
 //    public static final String EXTRA_EMPLOYER_ID = QueueApplication.prefix + ".extra.EMPLOYER_ID";
 //    public static final String EXTRA_SEARCH_TEXT = QueueApplication.prefix + ".extra.SEARCH_TEXT";
@@ -66,7 +68,7 @@ public class NetService extends IntentService {
     public static final String RETURN_QUEUE = QueueApplication.prefix + ".return.QUEUE";
     public static final String RETURN_QUEUE_LIST = QueueApplication.prefix + ".return.QUEUE_LIST";
     public static final String RETURN_USER = QueueApplication.prefix + ".return.USER";
-//    public static final String RETURN_DATA_SEARCH_RESULTS = QueueApplication.prefix + ".return.SEARCH_RESULTS";
+    public static final String RETURN_IS_TOKEN_OK = QueueApplication.prefix + ".return.IS_TOKEN_OK";
 
     private Processor processor;
     private ResultReceiver receiver;
@@ -90,7 +92,9 @@ public class NetService extends IntentService {
             switch (action) {
                 case ACTION_CREATE_QUEUE: {
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
-                    handleCreateQueue(token);
+                    final String name = intent.getStringExtra(EXTRA_NAME);
+                    final String desc = intent.getStringExtra(EXTRA_DESCRIPTION);
+                    handleCreateQueue(token, name, desc);
                     break;
                 }
                 case ACTION_GET_QUEUE: {
@@ -143,6 +147,11 @@ public class NetService extends IntentService {
                 case ACTION_ME_IN_QUEUES: {
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     handleMeInQueues(token);
+                    break;
+                }
+                case ACTION_CHECK_TOKEN: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleCheckToken(token);
                     break;
                 }
                 case ACTION_LOGIN_VK: {
@@ -243,13 +252,23 @@ public class NetService extends IntentService {
         receiver.send(CODE_OK, bundle);
     }
 
-    private void handleCreateQueue(String token) {
+    private void handleCreateQueue(String token, String name, String desc) {
         if (token == null || token.equals("")) {
             receiver.send(CODE_FAILED, null);
             return;
         }
 
-        Bundle bundle = processor.createQueue(token);
+        Bundle bundle = processor.createQueue(token, name, desc);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleCheckToken(String token) {
+        if (token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.checkToken(token);
         receiver.send(CODE_OK, bundle);
     }
 

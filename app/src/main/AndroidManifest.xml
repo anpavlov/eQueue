@@ -53,6 +53,11 @@
         <activity android:name=".activities.EditQueueActivity" />
         <activity android:name=".activities.MapActivity" />
 
+        <activity android:name=".activities.LoginActivity" >
+        </activity>
+        <activity android:name=".activities.RegisterActivity" >
+        </activity>
+
         <!-- =================== GCM =====================-->
 
         <receiver
