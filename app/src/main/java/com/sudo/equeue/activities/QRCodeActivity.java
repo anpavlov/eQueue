@@ -5,6 +5,7 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
@@ -128,6 +129,17 @@ public class QRCodeActivity extends NetBaseActivity {
             previewing = true;
             mPreview.refreshDrawableState();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+
+        return true;
     }
 
     private Runnable doAutoFocus = new Runnable() {
