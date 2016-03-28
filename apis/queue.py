@@ -122,7 +122,7 @@ def info():
             'name': q['name'],
             'description': q['description'],
             'date_opened': int(q['created']),
-            'users': users,
+            'users_quantity': len(users),
         }
     }
 
