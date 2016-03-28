@@ -2,6 +2,7 @@ package com.sudo.equeue.activities;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -81,14 +82,14 @@ public class MainActivity extends NetBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        ========== Toolbar ============
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle("eQueue");
         }
-//        prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
 
+//        ========== Queue List ============
         if (savedInstanceState == null) {
             queueList = (QueueList) getIntent().getSerializableExtra(EXTRA_QUEUE_LIST);
         } else {
@@ -96,11 +97,12 @@ public class MainActivity extends NetBaseActivity {
         }
         queues = new ArrayList<>(queueList.getQueues());
 
+//        ========== Recycler View ============
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        adapter = new RVAdapter(queueList.getQueues(), this::onItemClick);
+        adapter = new RVAdapter(queues, this::onItemClick);
         rv.setAdapter(adapter);
 
         updateView();
@@ -179,7 +181,7 @@ public class MainActivity extends NetBaseActivity {
     private void updateView() {
         View noQueuesView = findViewById(R.id.no_queues_view);
         View queueListView = findViewById(R.id.queue_list_view);
-        if (queueList.getQueues().size() == 0) {
+        if (queues.size() == 0) {
             noQueuesView.setVisibility(View.VISIBLE);
             queueListView.setVisibility(View.GONE);
         } else {
@@ -193,6 +195,7 @@ public class MainActivity extends NetBaseActivity {
         queues.clear();
         queues.addAll(queueList.getQueues());
         swipeRefreshLayout.setRefreshing(false);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -279,13 +282,4 @@ public class MainActivity extends NetBaseActivity {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> updateQueueList((QueueList) obj), NetService.RETURN_QUEUE_LIST);
         }
     }
-
-//    private void onAddCLick() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("What to do")
-//                .setItems(new String[]{"QR", "жжж"}, (dialog, which) -> {
-//
-//                });
-//        builder.create().show();
-//    }
 }

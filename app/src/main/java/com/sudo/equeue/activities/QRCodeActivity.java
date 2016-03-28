@@ -26,15 +26,17 @@ import net.sourceforge.zbar.SymbolSet;
 
 public class QRCodeActivity extends NetBaseActivity {
 
+    private int getQueueRequestId = -1;
+
     private Camera mCamera;
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
     private FrameLayout preview;
-    private TextView scanText;
+//    private TextView scanText;
     private ImageScanner scanner;
     private boolean previewing = true;
-    private String lastScannedCode;
     private Image codeImage;
+    private FrameLayout progressBarHolder;
 
     static {
         System.loadLibrary("iconv");
@@ -55,9 +57,25 @@ public class QRCodeActivity extends NetBaseActivity {
         scanner.setConfig(0, Config.X_DENSITY, 3);
         scanner.setConfig(0, Config.Y_DENSITY, 3);
 
-        scanText = (TextView) findViewById(R.id.scanText);
+        progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
+//        scanText = (TextView) findViewById(R.id.scanText);
     }
 
+    private void handleScannedText(String text) {
+        if (text.startsWith("http://equeue/")) {
+            int qid = Integer.parseInt(text.replace("http://equeue/", ""));
+            getQueueRequestId = getServiceHelper().getQueue(qid);
+            loadingStart();
+        }
+    }
+
+    private void openQueue(Queue queue) {
+        loadingStop();
+        Intent intent = new Intent(this, QueueActivity.class);
+        intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
+        startActivity(intent);
+        finish();
+    }
 
     @Override
     protected void onResume() {
@@ -119,9 +137,10 @@ public class QRCodeActivity extends NetBaseActivity {
             if (result != 0) {
                 SymbolSet syms = scanner.getResults();
                 for (Symbol sym : syms) {
-                    lastScannedCode = sym.getData();
+                    String lastScannedCode = sym.getData();
                     if (lastScannedCode != null) {
-                        Toast.makeText(QRCodeActivity.this, lastScannedCode, Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(QRCodeActivity.this, lastScannedCode, Toast.LENGTH_SHORT).show();
+                        handleScannedText(lastScannedCode);
                     }
                 }
             }
@@ -136,8 +155,26 @@ public class QRCodeActivity extends NetBaseActivity {
         }
     };
 
+    private void loadingStart() {
+        AlphaAnimation inAnimation;
+        inAnimation = new AlphaAnimation(0f, 1f);
+        inAnimation.setDuration(200);
+        progressBarHolder.setAnimation(inAnimation);
+        progressBarHolder.setVisibility(View.VISIBLE);
+    }
 
+    private void loadingStop() {
+        AlphaAnimation outAnimation;
+        outAnimation = new AlphaAnimation(1f, 0f);
+        outAnimation.setDuration(200);
+        progressBarHolder.setAnimation(outAnimation);
+        progressBarHolder.setVisibility(View.GONE);
+    }
 
     @Override
-    public void onServiceCallback(int requestId, int resultCode, Bundle data) { }
+    public void onServiceCallback(int requestId, int resultCode, Bundle data) {
+        if (requestId == getQueueRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((Queue) obj), NetService.RETURN_QUEUE);
+        }
+    }
 }
