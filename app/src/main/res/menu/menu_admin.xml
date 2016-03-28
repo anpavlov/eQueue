@@ -7,7 +7,7 @@
     <item android:id="@+id/menu_terminal"
         android:title="Терминал"
         app:showAsAction="never" />
-    <item android:id="@+id/menu_logout"
-        android:title="Выйти"
-        app:showAsAction="never" />
+    <!--<item android:id="@+id/menu_logout"-->
+        <!--android:title="Выйти"-->
+        <!--app:showAsAction="never" />-->
 </menu>
