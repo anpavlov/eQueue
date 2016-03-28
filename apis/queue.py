@@ -2,7 +2,6 @@
 import random
 
 from flask import request, Blueprint
-from models import db, User, Queue
 import json
 import tarantool
 import settings
@@ -181,7 +180,7 @@ def call():
         return json.dumps(responses.EMPTY_QUEUE)
     # push notification
     gcm = GCM(settings.GCM_SERVER_ID)
-    data = {'notification': {'body': 'true', 'title': 'value2'}}
+    data = {'notification': {'body': 'true', 'title': q[0]['name']}}
     try:
         out_user = tarantool_manager.select_assoc('users', (user[0][1]))
     except NoResult:
@@ -317,7 +316,14 @@ def in_queue():
             queue = tarantool_manager.select_assoc('queues', (q_id))
         except NoResult:
             return json.dumps(responses.ACCESS_DENIED)
-        info.append({'qid': queue[0]['id'], 'name': queue[0]['name'], 'description': queue[0]['description']})
+        stands = standings.select(queue[0]['id'], index='qid')
+        users = [u[1] for u in stands]
+        info.append({
+            'qid': queue[0]['id'],
+            'name': queue[0]['name'],
+            'description': queue[0]['description'],
+            'users_quantity': len(users)
+        })
 
 
     response = {
