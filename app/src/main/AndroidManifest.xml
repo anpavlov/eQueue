@@ -52,6 +52,9 @@
         <activity android:name=".activities.AdminQueueActivity" />
         <activity android:name=".activities.EditQueueActivity" />
         <activity android:name=".activities.MapActivity" />
+        <activity android:name=".activities.QueueTerminalActivity"
+            android:screenOrientation="landscape">
+        </activity>
 
         <!-- =================== GCM =====================-->
 
