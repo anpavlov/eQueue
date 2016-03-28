@@ -322,3 +322,34 @@ def in_queue():
         }
     }
     return json.dumps(response)
+
+
+@queue_api.route("/is-yours/", methods=['POST'])
+def is_yours():
+    try:
+        token = request.form['token']
+        qid = int(request.form['qid'])
+    except (KeyError, ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
+        return json.dumps(responses.INVALID_TOKEN)
+
+    res = standings.select((qid, user['id']), index='qid_u')
+    if not res:
+        response = {
+            'code': 200,
+            'body': {
+                'status': 0
+            }
+        }
+        return json.dumps(response)
+    response = {
+        'code': 200,
+        'body': {
+            'status': 1
+        }
+    }
+    return json.dumps(response)
+
