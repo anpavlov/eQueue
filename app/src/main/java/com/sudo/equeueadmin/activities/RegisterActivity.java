@@ -57,6 +57,7 @@ public class RegisterActivity extends NetBaseActivity {
 
     private void startApp() {
         Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
     }
