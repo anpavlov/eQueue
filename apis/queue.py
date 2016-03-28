@@ -126,7 +126,7 @@ def info():
     }
 
     if q['coords'] != [0, 0]:
-        response['body']['coords'] = q['coords']
+        response['body']['coords'] = str(q['coords'][0]) + ',' + str(q['coords'][1])
 
     return json.dumps(response)
 
