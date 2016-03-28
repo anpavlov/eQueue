@@ -118,19 +118,19 @@ public class QueueTerminalActivity extends NetBaseActivity {
         generateCodeImage("http://equeue/" + queueInfo.getQid());
 
 
-        if (queueInfo.getUserlist() != null && !queueInfo.getUserlist().isEmpty()) {
-            int count = queueInfo.getUserlist().size();
-            int current = queueInfo.getUserlist().get(0);
-            ((TextView) findViewById(R.id.count_field)).setText(String.valueOf(count));
+//        if (queueInfo. != null && !queueInfo.getUserlist().isEmpty()) {
+        int count = queueInfo.getUsersQuantity();
+//        int current = queueInfo.getUserlist().get(0);
+        ((TextView) findViewById(R.id.count_field)).setText(String.valueOf(count));
 
-            findViewById(R.id.current_lbl).setVisibility(View.VISIBLE);
-            findViewById(R.id.current_field).setVisibility(View.VISIBLE);
-            ((TextView) findViewById(R.id.current_field)).setText(String.valueOf(current));
-        } else {
-            findViewById(R.id.current_lbl).setVisibility(View.INVISIBLE);
-            findViewById(R.id.current_field).setVisibility(View.INVISIBLE);
-            ((TextView) findViewById(R.id.count_field)).setText("0");
-        }
+//        findViewById(R.id.current_lbl).setVisibility(View.VISIBLE);
+//        findViewById(R.id.current_field).setVisibility(View.VISIBLE);
+//            ((TextView) findViewById(R.id.current_field)).setText(String.valueOf(current));
+//        } else {
+        findViewById(R.id.current_lbl).setVisibility(View.INVISIBLE);
+        findViewById(R.id.current_field).setVisibility(View.INVISIBLE);
+//        ((TextView) findViewById(R.id.count_field)).setText("0");
+//        }
     }
 
     //    TODO: вынести инициализацию юзера в Application
