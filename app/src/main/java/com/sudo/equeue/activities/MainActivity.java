@@ -166,9 +166,10 @@ public class MainActivity extends NetBaseActivity {
         @Override
         public void onLocationChanged(Location loc) {
             if (loc != null) {
-                Toast.makeText(MainActivity.this,
-                        "lat: " + String.valueOf(loc.getLatitude()) + ", long: " + String.valueOf(loc.getLongitude()),
-                        Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this,
+//                        "lat: " + String.valueOf(loc.getLatitude()) + ", long: " + String.valueOf(loc.getLongitude()),
+//                        Toast.LENGTH_LONG).show();
+//                TODO: save coords somewhere to get when needed
             }
         }
 
