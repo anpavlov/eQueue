@@ -18,49 +18,32 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
 
-    /**
-     * Called when message is received.
-     *
-     * @param from SenderID of the sender.
-     * @param data Data bundle containing message data as key/value pairs.
-     *             For Set of keys use data.keySet().
-     */
-    // [START receive_message]
     @Override
     public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
+        String message = data.getString("title");
+//        int qid = data.getInt("qid");
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
 
-//        if (from.startsWith("/topics/")) {
-//            // message received from some topic.
-//        } else {
-//            // normal downstream message.
-//        }
 
-        // [START_EXCLUDE]
-        /**
-         * Production applications would usually process the message here.
-         * Eg: - Syncing with server.
-         *     - Store message in local database.
-         *     - Update UI.
-         */
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(this, StartActivity.class), 0);
 
-        /**
-         * In some cases it may be useful to show a notification indicating to the user
-         * that a message was received.
-         */
-        sendNotification(message);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.people_pur)
+                .setContentTitle("Ваша очередь!")
+                .setContentText("Настала ваша очередь в '" + message + "'")
+                .setAutoCancel(true)
+                .setSound(defaultSoundUri)
+                .setContentIntent(pendingIntent);
 
-        // [END_EXCLUDE]
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(7 /* ID of notification */, notificationBuilder.build());
+
     }
-    // [END receive_message]
 
-    /**
-     * Create and show a simple notification containing the received GCM message.
-     *
-     * @param message GCM message received.
-     */
     private void sendNotification(String message) {
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);
 
