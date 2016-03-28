@@ -42,8 +42,8 @@
             android:text="Указать местоположение"
             android:id="@+id/btn_coords"
             android:shadowRadius="0"
-            android:textColor="@android:color/black"
-            android:background="@android:color/darker_gray"/>
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_custom"/>
 
         <Button
             android:layout_width="match_parent"
