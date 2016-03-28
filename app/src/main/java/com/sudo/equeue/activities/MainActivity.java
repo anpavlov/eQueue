@@ -1,13 +1,21 @@
 package com.sudo.equeue.activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -56,7 +64,7 @@ public class MainActivity extends NetBaseActivity {
 //    private SharedPreferences prefs;
 //    private Button addButton;
 
-//    private int createUserRequestId = -1;
+    //    private int createUserRequestId = -1;
     public static final String EXTRA_QUEUE_LIST = QueueApplication.prefix + ".extra.queue_list";
     private static final String SAVED_STATE_QUEUE_LIST = QueueApplication.prefix + ".QueueAdminActivity.saved.queue_list";
 
@@ -98,7 +106,7 @@ public class MainActivity extends NetBaseActivity {
         updateView();
 
         Button addQueue = (Button) findViewById(R.id.btn_add_queue);
-        if(addQueue != null) {
+        if (addQueue != null) {
             addQueue.setOnClickListener(v -> openBottomSheet());
         }
 
@@ -106,6 +114,58 @@ public class MainActivity extends NetBaseActivity {
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_queue_list);
         swipeRefreshLayout.setOnRefreshListener(() -> getMyQueuesRequestId = getServiceHelper().meInQueues());
+
+        /* -- User location --  */
+
+
+        int minTime = 5000;
+        float minDistance = 5;
+        MyLocationListener myLocListener = new MyLocationListener();
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        Criteria criteria = new Criteria();
+        criteria.setPowerRequirement(Criteria.POWER_LOW);
+        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setSpeedRequired(false);
+
+        String bestProvider = locationManager.getBestProvider(criteria, false);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            return;
+        }
+
+        locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
+    }
+
+
+    private class MyLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(Location loc) {
+            if (loc != null) {
+                Toast.makeText(MainActivity.this,
+                        "lat: " + String.valueOf(loc.getLatitude()) + ", long: " + String.valueOf(loc.getLongitude()),
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        public void onProviderDisabled(String arg0) {
+            Toast.makeText(MainActivity.this, "Вы отключили систему навигации", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onProviderEnabled(String arg0) {
+            // Do something here if you would like to know when the provider is enabled by the user
+        }
+
+        @Override
+        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+            // Do something here if you would like to know when the provider status changes
+        }
     }
 
     private void onItemClick(Queue queue) {
