@@ -23,4 +23,28 @@
     <string name="section_format">Hello World from section: %1$d</string>
 
     <string name="asd"><font size="20">First line!</font>\n\<font size="10">Second line!</font></string>
+
+    <string name="normal">Normal</string>
+    <string name="hybrid">Hybrid</string>
+    <string name="satellite">Satellite</string>
+    <string name="terrain">Terrain</string>
+    <string name="none_map">None</string>
+
+    <string-array name="layers_array">
+        <item>@string/normal</item>
+        <item>@string/hybrid</item>
+
+
+        <item>@string/satellite</item>
+        <item>@string/terrain</item>
+        <item>@string/none_map</item>
+    </string-array>
+
+    <string name="map_not_ready">Map is not ready yet</string>
+
+    <!--    Permissions    -->
+    <string name="permission_rationale_location">Access to the location service is required to demonstrate the \'my location\' feature, which shows your current location on the map.</string>
+    <string name="location_permission_denied">This sample requires location permission to enable the \'my location\' layer. Please try again and grant access to use the location.\nIf the permission has been permanently denied, it can be enabled from the System Settings &gt; Apps &gt; \'Google Maps API Demos\'.</string>
+    <string name="permission_required_toast">Location permission is required for this demo.</string>
+
 </resources>

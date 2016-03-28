@@ -39,6 +39,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
+            android:text="Указать местоположение"
+            android:id="@+id/btn_coords"
+            android:shadowRadius="0"
+            android:textColor="@android:color/black"
+            android:background="@android:color/darker_gray"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:text="Сохранить"
             android:id="@+id/btn_save"
             android:shadowRadius="0"

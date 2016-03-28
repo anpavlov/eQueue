@@ -47,6 +47,7 @@ public class EditQueueActivity extends NetBaseActivity {
             ((EditText) findViewById(R.id.name_field)).setText(queueInfo.getName());
             ((EditText) findViewById(R.id.description_field)).setText(queueInfo.getDescription());
             findViewById(R.id.btn_save).setOnClickListener(v -> saveQueue());
+            findViewById(R.id.btn_coords).setOnClickListener(v -> openMap());
         }
     }
 
@@ -54,6 +55,10 @@ public class EditQueueActivity extends NetBaseActivity {
         queueInfo.setName(((EditText) findViewById(R.id.name_field)).getText().toString());
         queueInfo.setDescription(((EditText) findViewById(R.id.description_field)).getText().toString());
         saveInfoRequestId = getServiceHelper().saveQueueInfo(queueInfo);
+    }
+
+    private void openMap() {
+        startActivity(new Intent(this, MapActivity.class));
     }
 
     @Override
