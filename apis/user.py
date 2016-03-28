@@ -275,3 +275,28 @@ def vkauth():
         }
     }
     return json.dumps(response)
+
+
+@user_api.route("/check-token/", methods=['POST'])
+def check_token():
+    try:
+        token = request.form['token']
+    except (KeyError, ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
+        response = {
+            'code': 200,
+            'body': {
+                'is_valid': 0
+            }
+        }
+        return json.dumps(response)
+    response = {
+        'code': 200,
+        'body': {
+            'is_valid': 1
+        }
+    }
+    return json.dumps(response)

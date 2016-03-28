@@ -352,4 +352,3 @@ def is_yours():
         }
     }
     return json.dumps(response)
-
