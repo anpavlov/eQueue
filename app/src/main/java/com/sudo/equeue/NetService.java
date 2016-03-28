@@ -34,6 +34,7 @@ public class NetService extends IntentService {
     public static final String ACTION_LOGIN_EMAIL = QueueApplication.prefix + ".action.LOGIN_EMAIL";
     public static final String ACTION_ME_IN_QUEUES = QueueApplication.prefix + ".action.ME_IN_QUEUES";
     public static final String ACTION_UPDATE_GCM = QueueApplication.prefix + ".action.UPDATE_GCM";
+    public static final String ACTION_IS_IN = QueueApplication.prefix + ".action.IS_IN";
 
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
@@ -66,6 +67,7 @@ public class NetService extends IntentService {
     public static final String RETURN_QUEUE = QueueApplication.prefix + ".return.QUEUE";
     public static final String RETURN_QUEUE_LIST = QueueApplication.prefix + ".return.QUEUE_LIST";
     public static final String RETURN_USER = QueueApplication.prefix + ".return.USER";
+    public static final String RETURN_IS_IN = QueueApplication.prefix + ".return.IS_IN";
 //    public static final String RETURN_DATA_SEARCH_RESULTS = QueueApplication.prefix + ".return.SEARCH_RESULTS";
 
     private Processor processor;
@@ -96,6 +98,12 @@ public class NetService extends IntentService {
                 case ACTION_GET_QUEUE: {
                     final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
                     handleGetQueue(queueId);
+                    break;
+                }
+                case ACTION_IS_IN: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
+                    handleIsIn(token, queueId);
                     break;
                 }
                 case ACTION_SAVE_QUEUE: {
@@ -260,6 +268,16 @@ public class NetService extends IntentService {
         }
 
         Bundle bundle = processor.getQueue(queueId);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleIsIn(String token, int queueId) {
+        if (token == null || token.equals("") || queueId == -1) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.isIn(token, queueId);
         receiver.send(CODE_OK, bundle);
     }
 

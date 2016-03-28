@@ -43,6 +43,7 @@ import com.sudo.equeue.R;
 //import com.sudo.equeue.fragments.LoginFragment;
 //import com.sudo.equeue.fragments.MyQueuesFragment;
 //import com.sudo.equeue.fragments.ProfileFragment;
+import com.sudo.equeue.models.IsInModel;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.models.User;
@@ -70,6 +71,8 @@ public class MainActivity extends NetBaseActivity {
     private static final String SAVED_STATE_QUEUE_LIST = QueueApplication.prefix + ".QueueAdminActivity.saved.queue_list";
 
     private int getMyQueuesRequestId = -1;
+    private int isInQueueRequestId = -1;
+    private Queue savedQueue;
 
     private QueueList queueList;
     private List<Queue> queues;
@@ -104,6 +107,21 @@ public class MainActivity extends NetBaseActivity {
         rv.setLayoutManager(llm);
         adapter = new RVAdapter(queues, this::onItemClick);
         rv.setAdapter(adapter);
+
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                int topRowVerticalPosition =
+                        (recyclerView == null || recyclerView.getChildCount() == 0) ? 0 : recyclerView.getChildAt(0).getTop();
+                swipeRefreshLayout.setEnabled(topRowVerticalPosition >= 0);
+
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
 
         updateView();
 
@@ -171,10 +189,19 @@ public class MainActivity extends NetBaseActivity {
     }
 
     private void onItemClick(Queue queue) {
-//        getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
-//        loadingStart();
+        loadingStart();
+        isInQueueRequestId = getServiceHelper().isIn(queue.getQid());
+        savedQueue = queue;
+//        Intent intent = new Intent(this, QueueActivity.class);
+//        intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
+//        startActivity(intent);
+    }
+
+    private void openQueue(IsInModel isIn) {
+        savedQueue.setIsIn(isIn.getStatus());
+        loadingStop();
         Intent intent = new Intent(this, QueueActivity.class);
-        intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
+        intent.putExtra(QueueActivity.EXTRA_QUEUE, savedQueue);
         startActivity(intent);
     }
 
@@ -195,6 +222,7 @@ public class MainActivity extends NetBaseActivity {
         queues.clear();
         queues.addAll(queueList.getQueues());
         swipeRefreshLayout.setRefreshing(false);
+        updateView();
         adapter.notifyDataSetChanged();
     }
 
@@ -255,6 +283,13 @@ public class MainActivity extends NetBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        getMyQueuesRequestId = getServiceHelper().meInQueues();
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable(SAVED_STATE_QUEUE_LIST, queueList);
@@ -280,6 +315,8 @@ public class MainActivity extends NetBaseActivity {
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getMyQueuesRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> updateQueueList((QueueList) obj), NetService.RETURN_QUEUE_LIST);
+        } else if (requestId == isInQueueRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((IsInModel) obj), NetService.RETURN_IS_IN);
         }
     }
 }

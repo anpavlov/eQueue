@@ -73,7 +73,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
             queueDescription.setText(queue.getDescription());
             queueLocation.setText("Адрес" /*queue.location*/);
             queueRemaining.setText(Integer.toString(10/*queue.remaining*/) + " мин");
-            queueTotal.setText(Integer.toString(queue.getUserlist() == null ? 0 : queue.getUserlist().size()) + " человек в очереди");
+            queueTotal.setText(Integer.toString(queue.getUsersQuantity()) + " человек в очереди");
             queueFront.setText(Integer.toString(2/*queue.frontOfYou*/) + " человек перед Вами");
             cv.setOnClickListener(v -> listener.onItemClick(queue));
         }

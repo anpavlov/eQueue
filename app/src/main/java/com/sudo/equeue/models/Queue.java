@@ -12,16 +12,30 @@ public class Queue extends PossibleError {
     private int qid;
     private String name;
     private String alias;
+    private boolean isIn;
     private String description;
-    private List<Integer> users;
+//    private List<Integer> users;
+    private int users_quantity;
 
-    public List<Integer> getUserlist() {
-        return users;
+    public int getUsersQuantity() {
+        return users_quantity;
     }
 
-    public void setUserlist(List<Integer> userlist) {
-        this.users = userlist;
+    public boolean isIn() {
+        return isIn;
     }
+
+    public void setIsIn(boolean isIn) {
+        this.isIn = isIn;
+    }
+
+//    public List<Integer> getUserlist() {
+//        return users;
+//    }
+//
+//    public void setUserlist(List<Integer> userlist) {
+//        this.users = userlist;
+//    }
 
     public int getQid() {
         return qid;

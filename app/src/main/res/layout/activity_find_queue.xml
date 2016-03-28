@@ -34,7 +34,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Добавить"
+        android:text="Открыть"
         android:id="@+id/btn_find_queue"
         android:layout_below="@id/queue_hash_field"
         android:layout_marginLeft="10dp"

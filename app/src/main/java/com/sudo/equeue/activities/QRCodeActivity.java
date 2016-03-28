@@ -48,6 +48,14 @@ public class QRCodeActivity extends NetBaseActivity {
         setContentView(R.layout.activity_qr_code);
         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
+        //        ========== Toolbar ============
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle("Сканировать QR");
+        }
+
         autoFocusHandler = new Handler();
 
         preview = (FrameLayout) findViewById(R.id.cameraPreview);

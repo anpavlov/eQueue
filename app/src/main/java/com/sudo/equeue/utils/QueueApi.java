@@ -7,6 +7,7 @@ package com.sudo.equeue.utils;
 //import com.sudo.equeue.models.CreateQueueResponse;
 //import com.sudo.equeue.models.Employer;
 
+import com.sudo.equeue.models.IsInModel;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.models.User;
@@ -92,4 +93,8 @@ public interface QueueApi {
     @FormUrlEncoded
     @POST("/api/user/updategcm/")
     Call<ResponseBase<QueueList>> updateGcmId(@Field("token") String token, @Field("gcmid") String gcmid);
+
+    @FormUrlEncoded
+    @POST("/api/queue/is-yours/")
+    Call<ResponseBase<IsInModel>> isIn(@Field("token") String token, @Field("qid") int qid);
 }

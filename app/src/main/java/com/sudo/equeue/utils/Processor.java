@@ -105,6 +105,10 @@ public class Processor {
         return makeSimpleRequest(queueApi.getQueue(queueId), NetService.RETURN_QUEUE);
     }
 
+    public Bundle isIn(String token, int queueId) {
+        return makeSimpleRequest(queueApi.isIn(token, queueId), NetService.RETURN_IS_IN);
+    }
+
     public Bundle saveQueue(String token, Queue queue) {
         return makeSimpleRequest(queueApi.saveQueue(token, queue.getQid(), queue.getName(), queue.getDescription()), null);
     }
