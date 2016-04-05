@@ -40,17 +40,13 @@ end
 
 function search_by_like(space_name, index_name, col_number, value)
     local space_values = box.space[space_name].index[index_name]:select{}
-    local first_in = false
     local result = {}
     local k = 1
     for i,v in ipairs(space_values) do
         local res = string.match(string.lower(tostring(v[col_number])), '%w*' .. string.lower(value) .. '%w*')
         if res ~= nil and res ~= '' then
-            first_in = true
             result[k] = v
             k = k + 1
-        elseif first_in == true then
-            break
         end
     end
     return result
@@ -59,6 +55,19 @@ end
 function search_by_coords(space_name, index_name, value)
     local result = box.space[space_name].index[index_name]:select(value, {iterator='overlaps'})
     return result
+end
+
+-- returns user's position in queue or -1
+function user_number(qid, uid)
+    local result = box.space.standings.index.qid:select(qid)
+    local k = 0
+    for q in result do
+        if q[2] == uid then
+            return k
+        end
+        k = k + 1
+    end
+    return -1
 end
 
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})

@@ -15,9 +15,7 @@ app = Flask(__name__)
 app.config.from_object(settings)
 
 db.init_app(app)
-migrate = Migrate(app, db)
 manager = Manager(app)
-manager.add_command('db', MigrateCommand)
 
 
 app.register_blueprint(user_api, url_prefix='/api/user')

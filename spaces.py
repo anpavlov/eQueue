@@ -37,5 +37,13 @@ schema = {
             ('closed', TARANTOOL_NUM, 0),
             ('coords', TARANTOOL_ARRAY, [])
         ]
+    },
+    'stats': {
+        'fields': [
+            ('id', TARANTOOL_NUM64, None),
+            ('qid', TARANTOOL_NUM64, 0),
+            ('uid', TARANTOOL_NUM64, 0),
+            ('wait_time', TARANTOOL_NUM64, 0)
+        ]
     }
 }
