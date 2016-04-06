@@ -35,6 +35,7 @@ public class NetService extends IntentService {
     public static final String ACTION_ME_IN_QUEUES = QueueApplication.prefix + ".action.ME_IN_QUEUES";
     public static final String ACTION_UPDATE_GCM = QueueApplication.prefix + ".action.UPDATE_GCM";
     public static final String ACTION_CHECK_TOKEN = QueueApplication.prefix + ".action.CHECK_TOKEN";
+    public static final String ACTION_SAVE_COORDS = QueueApplication.prefix + ".action.SAVE_COORDS";
 
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
@@ -106,6 +107,12 @@ public class NetService extends IntentService {
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     final Queue queue = (Queue) intent.getSerializableExtra(EXTRA_QUEUE);
                     handleSaveQueue(token, queue);
+                    break;
+                }
+                case ACTION_SAVE_COORDS: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    final Queue queue = (Queue) intent.getSerializableExtra(EXTRA_QUEUE);
+                    handleSaveCoords(token, queue);
                     break;
                 }
                 case ACTION_CALL_NEXT: {
@@ -289,6 +296,17 @@ public class NetService extends IntentService {
         }
 
         Bundle bundle = processor.saveQueue(token, queue);
+//        receiver.send(result, null);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleSaveCoords(String token, Queue queue) {
+        if (queue == null || token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.saveCoords(token, queue);
 //        receiver.send(result, null);
         receiver.send(CODE_OK, bundle);
     }

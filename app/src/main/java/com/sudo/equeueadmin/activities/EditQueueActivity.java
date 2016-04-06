@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sudo.equeueadmin.NetBaseActivity;
@@ -13,13 +14,17 @@ import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
+import java.util.List;
+
 public class EditQueueActivity extends NetBaseActivity {
 
     private static final String SAVED_STATE_QUEUE = QueueApplication.prefix + ".QueueAdminActivity.saved.queue";
     private static final String SAVED_STATE_ID_SAVE = QueueApplication.prefix + ".QueueAdminActivity.saved.id_save";
 
     private int saveInfoRequestId = -1;
+    private int saveCoordsRequestId = 20;
     private Queue queueInfo;
+    int RESULT_CODE = 55;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,7 @@ public class EditQueueActivity extends NetBaseActivity {
 
         if (savedInstanceState == null) {
             queueInfo = (Queue) getIntent().getSerializableExtra(AdminQueueActivity.EXTRA_QUEUE);
+            Toast.makeText(this, queueInfo.getCoords(), Toast.LENGTH_LONG).show();
         } else {
             queueInfo = (Queue) savedInstanceState.getSerializable(SAVED_STATE_QUEUE);
             saveInfoRequestId = savedInstanceState.getInt(SAVED_STATE_ID_SAVE, -1);
@@ -46,6 +52,7 @@ public class EditQueueActivity extends NetBaseActivity {
         } else {
             ((EditText) findViewById(R.id.name_field)).setText(queueInfo.getName());
             ((EditText) findViewById(R.id.description_field)).setText(queueInfo.getDescription());
+            ((TextView) findViewById(R.id.lbl_coords)).setText(queueInfo.getCoords());
             findViewById(R.id.btn_save).setOnClickListener(v -> saveQueue());
             findViewById(R.id.btn_coords).setOnClickListener(v -> openMap());
         }
@@ -58,7 +65,23 @@ public class EditQueueActivity extends NetBaseActivity {
     }
 
     private void openMap() {
-        startActivity(new Intent(this, MapActivity.class));
+
+        Intent intent = new Intent(EditQueueActivity.this, MapActivity.class);
+
+        if (queueInfo.getCoords() != null) {
+
+            String[] coords = queueInfo.getCoords().split(",");
+            Float lat = Float.valueOf(coords[0]);
+            Float lon = Float.valueOf(coords[1]);
+
+            intent.putExtra(MapActivity.EXTRA_SHOW_KEY, true);
+            intent.putExtra(MapActivity.EXTRA_LATITUDE_KEY, lat);
+            intent.putExtra(MapActivity.EXTRA_LONGITUDE_KEY, lon);
+        } else {
+            intent.putExtra(MapActivity.EXTRA_SHOW_KEY, false);
+        }
+
+        startActivityForResult(intent, RESULT_CODE);
     }
 
     @Override
@@ -81,12 +104,27 @@ public class EditQueueActivity extends NetBaseActivity {
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == saveInfoRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> {
-                Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putExtra(AdminQueueActivity.EXTRA_QUEUE, queueInfo);
                 setResult(RESULT_OK, intent);
                 finish();
             }, null);
+        }
+        if (requestId == saveCoordsRequestId) {
+            Toast.makeText(this, "Координаты сохранены", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            double lat = data.getDoubleExtra(MapActivity.EXTRA_LATITUDE_KEY, 0);
+            double lon = data.getDoubleExtra(MapActivity.EXTRA_LONGITUDE_KEY, 0);
+
+            queueInfo.setCoords(String.valueOf(lat) + "," + String.valueOf(lon));
+            saveCoordsRequestId = getServiceHelper().saveCoords(queueInfo);
         }
     }
 }

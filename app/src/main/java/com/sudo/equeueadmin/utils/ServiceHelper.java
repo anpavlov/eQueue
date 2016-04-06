@@ -200,6 +200,18 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
+    public int saveCoords(Queue queue) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_SAVE_COORDS, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_QUEUE, queue);
+
+        application.startService(i);
+        return requestId;
+    }
+
     public int callNext(int queueId) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_CALL_NEXT, requestId);

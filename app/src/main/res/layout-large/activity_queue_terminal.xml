@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="40dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="16pt"
+            android:text="Очередь"
+            android:id="@+id/lbl_terminal"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="22pt"
+            android:id="@+id/name_field" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:textSize="16pt"
+            android:text="Информация об очереди:"
+            android:id="@+id/description_lbl"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="20pt"
+            android:id="@+id/description_field"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:textSize="16pt"
+            android:text="Количество ожидающих:"
+            android:id="@+id/lbl_lost"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="20pt"
+            android:text=""
+            android:id="@+id/count_field"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_marginTop="40dp"
+            android:textSize="16pt"
+            android:text="Текущий номер:"
+            android:id="@+id/current_lbl" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="#000"
+            android:textStyle="bold"
+            android:textSize="20pt"
+            android:text=""
+            android:id="@+id/current_field"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:textSize="10pt"
+            android:text="Встать в очередь"
+            android:id="@+id/btn_join"
+            android:textColor="@color/white"/>
+
+        <ImageView
+            android:id="@+id/bar_code"
+            android:layout_width="300dip"
+            android:layout_height="300dip"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:layout_marginTop="20dp"
+            android:textSize="12pt"
+            android:text="Ваш номер:"
+            android:id="@+id/number_lbl" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="#222"
+            android:textStyle="bold"
+            android:textSize="15pt"
+            android:text="17"
+            android:id="@+id/number_field" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textSize="12pt"
+            android:text="Ваш секретный код:"
+            android:id="@+id/code_lbl" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:textColor="#222"
+            android:textStyle="bold"
+            android:textSize="15pt"
+            android:text="739"
+            android:id="@+id/code_field" />
+
+        <Button
+            android:layout_width="300dp"
+            android:layout_height="80dp"
+            android:visibility="invisible"
+            android:textSize="7pt"
+            android:textColor="@color/white"
+            android:text="Я запомнил свой номер и секретный код"
+            android:id="@+id/btn_hide"/>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

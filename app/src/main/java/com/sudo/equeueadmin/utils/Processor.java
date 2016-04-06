@@ -109,6 +109,10 @@ public class Processor {
         return makeSimpleRequest(queueApi.saveQueue(token, queue.getQid(), queue.getName(), queue.getDescription()), null);
     }
 
+    public Bundle saveCoords(String token, Queue queue) {
+        return makeSimpleRequest(queueApi.saveCoords(token, queue.getQid(), queue.getCoords()), null);
+    }
+
     public Bundle callNext(String token, int queueId) {
         return makeSimpleRequest(queueApi.callNext(token, queueId), null);
     }

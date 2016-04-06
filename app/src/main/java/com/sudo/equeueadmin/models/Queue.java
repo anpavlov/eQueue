@@ -13,6 +13,8 @@ public class Queue extends PossibleError {
     private String name;
     private String alias;
     private String description;
+
+    private String coords;
 //    private List<Integer> users;
     private int users_quantity;
 
@@ -52,11 +54,20 @@ public class Queue extends PossibleError {
         this.alias = alias;
     }
 
+
     public String getDescription() {
         return description;
     }
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getCoords() {
+        return coords;
+    }
+
+    public void setCoords(String coords) {
+        this.coords = coords;
     }
 }

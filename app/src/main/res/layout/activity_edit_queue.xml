@@ -35,6 +35,14 @@
             android:hint="Описание"
             style="@style/FullWidthEditText"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="кординаты"
+            style="@style/FullWidthEditText"
+            android:id="@+id/lbl_coords"/>
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

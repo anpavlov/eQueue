@@ -57,8 +57,6 @@ public class QueueTerminalActivity extends NetBaseActivity {
         findViewById(R.id.code_field).setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_hide).setVisibility(View.INVISIBLE);
 
-        findViewById(R.id.bar_code).setVisibility(View.INVISIBLE);
-
         if (savedInstanceState == null) {
             getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
         }
@@ -103,7 +101,6 @@ public class QueueTerminalActivity extends NetBaseActivity {
         findViewById(R.id.lbl_terminal).setVisibility(View.VISIBLE);
         findViewById(R.id.lbl_lost).setVisibility(View.VISIBLE);
         findViewById(R.id.btn_join).setVisibility(View.VISIBLE);
-        findViewById(R.id.bar_code).setVisibility(View.VISIBLE);
 
         ((TextView) findViewById(R.id.name_field)).setText(queueInfo.getName());
 

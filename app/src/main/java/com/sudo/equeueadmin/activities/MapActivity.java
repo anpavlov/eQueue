@@ -17,6 +17,7 @@
 package com.sudo.equeueadmin.activities;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -25,6 +26,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -46,6 +48,11 @@ public class MapActivity extends AppCompatActivity implements  OnMapReadyCallbac
     private boolean mShowPermissionDeniedDialog = false;
     private GoogleMap mMap;
     private Marker marker;
+
+    double latitude, longitude;
+    public final static String EXTRA_SHOW_KEY = "PREFS_SHOW";
+    public final static String EXTRA_LATITUDE_KEY = "PREFS_LATITUDE";
+    public final static String EXTRA_LONGITUDE_KEY = "PREFS_LONGITUDE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +105,34 @@ public class MapActivity extends AppCompatActivity implements  OnMapReadyCallbac
             CameraPosition cameraPosition = new CameraPosition.Builder().target(myPosition).zoom(15.5f).build();
             mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
+
+        findViewById(R.id.btn_save_coords).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_save_coords).setOnClickListener(v -> saveCoords());
+
+        if (getIntent().getBooleanExtra(EXTRA_SHOW_KEY, false)) {
+            latitude = getIntent().getDoubleExtra(EXTRA_LATITUDE_KEY, 0);
+            longitude = getIntent().getDoubleExtra(EXTRA_LONGITUDE_KEY, 0);
+            changeCamera(latitude, longitude);
+        }
+    }
+
+    public void changeCamera(double latitude, double longitude) {
+        if (mMap != null) {
+
+            LatLng place = new LatLng(latitude, longitude);
+            marker = mMap.addMarker(new MarkerOptions().position(place));
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(place));
+        }
+    }
+
+    private void saveCoords() {
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_LATITUDE_KEY, latitude);
+        intent.putExtra(EXTRA_LONGITUDE_KEY, longitude);
+
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Override
@@ -133,7 +168,9 @@ public class MapActivity extends AppCompatActivity implements  OnMapReadyCallbac
         if (marker != null) marker.remove();
         marker = mMap.addMarker(new MarkerOptions().position(latLng));
 
-        Toast.makeText(this,String.valueOf(latLng.latitude) + "," + String.valueOf(latLng.longitude),
-                Toast.LENGTH_SHORT).show();
+        latitude = latLng.latitude;
+        longitude = latLng.longitude;
+
+        findViewById(R.id.btn_save_coords).setVisibility(View.VISIBLE);
     }
 }
