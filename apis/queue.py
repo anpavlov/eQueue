@@ -1,6 +1,4 @@
 # coding=utf-8
-import random
-
 from flask import request, Blueprint
 import json
 import tarantool

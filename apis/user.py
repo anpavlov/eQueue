@@ -1,8 +1,6 @@
 # coding=utf-8
 from flask import request, Blueprint
 from sqlalchemy.orm.exc import NoResultFound
-from models import db, User, Session
-from datetime import datetime, timedelta
 import werkzeug
 import json
 import responses
