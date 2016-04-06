@@ -59,11 +59,11 @@ end
 
 -- returns user's position in queue or -1
 function user_number(qid, uid)
-    local result = box.space.standings.index.qid:select(qid)
+    local result = box.space.standings.index.qid:select{qid}
     local k = 0
-    for q in result do
+    for i,q in ipairs(result) do
         if q[2] == uid then
-            return k
+            return k + 1
         end
         k = k + 1
     end
