@@ -17,9 +17,12 @@
     </style>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:background">@color/mainColor</item>
         <!--<item name="colorPrimary">@color/colorPrimary</item>-->
+        <!--<item name="android:popupTheme">@android:</item>-->
+        <item name="android:actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>
     </style>
 
     <style name="MaterialDialogSheet" parent="@android:style/Theme.Dialog">
@@ -37,5 +40,15 @@
         <item name="android:windowEnterAnimation">@anim/popup_show</item>
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
+
+    <style name="QueueButton">
+        <item name="colorButtonNormal">@color/mainColor</item>
+        <!--<item name="colorControlHighlight">@color/colorPrimary</item>-->
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <!--<style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">-->
+        <!--<item name="android:actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>-->
+    <!--</style>-->
 
 </resources>

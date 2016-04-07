@@ -2,25 +2,16 @@ package com.sudo.equeue.activities;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,9 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,9 +35,9 @@ import com.sudo.equeue.R;
 import com.sudo.equeue.models.IsInModel;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
-import com.sudo.equeue.models.User;
+import com.sudo.equeue.utils.MultiSwipeRefreshLayout;
 import com.sudo.equeue.utils.QueueApplication;
-import com.sudo.equeue.utils.RVAdapter;
+import com.sudo.equeue.utils.QueueListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,14 +60,14 @@ public class MainActivity extends NetBaseActivity {
     private static final String SAVED_STATE_QUEUE_LIST = QueueApplication.prefix + ".QueueAdminActivity.saved.queue_list";
 
     private int getMyQueuesRequestId = -1;
-    private int isInQueueRequestId = -1;
-    private Queue savedQueue;
+//    private int isInQueueRequestId = -1;
+//    private Queue savedQueue;
 
-    private QueueList queueList;
+//    private QueueList queueList;
     private List<Queue> queues;
-    private RVAdapter adapter;
-    private FrameLayout progressBarHolder;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    private QueueListAdapter adapter;
+//    private FrameLayout progressBarHolder;
+    private MultiSwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,19 +82,25 @@ public class MainActivity extends NetBaseActivity {
         }
 
 //        ========== Queue List ============
+        QueueList queueList;
         if (savedInstanceState == null) {
             queueList = (QueueList) getIntent().getSerializableExtra(EXTRA_QUEUE_LIST);
         } else {
             queueList = (QueueList) savedInstanceState.getSerializable(SAVED_STATE_QUEUE_LIST);
         }
-        queues = new ArrayList<>(queueList.getQueues());
+        if (queueList != null) {
+            queues = new ArrayList<>(queueList.getQueues());
+        } else {
+            queues = new ArrayList<>();
+            getMyQueuesRequestId = getServiceHelper().meInQueues();
+        }
 
 //        ========== Recycler View ============
         RecyclerView rv = (RecyclerView) findViewById(R.id.rv);
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        adapter = new RVAdapter(queues, this::onItemClick);
+        adapter = new QueueListAdapter(queues, this::onItemClick);
         rv.setAdapter(adapter);
 
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -123,21 +118,22 @@ public class MainActivity extends NetBaseActivity {
             }
         });
 
-        updateView();
-
+//        ========== Add button ============
         Button addQueue = (Button) findViewById(R.id.btn_add_queue);
         if (addQueue != null) {
             addQueue.setOnClickListener(v -> openBottomSheet());
         }
 
-        progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
+//        ========== Progress overlay ============
+//        progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_queue_list);
+//        ========== Swipe refresh layout ============
+        swipeRefreshLayout = (MultiSwipeRefreshLayout) findViewById(R.id.refresh_queue_list);
+        swipeRefreshLayout.setSwipeableChildren(R.id.queue_list_view, R.id.no_queues_view);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(() -> getMyQueuesRequestId = getServiceHelper().meInQueues());
 
-        /* -- User location --  */
-
-
+//        ========== Location ============
         int minTime = 5000;
         float minDistance = 5;
         MyLocationListener myLocListener = new MyLocationListener();
@@ -159,57 +155,15 @@ public class MainActivity extends NetBaseActivity {
         }
 
         locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
-    }
+//        ===============================
 
-
-    private class MyLocationListener implements LocationListener {
-        @Override
-        public void onLocationChanged(Location loc) {
-            if (loc != null) {
-//                Toast.makeText(MainActivity.this,
-//                        "lat: " + String.valueOf(loc.getLatitude()) + ", long: " + String.valueOf(loc.getLongitude()),
-//                        Toast.LENGTH_LONG).show();
-//                TODO: save coords somewhere to get when needed
-            }
-        }
-
-        @Override
-        public void onProviderDisabled(String arg0) {
-            Toast.makeText(MainActivity.this, "Вы отключили систему навигации", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onProviderEnabled(String arg0) {
-            // Do something here if you would like to know when the provider is enabled by the user
-        }
-
-        @Override
-        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-            // Do something here if you would like to know when the provider status changes
-        }
-    }
-
-    private void onItemClick(Queue queue) {
-        loadingStart();
-        isInQueueRequestId = getServiceHelper().isIn(queue.getQid());
-        savedQueue = queue;
-//        Intent intent = new Intent(this, QueueActivity.class);
-//        intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
-//        startActivity(intent);
-    }
-
-    private void openQueue(IsInModel isIn) {
-        savedQueue.setIsIn(isIn.getStatus());
-        loadingStop();
-        Intent intent = new Intent(this, QueueActivity.class);
-        intent.putExtra(QueueActivity.EXTRA_QUEUE, savedQueue);
-        startActivity(intent);
+        updateView();
     }
 
     private void updateView() {
         View noQueuesView = findViewById(R.id.no_queues_view);
         View queueListView = findViewById(R.id.queue_list_view);
-        if (queues.size() == 0) {
+        if (queues == null || queues.size() == 0) {
             noQueuesView.setVisibility(View.VISIBLE);
             queueListView.setVisibility(View.GONE);
         } else {
@@ -218,8 +172,29 @@ public class MainActivity extends NetBaseActivity {
         }
     }
 
+    private void onItemClick(int qid) {
+        Intent intent = new Intent(this, QueueActivity.class);
+        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, qid);
+        startActivity(intent);
+//        loadingStart();
+//        isInQueueRequestId = getServiceHelper().isIn(qid);
+//        savedQueue = queue;
+//        Intent intent = new Intent(this, QueueActivity.class);
+//        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue);
+//        startActivity(intent);
+    }
+
+//    private void openQueue(IsInModel isIn) {
+//        savedQueue.setIsIn(isIn.getStatus());
+//        loadingStop();
+//        Intent intent = new Intent(this, QueueActivity.class);
+//        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, savedQueue);
+//        startActivity(intent);
+//    }
+
+
+
     private void updateQueueList(QueueList queueList) {
-        this.queueList = queueList;
         queues.clear();
         queues.addAll(queueList.getQueues());
         swipeRefreshLayout.setRefreshing(false);
@@ -293,31 +268,61 @@ public class MainActivity extends NetBaseActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        QueueList queueList = new QueueList();
+        queueList.setQueues(queues);
         outState.putSerializable(SAVED_STATE_QUEUE_LIST, queueList);
     }
 
-    private void loadingStart() {
-        AlphaAnimation inAnimation;
-        inAnimation = new AlphaAnimation(0f, 1f);
-        inAnimation.setDuration(200);
-        progressBarHolder.setAnimation(inAnimation);
-        progressBarHolder.setVisibility(View.VISIBLE);
-    }
+//    private void loadingStart() {
+//        AlphaAnimation inAnimation;
+//        inAnimation = new AlphaAnimation(0f, 1f);
+//        inAnimation.setDuration(200);
+//        progressBarHolder.setAnimation(inAnimation);
+//        progressBarHolder.setVisibility(View.VISIBLE);
+//    }
 
-    private void loadingStop() {
-        AlphaAnimation outAnimation;
-        outAnimation = new AlphaAnimation(1f, 0f);
-        outAnimation.setDuration(200);
-        progressBarHolder.setAnimation(outAnimation);
-        progressBarHolder.setVisibility(View.GONE);
-    }
+//    private void loadingStop() {
+//        AlphaAnimation outAnimation;
+//        outAnimation = new AlphaAnimation(1f, 0f);
+//        outAnimation.setDuration(200);
+//        progressBarHolder.setAnimation(outAnimation);
+//        progressBarHolder.setVisibility(View.GONE);
+//    }
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getMyQueuesRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> updateQueueList((QueueList) obj), NetService.RETURN_QUEUE_LIST);
-        } else if (requestId == isInQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((IsInModel) obj), NetService.RETURN_IS_IN);
+        }
+//        else if (requestId == isInQueueRequestId) {
+//            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((IsInModel) obj), NetService.RETURN_IS_IN);
+//        }
+    }
+
+    private class MyLocationListener implements LocationListener {
+        @Override
+        public void onLocationChanged(Location loc) {
+            if (loc != null) {
+//                Toast.makeText(MainActivity.this,
+//                        "lat: " + String.valueOf(loc.getLatitude()) + ", long: " + String.valueOf(loc.getLongitude()),
+//                        Toast.LENGTH_LONG).show();
+//                TODO: save coords somewhere to get when needed
+            }
+        }
+
+        @Override
+        public void onProviderDisabled(String arg0) {
+            Toast.makeText(MainActivity.this, "Вы отключили систему навигации", Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onProviderEnabled(String arg0) {
+            // Do something here if you would like to know when the provider is enabled by the user
+        }
+
+        @Override
+        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+            // Do something here if you would like to know when the provider status changes
         }
     }
 }

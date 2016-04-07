@@ -35,6 +35,7 @@ public class NetService extends IntentService {
     public static final String ACTION_ME_IN_QUEUES = QueueApplication.prefix + ".action.ME_IN_QUEUES";
     public static final String ACTION_UPDATE_GCM = QueueApplication.prefix + ".action.UPDATE_GCM";
     public static final String ACTION_IS_IN = QueueApplication.prefix + ".action.IS_IN";
+    public static final String ACTION_CHECK_TOKEN = QueueApplication.prefix + ".action.CHECK_TOKEN";
 
 
 //    public static final String ACTION_GET_EMPLOYER = QueueApplication.prefix + ".action.GET_EMPLOYER";
@@ -68,6 +69,7 @@ public class NetService extends IntentService {
     public static final String RETURN_QUEUE_LIST = QueueApplication.prefix + ".return.QUEUE_LIST";
     public static final String RETURN_USER = QueueApplication.prefix + ".return.USER";
     public static final String RETURN_IS_IN = QueueApplication.prefix + ".return.IS_IN";
+    public static final String RETURN_IS_TOKEN_OK = QueueApplication.prefix + ".return.IS_TOKEN_OK";
 //    public static final String RETURN_DATA_SEARCH_RESULTS = QueueApplication.prefix + ".return.SEARCH_RESULTS";
 
     private Processor processor;
@@ -134,6 +136,11 @@ public class NetService extends IntentService {
                     final String password = intent.getStringExtra(EXTRA_PASSWORD);
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     handleCreateUser(email, password, token);
+                    break;
+                }
+                case ACTION_CHECK_TOKEN: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleCheckToken(token);
                     break;
                 }
                 case ACTION_UPDATE_USER: {
@@ -268,6 +275,16 @@ public class NetService extends IntentService {
         }
 
         Bundle bundle = processor.getQueue(queueId);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleCheckToken(String token) {
+        if (token == null || token.equals("")) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.checkToken(token);
         receiver.send(CODE_OK, bundle);
     }
 

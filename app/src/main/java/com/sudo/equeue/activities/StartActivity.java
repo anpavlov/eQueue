@@ -12,6 +12,7 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
+import com.sudo.equeue.models.IsTokenOkModel;
 import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.models.User;
 import com.sudo.equeue.push.RegistrationIntentService;
@@ -25,6 +26,7 @@ public class StartActivity extends NetBaseActivity {
 
     private int createUserRequestId = -1;
     private int getMyQueuesRequestId = -1;
+    private int checkTokenRequestId = -1;
 
     private SharedPreferences prefs;
 
@@ -45,7 +47,56 @@ public class StartActivity extends NetBaseActivity {
         if (token == null || token.equals("")) {
             createUserRequestId = getServiceHelper().createUser(null, null, null, false);
         } else {
+            checkTokenRequestId = getServiceHelper().checkToken();
+//            getMyQueuesRequestId = getServiceHelper().meInQueues();
+        }
+    }
+
+    private void startApp(QueueList queueList) {
+        if (queueList == null) {
+            Toast.makeText(this, "Error: qlist is null", Toast.LENGTH_LONG).show();
+            Log.e(null, "Error: qlist is null");
+        } else {
+            Intent intent = new Intent(StartActivity.this, MainActivity.class);
+            intent.putExtra(MainActivity.EXTRA_QUEUE_LIST, queueList);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void handleTokenCheck(IsTokenOkModel isOk) {
+        if (isOk.isValid()) {
             getMyQueuesRequestId = getServiceHelper().meInQueues();
+        } else {
+            createUserRequestId = getServiceHelper().createUser(null, null, null, false);
+        }
+    }
+
+    private void initUserPref(User user) {
+        if (user != null && user.getToken() != null && !user.getToken().equals("")) {
+            SharedPreferences prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
+            prefs.edit()
+                    .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
+                    .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
+                    .commit();
+            getMyQueuesRequestId = getServiceHelper().meInQueues();
+        } else {
+            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            Log.e(null, "Got error: user==0 -> " + Boolean.toString(user == null));
+            if (user != null) {
+                Log.e(null, "Got error: token='" + user.getToken() + "'");
+            }
+        }
+    }
+
+    @Override
+    public void onServiceCallback(int requestId, int resultCode, Bundle data) {
+        if (requestId == createUserRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> initUserPref((User) obj), NetService.RETURN_USER);
+        } else if (requestId == getMyQueuesRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> startApp((QueueList) obj), NetService.RETURN_QUEUE_LIST);
+        } else if (requestId == checkTokenRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, obj -> handleTokenCheck((IsTokenOkModel) obj), NetService.RETURN_IS_TOKEN_OK);
         }
     }
 
@@ -62,38 +113,5 @@ public class StartActivity extends NetBaseActivity {
             return false;
         }
         return true;
-    }
-
-    private void startApp(QueueList queueList) {
-        if (queueList == null) {
-            Toast.makeText(this, "Error: qlist is null", Toast.LENGTH_LONG).show();
-        } else {
-            Intent intent = new Intent(StartActivity.this, MainActivity.class);
-            intent.putExtra(MainActivity.EXTRA_QUEUE_LIST, queueList);
-            startActivity(intent);
-            finish();
-        }
-    }
-
-    private void initUserPref(User user) {
-        if (user != null && user.getToken() != null && !user.getToken().equals("")) {
-            SharedPreferences prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
-            prefs.edit()
-                    .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
-                    .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
-                    .commit();
-            getMyQueuesRequestId = getServiceHelper().meInQueues();
-        } else {
-            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onServiceCallback(int requestId, int resultCode, Bundle data) {
-        if (requestId == createUserRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> initUserPref((User) obj), NetService.RETURN_USER);
-        } else if (requestId == getMyQueuesRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> startApp((QueueList) obj), NetService.RETURN_QUEUE_LIST);
-        }
     }
 }

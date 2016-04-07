@@ -121,6 +121,10 @@ public class Processor {
         return makeSimpleRequest(queueApi.findQueue(query), NetService.RETURN_QUEUE_LIST);
     }
 
+    public Bundle checkToken(String token) {
+        return makeSimpleRequest(queueApi.checkToken(token), NetService.RETURN_IS_TOKEN_OK);
+    }
+
     public Bundle myQueues(String token) {
         return makeSimpleRequest(queueApi.myQueues(token), NetService.RETURN_QUEUE_LIST);
     }

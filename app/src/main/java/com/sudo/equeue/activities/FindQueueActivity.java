@@ -30,7 +30,7 @@ public class FindQueueActivity extends NetBaseActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Встать в очередь");
+            getSupportActionBar().setTitle("Поиск очереди");
         }
 
         Button buttonSearch = (Button) findViewById(R.id.btn_find_queue);
@@ -41,35 +41,35 @@ public class FindQueueActivity extends NetBaseActivity {
         progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
     }
 
-    private void loadingStart() {
-        AlphaAnimation inAnimation;
-        inAnimation = new AlphaAnimation(0f, 1f);
-        inAnimation.setDuration(200);
-        progressBarHolder.setAnimation(inAnimation);
-        progressBarHolder.setVisibility(View.VISIBLE);
-    }
-
-    private void loadingStop() {
-        AlphaAnimation outAnimation;
-        outAnimation = new AlphaAnimation(1f, 0f);
-        outAnimation.setDuration(200);
-        progressBarHolder.setAnimation(outAnimation);
-        progressBarHolder.setVisibility(View.GONE);
-    }
+//    private void loadingStart() {
+//        AlphaAnimation inAnimation;
+//        inAnimation = new AlphaAnimation(0f, 1f);
+//        inAnimation.setDuration(200);
+//        progressBarHolder.setAnimation(inAnimation);
+//        progressBarHolder.setVisibility(View.VISIBLE);
+//    }
+//
+//    private void loadingStop() {
+//        AlphaAnimation outAnimation;
+//        outAnimation = new AlphaAnimation(1f, 0f);
+//        outAnimation.setDuration(200);
+//        progressBarHolder.setAnimation(outAnimation);
+//        progressBarHolder.setVisibility(View.GONE);
+//    }
 
     private void searchForQueue() {
         String queueHash = ((EditText) findViewById(R.id.queue_hash_field)).getText().toString();
         Integer aa = Integer.parseInt(queueHash);
         searchQueueRequestId = getServiceHelper().getQueue(aa == null ? 1 : aa);
-        loadingStart();
+//        loadingStart();
     }
 
     private void gotQueue(Queue queue) {
-        loadingStop();
+//        loadingStop();
 
         if (queue != null) {
             Intent intent = new Intent(this, QueueActivity.class);
-            intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
+            intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue.getQid());
             startActivity(intent);
             finish();
         }

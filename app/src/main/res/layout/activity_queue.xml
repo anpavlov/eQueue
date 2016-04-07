@@ -1,162 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.alex.inqueue.QueueActivity"
-    android:background="@color/mainColor"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.sudo.equeue.utils.StaticSwipeRefreshLayout
         android:id="@+id/refresh_queue_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <!-- Global content layout -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:id="@+id/queue_stats"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true">
-            <TextView
-                android:id="@+id/inqueue_lbl"
-                android:layout_width="100dp"
+            android:layout_height="match_parent">
+
+            <!-- Queue stats layout -->
+            <RelativeLayout
+                android:id="@+id/queue_stats"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/grid_box"
-                android:text="в очереди"
-                android:textColor="@android:color/white"
-                android:layout_alignParentLeft="true"
-                android:drawableTop="@drawable/in_queue"
-                android:drawablePadding="9dp"
-                android:paddingTop="14dp"
-                android:gravity="center_horizontal"/>
-            <TextView
-                android:id="@+id/num_in_queue"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="24"
-                android:layout_below="@id/inqueue_lbl"
-                android:textColor="@android:color/white"
-                android:gravity="center"/>
+                android:padding="20dp"
+                android:layout_centerHorizontal="true">
 
-            <TextView
-                android:id="@+id/passed_lbl"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/grid_box"
-                android:text="прошло"
-                android:textColor="@android:color/white"
-                android:layout_centerHorizontal="true"
-                android:drawableTop="@drawable/arrow"
-                android:drawablePadding="9dp"
-                android:paddingTop="14dp"
-                android:gravity="center_horizontal"/>
-            <TextView
-                android:id="@+id/num_passed"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="4"
-                android:layout_below="@id/passed_lbl"
-                android:textColor="@android:color/white"
-                android:gravity="center"
-                android:layout_alignLeft="@id/passed_lbl" />
+                <!-- Num in queue stat -->
+                <RelativeLayout
+                    android:layout_alignParentLeft="true"
+                    android:background="@drawable/stats_background_circle"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp">
 
-            <TextView
-                android:id="@+id/time_wait"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/grid_box"
-                android:text="10 минут"
-                android:textColor="@android:color/white"
-                android:layout_alignParentRight="true"
-                android:drawableTop="@drawable/clock"
-                android:drawablePadding="15dp"
-                android:paddingTop="14dp"
-                android:gravity="center_horizontal"/>
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true">
 
-        </RelativeLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="1"
+                            android:id="@+id/stats_in_queue"
+                            android:layout_centerHorizontal="true"
+                            android:textSize="40sp"
+                            android:visibility="visible"/>
+
+                        <ProgressBar
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:id="@+id/stats_in_queue_loader"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true"
+                            android:indeterminate="false" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/stats_background_label"
+                        android:text="в очереди"
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="true"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center"
+                        android:layout_alignParentBottom="true"
+                        android:textSize="11dp" />
+
+                </RelativeLayout>
+
+                <!-- Before stat -->
+                <RelativeLayout
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/stats_background_circle_filled"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:gravity="center">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="6"
+                            android:textColor="@android:color/white"
+                            android:id="@+id/stats_before"
+                            android:layout_centerHorizontal="true"
+                            android:textSize="40sp"
+                            android:visibility="gone"/>
+
+                        <ProgressBar
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:id="@+id/stats_before_loader"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="перед\nвами"
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="true"
+                        android:gravity="center"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="11dp" />
+
+                </RelativeLayout>
+
+                <!-- Time left stat -->
+                <RelativeLayout
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/stats_background_circle_filled"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:id="@+id/stats_time_num_layout"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="12"
+                            android:textColor="@android:color/white"
+                            android:id="@+id/stats_time_left"
+                            android:layout_centerHorizontal="true"
+                            android:textSize="40sp"
+                            android:visibility="visible"/>
+
+                        <ProgressBar
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:id="@+id/stats_time_loader"
+                            android:layout_centerVertical="true"
+                            android:layout_centerHorizontal="true" />
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="минут"
+                        android:textColor="@android:color/white"
+                        android:textAllCaps="true"
+                        android:gravity="center"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/stats_time_num_layout"
+                        android:textSize="11dp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
 
 
-
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/scrollTicket"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentTop="true">
 
             <RelativeLayout
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minHeight="324dp"
-                android:id="@+id/ticket"
-                android:visibility="gone">
-                <ImageView
-                    android:layout_width="300dp"
-                    android:layout_height="324dp"
-                    android:src="@drawable/ticket"
-                    android:layout_centerHorizontal="true"
-                    android:scaleType="fitXY"
-                    />
-                <TextView
-                    android:id="@+id/ticket_num"
-                    android:layout_width="wrap_content"
+                android:layout_below="@id/queue_stats"
+                android:layout_above="@+id/btn_join_queue">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="17"
-                    android:textColor="@color/mainColor"
-                    android:layout_marginTop="80dp"
-                    android:layout_centerHorizontal="true"
-                    android:textSize="25pt" />
-                <TextView
-                    android:id="@+id/ticket_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="90dp"
-                    android:text="2016 03/02 12:34"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/ticket_num"/>
+
+                    android:minHeight="324dp"
+                    android:id="@+id/ticket"
+                    android:visibility="gone">
+                    <ImageView
+                        android:layout_width="300dp"
+                        android:layout_height="324dp"
+                        android:src="@drawable/ticket"
+                        android:layout_centerHorizontal="true"
+                        android:scaleType="fitXY" />
+                    <TextView
+                        android:id="@+id/ticket_num"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="17"
+                        android:textColor="@color/mainColor"
+                        android:layout_marginTop="80dp"
+                        android:layout_centerHorizontal="true"
+                        android:textSize="25pt" />
+                    <TextView
+                        android:id="@+id/ticket_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="90dp"
+                        android:text="2016 03/02 12:34"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/ticket_num"/>
+                </RelativeLayout>
             </RelativeLayout>
+            <!--</ScrollView>-->
+
+            <!-- Buttons -->
+            <Button
+                android:id="@+id/btn_join_queue"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:text="Встать в эту очередь"
+                android:textColor="@drawable/button_queue_text"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="10dp"
+                android:shadowRadius="0"
+                android:stateListAnimator="@null"
+                android:background="@drawable/button_queue" />
+
+            <ProgressBar
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:id="@+id/button_loader"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="17dp"
+                android:layout_centerHorizontal="true" />
+
+            <!--<include layout="@layout/overlay"/>-->
+
+        </RelativeLayout>
         </ScrollView>
 
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Встать в эту очередь"
-            android:id="@+id/btn_join_queue"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:shadowRadius="0"
-            android:textColor="@color/mainColor"
-            android:background="@drawable/button_white"
-            android:visibility="visible"/>
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Покинуть очередь"
-            android:id="@+id/btn_leave_queue"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:shadowRadius="0"
-            android:textColor="@color/mainColor"
-            android:background="@drawable/button_white"
-            android:visibility="gone"/>
-
-        <include layout="@layout/overlay"/>
-
-    </RelativeLayout>
-
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.sudo.equeue.utils.StaticSwipeRefreshLayout>
 
 </LinearLayout>

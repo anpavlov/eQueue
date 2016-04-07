@@ -12,16 +12,16 @@ import com.sudo.equeue.models.Queue;
 
 import java.util.List;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> {
+public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.PersonViewHolder> {
 
     public interface ItemClickListener {
-        void onItemClick(Queue queue);
+        void onItemClick(int qid);
     }
 
     private List<Queue> queues;
     private ItemClickListener listener;
 
-    public RVAdapter(List<Queue> queues, ItemClickListener listener) {
+    public QueueListAdapter(List<Queue> queues, ItemClickListener listener) {
         this.queues = queues;
         this.listener = listener;
     }
@@ -34,8 +34,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
     @Override
     public PersonViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.queue_card, viewGroup, false);
-        PersonViewHolder pvh = new PersonViewHolder(v);
-        return pvh;
+        return new PersonViewHolder(v);
     }
 
     @Override
@@ -75,7 +74,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.PersonViewHolder> 
             queueRemaining.setText(Integer.toString(10/*queue.remaining*/) + " мин");
             queueTotal.setText(Integer.toString(queue.getUsersQuantity()) + " человек в очереди");
             queueFront.setText(Integer.toString(2/*queue.frontOfYou*/) + " человек перед Вами");
-            cv.setOnClickListener(v -> listener.onItemClick(queue));
+            cv.setOnClickListener(v -> listener.onItemClick(queue.getQid()));
         }
     }
 

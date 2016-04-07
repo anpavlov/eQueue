@@ -7,12 +7,12 @@
 
     <include layout="@layout/toolbar"/>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <com.sudo.equeue.utils.MultiSwipeRefreshLayout
         android:id="@+id/refresh_queue_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -30,46 +30,52 @@
 
             </LinearLayout>
 
-            <RelativeLayout
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:fillViewport="true"
                 android:id="@+id/no_queues_view">
 
-                <ImageView
-                    android:layout_width="128dp"
-                    android:layout_height="128dp"
-                    android:id="@+id/queueImg"
-                    android:layout_centerVertical="true"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/people_pur"
-                    android:maxHeight="64dp"
-                    android:maxWidth="64dp" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="У вас нет ни одной очереди"
-                    android:textColor="@color/mainColor"
-                    android:id="@+id/noQueues"
-                    android:layout_below="@+id/queueImg"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="10dp"/>
+                    <ImageView
+                        android:layout_width="128dp"
+                        android:layout_height="128dp"
+                        android:id="@+id/queueImg"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/people_pur"
+                        android:maxHeight="64dp"
+                        android:maxWidth="64dp" />
 
-                <Button
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Добавить"
-                    android:id="@+id/btn_add_queue"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:shadowRadius="0"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/button_custom"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="У вас нет ни одной очереди"
+                        android:textColor="@color/mainColor"
+                        android:id="@+id/noQueues"
+                        android:layout_below="@+id/queueImg"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"/>
 
-            </RelativeLayout>
+                    <Button
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Добавить"
+                        android:id="@+id/btn_add_queue"
+                        android:layout_alignParentBottom="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:shadowRadius="0"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/button_custom"/>
+
+                </RelativeLayout>
+            </ScrollView>
 
             <!--<fragment android:name="com.example.alex.inqueue.NoQueueFragment"-->
             <!--android:id="@+id/no_queue_frag"-->
@@ -82,10 +88,10 @@
                 <!--android:layout_height="match_parent"-->
                 <!--tools:layout="@layout/fragment_queue_list"-->
                 <!--android:layout_marginTop="56dp"/>-->
-        </FrameLayout>
+        </RelativeLayout>
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </com.sudo.equeue.utils.MultiSwipeRefreshLayout>
 
-    <include layout="@layout/overlay"/>
+    <!--<include layout="@layout/overlay"/>-->
 
 </LinearLayout>

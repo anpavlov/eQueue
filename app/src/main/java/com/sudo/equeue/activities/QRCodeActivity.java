@@ -8,11 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
@@ -81,7 +77,7 @@ public class QRCodeActivity extends NetBaseActivity {
     private void openQueue(Queue queue) {
         loadingStop();
         Intent intent = new Intent(this, QueueActivity.class);
-        intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
+        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue);
         startActivity(intent);
         finish();
     }
