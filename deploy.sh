@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd ~/eQueue/
 git pull >& /dev/null
 cd ..
