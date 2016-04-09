@@ -176,6 +176,7 @@ def call():
     user = standings.select(qid, index='secondary', limit=1, iterator=0)
     if not user:
         return json.dumps(responses.EMPTY_QUEUE)
+
     # push notification
     gcm = GCM(settings.GCM_SERVER_ID)
     data = {'notification': 'true', 'title': q[0]['name']}
@@ -192,6 +193,15 @@ def call():
             pass
     
     standings.delete((qid, user[0][1]))
+
+    stat_data = {
+        'qid': qid,
+        'uid': out_user['id'],
+        'wait_time': int(time.time()) - int(user[0][4]),
+        'time_in': int(user[0][4]),
+        'time_out': int(time.time())
+    }
+    tarantool_manager.insert('stats', stat_data)
 
     response = {
         'code': 200,
