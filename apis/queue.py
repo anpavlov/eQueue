@@ -361,3 +361,35 @@ def is_yours():
         }
     }
     return json.dumps(response)
+
+
+@queue_api.route("/leave/", methods=['POST'])
+def leave():
+    try:
+        token = request.form['token']
+        qid = int(request.form['qid'])
+    except (KeyError, ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
+        return json.dumps(responses.INVALID_TOKEN)
+
+    res = standings.delete((qid, user['id']))
+    if res:
+        response = {
+            'code': 200,
+            'body': {
+                'status': 1
+            }
+        }
+        return json.dumps(response)
+    else:
+        #  means user was not in the queue
+        response = {
+            'code': 200,
+            'body': {
+                'status': 0
+            }
+        }
+        return json.dumps(response)
