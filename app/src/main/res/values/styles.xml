@@ -41,10 +41,26 @@
         <item name="android:windowExitAnimation">@anim/popup_hide</item>
     </style>
 
-    <style name="QueueButton">
-        <item name="colorButtonNormal">@color/mainColor</item>
-        <!--<item name="colorControlHighlight">@color/colorPrimary</item>-->
-        <item name="colorAccent">@color/colorPrimary</item>
+    <style name="FlatButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:shadowRadius">0</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:background">@drawable/button_queue</item>
+    </style>
+
+    <style name="WhiteProgress">
+        <item name="colorPrimary">@android:color/white</item>
+        <item name="colorPrimaryDark">@android:color/white</item>
+        <item name="colorAccent">@android:color/white</item>
+        <item name="colorButtonNormal">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
     </style>
 
     <!--<style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">-->

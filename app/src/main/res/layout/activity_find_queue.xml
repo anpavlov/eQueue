@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    tools:context="com.example.alex.inqueue.FindQueueActivity">
+    android:background="@android:color/white">
 
     <include layout="@layout/toolbar"/>
 
@@ -32,20 +31,22 @@
         android:foregroundGravity="center_horizontal" />
 
     <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Открыть"
         android:id="@+id/btn_find_queue"
         android:layout_below="@id/queue_hash_field"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp"
-        android:shadowRadius="0"
-        android:textColor="@android:color/white"
-        android:background="@drawable/button_custom"
-        android:layout_centerHorizontal="true"/>
+        android:text="Открыть"
+        style="@style/FlatButton" />
 
-    <include layout="@layout/overlay"/>
+    <ProgressBar
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/button_loader"
+        android:layout_below="@id/btn_find_queue"
+        android:layout_alignLeft="@id/btn_find_queue"
+        android:layout_alignRight="@id/btn_find_queue"
+        android:layout_marginTop="-47dp"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"
+        android:theme="@style/WhiteProgress"/>
 
 
 </RelativeLayout>

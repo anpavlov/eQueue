@@ -41,7 +41,7 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="60dp"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true">
 
@@ -52,6 +52,7 @@
                             android:text="1"
                             android:id="@+id/stats_in_queue"
                             android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
                             android:textSize="40sp"
                             android:visibility="visible"/>
 
@@ -84,31 +85,32 @@
                     android:layout_centerHorizontal="true"
                     android:background="@drawable/stats_background_circle_filled"
                     android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:gravity="center">
+                    android:layout_height="100dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
+                        android:layout_height="60dp"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="6"
                             android:textColor="@android:color/white"
                             android:id="@+id/stats_before"
                             android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
                             android:textSize="40sp"
-                            android:visibility="gone"/>
+                            android:visibility="visible"
+                            android:text="6" />
 
                         <ProgressBar
                             android:layout_width="40dp"
                             android:layout_height="40dp"
                             android:id="@+id/stats_before_loader"
                             android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true" />
+                            android:layout_centerHorizontal="true"
+                            android:theme="@style/WhiteProgress"/>
 
                     </RelativeLayout>
 
@@ -120,6 +122,7 @@
                         android:textAllCaps="true"
                         android:gravity="center"
                         android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="6dp"
                         android:layout_centerHorizontal="true"
                         android:textSize="11dp" />
 
@@ -134,8 +137,7 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:id="@+id/stats_time_num_layout"
+                        android:layout_height="60dp"
                         android:layout_centerVertical="true"
                         android:layout_centerHorizontal="true">
 
@@ -146,6 +148,7 @@
                             android:textColor="@android:color/white"
                             android:id="@+id/stats_time_left"
                             android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
                             android:textSize="40sp"
                             android:visibility="visible"/>
 
@@ -154,7 +157,8 @@
                             android:layout_height="40dp"
                             android:id="@+id/stats_time_loader"
                             android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true" />
+                            android:layout_centerHorizontal="true"
+                            android:theme="@style/WhiteProgress"/>
 
                     </RelativeLayout>
 
@@ -166,7 +170,8 @@
                         android:textAllCaps="true"
                         android:gravity="center"
                         android:layout_centerHorizontal="true"
-                        android:layout_below="@id/stats_time_num_layout"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="14dp"
                         android:textSize="11dp" />
 
                 </RelativeLayout>
@@ -218,19 +223,9 @@
             <!-- Buttons -->
             <Button
                 android:id="@+id/btn_join_queue"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:text="Встать в эту очередь"
-                android:textColor="@drawable/button_queue_text"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginBottom="10dp"
-                android:shadowRadius="0"
-                android:stateListAnimator="@null"
-                android:background="@drawable/button_queue" />
+                android:text="Открыть"
+                style="@style/FlatButton" />
 
             <ProgressBar
                 android:layout_width="30dp"
@@ -238,7 +233,8 @@
                 android:id="@+id/button_loader"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="17dp"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:theme="@style/WhiteProgress"/>
 
             <!--<include layout="@layout/overlay"/>-->
 

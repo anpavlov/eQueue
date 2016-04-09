@@ -7,6 +7,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -50,27 +51,24 @@ public class QueueActivity extends NetBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
+//        overridePendingTransition(R.anim.open_slide_in, R.anim.open_slide_out);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
 
         toolbarProgressBar = (ProgressBar) toolbar.findViewById(R.id.toolbar_loader);
         toolbarProgressBar.setVisibility(View.VISIBLE);
-        toolbarProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
 
         buttonProgressbar = (ProgressBar) findViewById(R.id.button_loader);
-        buttonProgressbar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
 
         statsInQueueProgressbar = (ProgressBar) findViewById(R.id.stats_in_queue_loader);
         statsBeforeProgressbar = (ProgressBar) findViewById(R.id.stats_before_loader);
         statsTimeProgressbar = (ProgressBar) findViewById(R.id.stats_time_loader);
-
-        statsBeforeProgressbar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
-        statsTimeProgressbar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
 
         if (savedInstanceState == null) {
             int qid = getIntent().getIntExtra(EXTRA_QUEUE_ID, -1);
@@ -185,11 +183,28 @@ public class QueueActivity extends NetBaseActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == joinQueueRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> joinSuccess(), null);
         } else if (requestId == getQueueRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> getQueueSuccess((Queue) obj), NetService.RETURN_QUEUE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.close_slide_in, R.anim.close_slide_out);
     }
 }

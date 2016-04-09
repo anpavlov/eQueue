@@ -19,7 +19,8 @@
             android:layout_marginLeft="50dp"
             android:visibility="gone"
             android:indeterminate="true"
-            android:layout_gravity="left"/>
+            android:layout_gravity="left"
+            android:theme="@style/WhiteProgress"/>
 
     <!--</LinearLayout>-->
 

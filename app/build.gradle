@@ -29,15 +29,17 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile 'com.google.android.gms:play-services-gcm:8.4.0'
-    compile 'com.android.support:appcompat-v7:23.2.1'
-    compile 'com.android.support:cardview-v7:21.0.+'
-    compile 'com.android.support:recyclerview-v7:21.0.+'
+//    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:cardview-v7:23.0.+'
+    compile 'com.android.support:recyclerview-v7:23.0.+'
     compile 'com.android.support:design:23.2.1'
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
     compile 'com.google.code.gson:gson:2.5'
 
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
+
+//    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
 
 
     compile files('libs/zbar.jar')

@@ -43,7 +43,7 @@ public class QRCodeActivity extends NetBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_qr_code);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.open_slide_in, R.anim.open_slide_out);
 
         //        ========== Toolbar ============
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);

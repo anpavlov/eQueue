@@ -1,14 +1,16 @@
 package com.sudo.equeue.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
@@ -18,13 +20,17 @@ import com.sudo.equeue.models.Queue;
 public class FindQueueActivity extends NetBaseActivity {
 
     private int searchQueueRequestId = -1;
-    private FrameLayout progressBarHolder;
+    
+    private ProgressBar buttonProgressBar;
+    private Button buttonSearch;
+    private EditText hashField;
+//    private FrameLayout progressBarHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_queue);
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.open_slide_in, R.anim.open_slide_out);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
@@ -33,34 +39,28 @@ public class FindQueueActivity extends NetBaseActivity {
             getSupportActionBar().setTitle("Поиск очереди");
         }
 
-        Button buttonSearch = (Button) findViewById(R.id.btn_find_queue);
-        if(buttonSearch != null) {
-            buttonSearch.setOnClickListener(v -> searchForQueue());
-        }
+        hashField = (EditText) findViewById(R.id.queue_hash_field);
+        buttonSearch = (Button) findViewById(R.id.btn_find_queue);
+        buttonSearch.setOnClickListener(v -> searchForQueue());
+        
+        buttonProgressBar = (ProgressBar) findViewById(R.id.button_loader);
+//        buttonProgressBar.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.MULTIPLY);
 
-        progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
     }
 
-//    private void loadingStart() {
-//        AlphaAnimation inAnimation;
-//        inAnimation = new AlphaAnimation(0f, 1f);
-//        inAnimation.setDuration(200);
-//        progressBarHolder.setAnimation(inAnimation);
-//        progressBarHolder.setVisibility(View.VISIBLE);
-//    }
-//
-//    private void loadingStop() {
-//        AlphaAnimation outAnimation;
-//        outAnimation = new AlphaAnimation(1f, 0f);
-//        outAnimation.setDuration(200);
-//        progressBarHolder.setAnimation(outAnimation);
-//        progressBarHolder.setVisibility(View.GONE);
-//    }
-
     private void searchForQueue() {
-        String queueHash = ((EditText) findViewById(R.id.queue_hash_field)).getText().toString();
-        Integer aa = Integer.parseInt(queueHash);
-        searchQueueRequestId = getServiceHelper().getQueue(aa == null ? 1 : aa);
+        buttonSearch.setEnabled(false);
+        buttonSearch.setText("");
+        buttonProgressBar.setVisibility(View.VISIBLE);
+
+        try {
+            Integer qid = Integer.parseInt(hashField.getText().toString());
+            searchQueueRequestId = getServiceHelper().getQueue(qid);
+        } catch (NumberFormatException e) {
+            Toast.makeText(this, "It's not a queue id", Toast.LENGTH_LONG).show();
+        }
+
+
 //        loadingStart();
     }
 
@@ -72,6 +72,10 @@ public class FindQueueActivity extends NetBaseActivity {
             intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue.getQid());
             startActivity(intent);
             finish();
+        } else {
+            buttonSearch.setEnabled(true);
+            buttonSearch.setText("Открыть");
+            buttonProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -96,6 +100,6 @@ public class FindQueueActivity extends NetBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+        overridePendingTransition(R.anim.close_slide_in, R.anim.close_slide_out);
     }
 }
