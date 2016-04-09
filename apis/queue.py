@@ -54,7 +54,7 @@ def create():
 def update():
     try:
         token = request.form['token']
-        qid = int(request.form['qid'])
+        qid = abs(int(request.form['qid']))
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
 
@@ -99,7 +99,7 @@ def update():
 @queue_api.route("/info/", methods=['GET'])
 def info():
     try:
-        qid = int(request.args.get('qid'))
+        qid = abs(int(request.args.get('qid')))
     except (ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
 
@@ -133,7 +133,7 @@ def info():
 def join():
     try:
         token = request.form['token']
-        qid = int(request.form['qid'])
+        qid = abs(int(request.form['qid']))
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
@@ -159,7 +159,7 @@ def join():
 def call():
     try:
         token = request.form['token']
-        qid = int(request.form['qid'])
+        qid = abs(int(request.form['qid']))
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
@@ -337,7 +337,7 @@ def in_queue():
 def is_yours():
     try:
         token = request.form['token']
-        qid = int(request.form['qid'])
+        qid = abs(int(request.form['qid']))
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
@@ -367,7 +367,7 @@ def is_yours():
 def leave():
     try:
         token = request.form['token']
-        qid = int(request.form['qid'])
+        qid = abs(int(request.form['qid']))
     except (KeyError, ValueError, TypeError):
         return json.dumps(responses.BAD_REQUEST)
     try:
@@ -376,6 +376,9 @@ def leave():
         return json.dumps(responses.INVALID_TOKEN)
 
     res = standings.delete((qid, user['id']))
+
+    #  TODO: broadcast
+
     if res:
         response = {
             'code': 200,
@@ -393,3 +396,28 @@ def leave():
             }
         }
         return json.dumps(response)
+
+
+@queue_api.route("/exist/", methods=['GET'])
+def exist():
+    try:
+        qid = abs(int(request.args.get('qid')))
+    except (ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        tarantool_manager.select_assoc('queues', (qid))
+    except NoResult:
+        response = {
+            'code': 200,
+            'body': {
+                'status': 0
+            }
+        }
+        return json.dumps(response)
+    response = {
+        'code': 200,
+        'body': {
+            'status': 1
+        }
+    }
+    return json.dumps(response)
