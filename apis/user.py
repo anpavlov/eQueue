@@ -305,7 +305,10 @@ def pretty():
     try:
         res = tarantool_manager.select_assoc('users', ())
         for user in res:
-            sessions = tarantool_manager.select_assoc('sessions', (user['id']), index='user')
+            try:
+                sessions = tarantool_manager.select_assoc('sessions', (user['id']), index='user')
+            except NoResult:
+                continue
             user['tokens'] = sessions
     except NoResult:
         response = {
