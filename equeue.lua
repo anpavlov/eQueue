@@ -21,7 +21,7 @@ users:create_index('vkuid', {type = 'tree', parts = {5, 'NUM'}, unique = false, 
 local session = box.schema.space.create('sessions', {if_not_exists = true})
 session:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists = true})
 session:create_index('token', {type='tree', parts = {2, 'STR'}, if_not_exists = true})
-session:create_index('user', {type='tree', parts = {4, 'NUM'}, if_not_exists = true})
+session:create_index('user', {type='tree', parts = {4, 'NUM'}, unique = false, if_not_exists = true})
 --session:truncate()
 
 local queues = box.schema.space.create('queues', {if_not_exists = true})
