@@ -129,6 +129,21 @@ def info():
     return json.dumps(response)
 
 
+@queue_api.route("/info-user/", methods=['POST'])
+def info_user():
+    try:
+        token = request.form['token']
+        qid = abs(int(request.form['qid']))
+    except (KeyError, ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
+        return json.dumps(responses.INVALID_TOKEN)
+
+
+
+
 @queue_api.route("/join/", methods=['POST'])
 def join():
     try:
@@ -431,3 +446,9 @@ def exist():
         }
     }
     return json.dumps(response)
+
+
+@queue_api.route("/pretty/", methods=['GET'])
+def pretty():
+    res = tarantool_manager.select_assoc('queues', ())
+    return json.dumps(res)

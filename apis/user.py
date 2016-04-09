@@ -298,3 +298,18 @@ def check_token():
         }
     }
     return json.dumps(response)
+
+
+@user_api.route("/pretty/", methods=['GET'])
+def pretty():
+    try:
+        res = tarantool_manager.select_assoc('users', ())
+        for user in res:
+            sessions = tarantool_manager.select_assoc('sessions', (user['id']), index='user')
+            user['tokens'] = sessions
+    except NoResult:
+        response = {
+            'status': 'no result'
+        }
+        return json.dumps(response)
+    return json.dumps(res)

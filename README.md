@@ -14,6 +14,9 @@ dependencies:
 ##Queue
 
 
+#Deploy
+Execute deploy.sh
+
 #tarantool new solution
 Copy equeue.lua file as config to /etc/tarantool/instances.available/
 Then make symlink in /etc/tarantool/instances.enabled/ to this file
