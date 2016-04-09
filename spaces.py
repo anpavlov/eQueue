@@ -46,7 +46,8 @@ schema = {
             ('uid', TARANTOOL_NUM64, 0),
             ('wait_time', TARANTOOL_NUM64, 0),  # in seconds
             ('time_in', TARANTOOL_NUM, 0),
-            ('time_out', TARANTOOL_NUM, 0)
+            ('time_out', TARANTOOL_NUM, 0),
+            ('class', TARANTOOL_STR, '')
         ]
     }
 }

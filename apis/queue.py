@@ -299,7 +299,8 @@ def call():
         'uid': out_user['id'],
         'wait_time': int(time.time()) - int(user[0][4]),
         'time_in': int(user[0][4]),
-        'time_out': int(time.time())
+        'time_out': int(time.time()),
+        'class': q[0]['class']
     }
     tarantool_manager.insert('stats', stat_data)
 
