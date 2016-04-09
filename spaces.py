@@ -35,6 +35,7 @@ schema = {
             ('current', TARANTOOL_NUM64, 0),
             ('created', TARANTOOL_NUM, 0),
             ('closed', TARANTOOL_NUM, 0),
+            ('class', TARANTOOL_STR, ''),
             ('coords', TARANTOOL_ARRAY, [])
         ]
     },

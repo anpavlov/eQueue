@@ -10,6 +10,7 @@ from taran import tarantool_manager
 from taran.helper import NoResult
 from gcm.gcm import GCMNotRegisteredException
 from prediction import predict
+from map import class_resolver
 
 queue_api = Blueprint('queue', __name__)
 
@@ -66,6 +67,9 @@ def update():
     except (KeyError, ValueError, TypeError, AttributeError, IndexError):
         coords = None
 
+    if coords:
+        category = class_resolver.get_class_by_coords(coords)
+
     name = request.form.get('name')
     description = request.form.get('description')
     try:
@@ -86,7 +90,8 @@ def update():
         to_update['description'] = description
     if coords:
         to_update['coords'] = coords
-
+        if category != -1:
+            to_update['class'] = category
 
     if len(to_update) > 0:
         tarantool_manager.simple_update('queues', q['id'], to_update)
