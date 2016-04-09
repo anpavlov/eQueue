@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,15 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
@@ -24,7 +32,7 @@ import com.sudo.equeue.utils.StaticSwipeRefreshLayout;
 
 import java.util.Random;
 
-public class QueueActivity extends NetBaseActivity {
+public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback {
 
     public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.queue";
 
@@ -35,6 +43,8 @@ public class QueueActivity extends NetBaseActivity {
     private Button joinButton;
     private ViewGroup ticketView;
     private StaticSwipeRefreshLayout swipeRefreshLayout;
+    private GoogleMap mMap;
+    private Marker mMapMaker;
 
     private ProgressBar toolbarProgressBar;
     private ProgressBar statsInQueueProgressbar;
@@ -91,6 +101,11 @@ public class QueueActivity extends NetBaseActivity {
         statsInQueue = (TextView) findViewById(R.id.stats_in_queue);
         statsBefore = (TextView) findViewById(R.id.stats_before);
         statsTime = (TextView) findViewById(R.id.stats_time_left);
+
+        MapView mapView = (MapView) findViewById(R.id.lite_map);
+        mapView.onCreate(null);
+        mapView.getMapAsync(this);
+        mapView.setVisibility(View.GONE);
     }
 
     private void getQueueSuccess(Queue newQueue) {
@@ -119,6 +134,13 @@ public class QueueActivity extends NetBaseActivity {
         joinButton.setEnabled(true);
         joinButton.setText("Присоединиться");
         joinButton.setOnClickListener((v) -> joinQueue());
+
+        LatLng place = this.queue.getLatLng();
+        if (place != null) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 15f));
+            mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
+            findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
+        }
     }
 
 //    private void refreshQueueData() {
@@ -191,5 +213,14 @@ public class QueueActivity extends NetBaseActivity {
         } else if (requestId == getQueueRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, obj -> getQueueSuccess((Queue) obj), NetService.RETURN_QUEUE);
         }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        UiSettings mUiSettings = mMap.getUiSettings();
+        mUiSettings.setMapToolbarEnabled(false);
+        mUiSettings.setAllGesturesEnabled(false);
     }
 }
