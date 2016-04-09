@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
@@ -24,6 +25,7 @@ import net.sourceforge.zbar.SymbolSet;
 public class QRCodeActivity extends NetBaseActivity {
 
     private int getQueueRequestId = -1;
+    private boolean sentRequest = false;
 
     private Camera mCamera;
     private CameraPreview mPreview;
@@ -67,17 +69,21 @@ public class QRCodeActivity extends NetBaseActivity {
     }
 
     private void handleScannedText(String text) {
-        if (text.startsWith("http://equeue/")) {
-            int qid = Integer.parseInt(text.replace("http://equeue/", ""));
-            getQueueRequestId = getServiceHelper().getQueue(qid);
-            loadingStart();
+        if (!sentRequest &&text.startsWith("http://equeue/")) {
+            try {
+                int qid = Integer.parseInt(text.replace("http://equeue/", ""));
+                getQueueRequestId = getServiceHelper().getQueue(qid);
+                sentRequest = true;
+                loadingStart();
+            } catch (NumberFormatException ignored) {
+            }
         }
     }
 
     private void openQueue(Queue queue) {
         loadingStop();
         Intent intent = new Intent(this, QueueActivity.class);
-        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue);
+        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue.getQid());
         startActivity(intent);
         finish();
     }
@@ -190,7 +196,7 @@ public class QRCodeActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((Queue) obj), NetService.RETURN_QUEUE);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> openQueue((Queue) obj), this::loadingStop);
         }
     }
 }

@@ -92,11 +92,11 @@ public class StartActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == createUserRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> initUserPref((User) obj), NetService.RETURN_USER);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_USER, obj -> initUserPref((User) obj), null);
         } else if (requestId == getMyQueuesRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> startApp((QueueList) obj), NetService.RETURN_QUEUE_LIST);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE_LIST, obj -> startApp((QueueList) obj), null);
         } else if (requestId == checkTokenRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> handleTokenCheck((IsTokenOkModel) obj), NetService.RETURN_IS_TOKEN_OK);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_IS_TOKEN_OK, obj -> handleTokenCheck((IsTokenOkModel) obj), null);
         }
     }
 

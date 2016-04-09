@@ -292,7 +292,7 @@ public class MainActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getMyQueuesRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> updateQueueList((QueueList) obj), NetService.RETURN_QUEUE_LIST);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE_LIST, obj -> updateQueueList((QueueList) obj), null);
         }
 //        else if (requestId == isInQueueRequestId) {
 //            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((IsInModel) obj), NetService.RETURN_IS_IN);

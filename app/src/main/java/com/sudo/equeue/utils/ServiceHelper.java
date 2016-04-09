@@ -75,19 +75,26 @@ public class ServiceHelper implements ServiceCallbackListener {
 //    ======= Public custom methods to call from activities =========
 //    ===============================================================
 
-    public interface HandleCallbackIntf {
+    public interface HandleSuccessCallbackIntf {
         void call(Serializable obj);
     }
 
-    public void handleResponse(Context context, int resultCode, Bundle data, HandleCallbackIntf callback, String returnKey) {
+    public interface HandleFailCallbackIntf {
+        void call();
+    }
+
+    public void handleResponse(Context context, int resultCode, Bundle data, String returnKey, HandleSuccessCallbackIntf successCallback, HandleFailCallbackIntf failCallback) {
         if (resultCode == NetService.CODE_OK) {
             if (data.getInt(NetService.RETURN_CODE) == NetService.CODE_OK) {
                 if (returnKey != null) {
-                    callback.call(data.getSerializable(returnKey));
+                    successCallback.call(data.getSerializable(returnKey));
                 } else {
-                    callback.call(null);
+                    successCallback.call(null);
                 }
             } else {
+                if (failCallback != null) {
+                    failCallback.call();
+                }
                 Toast.makeText(context, data.getString(NetService.ERROR_MSG, context.getString(R.string.error_msg_unknown)), Toast.LENGTH_LONG).show();
             }
         } else {

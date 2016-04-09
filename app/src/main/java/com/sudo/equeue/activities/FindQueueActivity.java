@@ -60,22 +60,14 @@ public class FindQueueActivity extends NetBaseActivity {
             Toast.makeText(this, "It's not a queue id", Toast.LENGTH_LONG).show();
         }
 
-
-//        loadingStart();
     }
 
     private void gotQueue(Queue queue) {
-//        loadingStop();
-
         if (queue != null) {
             Intent intent = new Intent(this, QueueActivity.class);
             intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue.getQid());
             startActivity(intent);
             finish();
-        } else {
-            buttonSearch.setEnabled(true);
-            buttonSearch.setText("Открыть");
-            buttonProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -93,7 +85,11 @@ public class FindQueueActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == searchQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> gotQueue((Queue) obj), NetService.RETURN_QUEUE);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> gotQueue((Queue) obj), () -> {
+                buttonSearch.setEnabled(true);
+                buttonSearch.setText("Открыть");
+                buttonProgressBar.setVisibility(View.GONE);
+            });
         }
     }
 

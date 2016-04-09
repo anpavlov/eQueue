@@ -38,6 +38,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.5'
 
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
 
 //    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
 
