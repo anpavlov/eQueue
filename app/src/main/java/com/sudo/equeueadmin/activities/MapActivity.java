@@ -110,8 +110,8 @@ public class MapActivity extends AppCompatActivity implements  OnMapReadyCallbac
         findViewById(R.id.btn_save_coords).setOnClickListener(v -> saveCoords());
 
         if (getIntent().getBooleanExtra(EXTRA_SHOW_KEY, false)) {
-            latitude = getIntent().getDoubleExtra(EXTRA_LATITUDE_KEY, 0);
-            longitude = getIntent().getDoubleExtra(EXTRA_LONGITUDE_KEY, 0);
+            latitude = Double.valueOf(getIntent().getExtras().get(EXTRA_LATITUDE_KEY).toString());
+            longitude = Double.valueOf(getIntent().getExtras().get(EXTRA_LONGITUDE_KEY).toString());
             changeCamera(latitude, longitude);
         }
     }

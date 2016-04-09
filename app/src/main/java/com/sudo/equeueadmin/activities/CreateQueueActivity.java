@@ -39,10 +39,11 @@ public class CreateQueueActivity extends NetBaseActivity {
     }
 
     private void createQueue() {
-//        ((EditText) findViewById(R.id.name_field)).getText().toString();
-        createQueueRequestId = getServiceHelper().createQueue(
-                ((EditText) findViewById(R.id.name_field)).getText().toString(),
-                ((EditText) findViewById(R.id.description_field)).getText().toString());
+        if (createQueueRequestId == -1) {
+            createQueueRequestId = getServiceHelper().createQueue(
+                    ((EditText) findViewById(R.id.name_field)).getText().toString(),
+                    ((EditText) findViewById(R.id.description_field)).getText().toString());
+        }
     }
 
     @Override

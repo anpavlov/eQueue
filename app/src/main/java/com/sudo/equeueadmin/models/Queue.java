@@ -1,5 +1,6 @@
 package com.sudo.equeueadmin.models;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.sudo.equeueadmin.models.basic.PossibleError;
 
 import java.util.List;
@@ -69,5 +70,15 @@ public class Queue extends PossibleError {
 
     public void setCoords(String coords) {
         this.coords = coords;
+    }
+
+    public LatLng getLatLng() {
+        if (this.coords != null && this.coords != "0,0") {
+            String[] coords = this.coords.split(",");
+            Float lat = Float.valueOf(coords[0]);
+            Float lon = Float.valueOf(coords[1]);
+            return new LatLng(lat, lon);
+        } else
+            return null;
     }
 }
