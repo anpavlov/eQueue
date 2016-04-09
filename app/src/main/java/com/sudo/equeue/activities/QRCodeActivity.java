@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
@@ -67,7 +68,7 @@ public class QRCodeActivity extends NetBaseActivity {
     }
 
     private void handleScannedText(String text) {
-        if (text.startsWith("http://equeue/")) {
+        if (getQueueRequestId < 0 &&text.startsWith("http://equeue/")) {
             int qid = Integer.parseInt(text.replace("http://equeue/", ""));
             getQueueRequestId = getServiceHelper().getQueue(qid);
             loadingStart();
@@ -77,7 +78,7 @@ public class QRCodeActivity extends NetBaseActivity {
     private void openQueue(Queue queue) {
         loadingStop();
         Intent intent = new Intent(this, QueueActivity.class);
-        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue);
+        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue.getQid());
         startActivity(intent);
         finish();
     }
