@@ -69,6 +69,12 @@ class Manager():
         self.insert('sessions', session)
         return session['token']
 
+    def get_user_position(self, qid, uid):
+        res = self.conn.call("user_number", qid, uid)
+        if not res:
+            return 0
+        return res[0][0]
+
     def _get_position_by_key(self, space_name, key):
         for i, val in enumerate(self.schema[space_name]['fields']):
             if val[0] == key:

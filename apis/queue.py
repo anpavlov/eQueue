@@ -9,6 +9,7 @@ from gcm import *
 from taran import tarantool_manager
 from taran.helper import NoResult
 from gcm.gcm import GCMNotRegisteredException
+from prediction import predict
 
 queue_api = Blueprint('queue', __name__)
 
@@ -141,8 +142,87 @@ def info_user():
     except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
 
+    try:
+        q = tarantool_manager.select_assoc('queues', (qid))
+    except NoResult:
+        return json.dumps(responses.QUEUE_NOT_FOUND)
+
+    q = q[0]
+    stands = standings.select(qid, index='qid')
+    users = [u[1] for u in stands]
+
+    in_front = tarantool_manager.get_user_position(q['id'], user['id'])
+    if in_front > 0:
+        in_front -= 1
+
+    response = {
+        'code': 200,
+        'body': {
+            'qid': q['id'],
+            'name': q['name'],
+            'description': q['description'],
+            'date_opened': int(q['created']),
+            'users_quantity': len(users),
+            'address': 'lorem ipsum',  # TODO: get address string
+            'wait_time': predict.predict(),
+            'in_front': in_front
+        }
+    }
+
+    if q['coords'] != [0, 0]:
+        response['body']['coords'] = str(q['coords'][0]) + ',' + str(q['coords'][1])
+
+    return json.dumps(response)
 
 
+@queue_api.route("/info-admin/", methods=['POST'])
+def info_admin():
+    try:
+        token = request.form['token']
+        qid = abs(int(request.form['qid']))
+    except (KeyError, ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        user = tarantool_manager.get_user_by_token(token)
+    except NoResult:
+        return json.dumps(responses.INVALID_TOKEN)
+
+    try:
+        q = tarantool_manager.select_assoc('queues', (qid))
+    except NoResult:
+        return json.dumps(responses.QUEUE_NOT_FOUND)
+
+    q = q[0]
+
+    if q['user_id'] != user['id']:
+        return json.dumps(responses.QUEUE_NOT_FOUND)
+
+    stands = standings.select(qid, index='qid')
+    users = [u[1] for u in stands]
+
+    try:
+        passed = tarantool_manager.select_assoc('stats', (qid), index='qid')
+    except NoResult:
+        passed = []
+
+    response = {
+        'code': 200,
+        'body': {
+            'qid': q['id'],
+            'name': q['name'],
+            'description': q['description'],
+            'date_opened': int(q['created']),
+            'users_quantity': len(users),
+            'address': 'lorem ipsum',  # TODO: get address string
+            'wait_time': predict.predict(),
+            'passed': len(passed)
+        }
+    }
+
+    if q['coords'] != [0, 0]:
+        response['body']['coords'] = str(q['coords'][0]) + ',' + str(q['coords'][1])
+
+    return json.dumps(response)
 
 @queue_api.route("/join/", methods=['POST'])
 def join():

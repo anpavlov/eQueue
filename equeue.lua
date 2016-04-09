@@ -34,6 +34,7 @@ queues:create_index('coords', {type = 'rtree', parts = {8, 'array'}, unique = fa
 
 local stats = box.schema.space.create('stats', {if_not_exists = true})
 stats:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists = true})
+stats:create_index('qid', {type = 'tree', parts = {2, 'NUM'}, unique = false, if_not_exists = true})
 
 
 -- functions area:
