@@ -38,6 +38,7 @@ import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.utils.MultiSwipeRefreshLayout;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.QueueListAdapter;
+import com.sudo.equeue.utils.QueueListWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,8 @@ public class MainActivity extends NetBaseActivity {
 //    private Queue savedQueue;
 
 //    private QueueList queueList;
-    private List<Queue> queues;
+//    private List<Queue> queues;
+    private QueueListWrapper queues;
     private QueueListAdapter adapter;
 //    private FrameLayout progressBarHolder;
     private MultiSwipeRefreshLayout swipeRefreshLayout;
@@ -89,10 +91,13 @@ public class MainActivity extends NetBaseActivity {
             queueList = (QueueList) savedInstanceState.getSerializable(SAVED_STATE_QUEUE_LIST);
         }
         if (queueList != null) {
-            queues = new ArrayList<>(queueList.getQueues());
+            queues = new QueueListWrapper();
+            queues.setQueueList(queueList);
+//            queues = new ArrayList<>(queueList.getQueues());
         } else {
-            queues = new ArrayList<>();
-            getMyQueuesRequestId = getServiceHelper().meInQueues();
+            throw new AssertionError("queulist is null");
+//            queues = new ArrayList<>();
+//            getMyQueuesRequestId = getServiceHelper().meInQueues();
         }
 
 //        ========== Recycler View ============
@@ -163,7 +168,7 @@ public class MainActivity extends NetBaseActivity {
     private void updateView() {
         View noQueuesView = findViewById(R.id.no_queues_view);
         View queueListView = findViewById(R.id.queue_list_view);
-        if (queues == null || queues.size() == 0) {
+        if (queues.getQueueList().getQueues() == null || queues.getQueueList().getQueues().size() == 0) {
             noQueuesView.setVisibility(View.VISIBLE);
             queueListView.setVisibility(View.GONE);
         } else {
@@ -172,31 +177,14 @@ public class MainActivity extends NetBaseActivity {
         }
     }
 
-    private void onItemClick(int qid) {
+    private void onItemClick(Queue queue) {
         Intent intent = new Intent(this, QueueActivity.class);
-        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, qid);
+        intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
         startActivity(intent);
-//        loadingStart();
-//        isInQueueRequestId = getServiceHelper().isIn(qid);
-//        savedQueue = queue;
-//        Intent intent = new Intent(this, QueueActivity.class);
-//        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue);
-//        startActivity(intent);
     }
 
-//    private void openQueue(IsInModel isIn) {
-//        savedQueue.setIsIn(isIn.getStatus());
-//        loadingStop();
-//        Intent intent = new Intent(this, QueueActivity.class);
-//        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, savedQueue);
-//        startActivity(intent);
-//    }
-
-
-
     private void updateQueueList(QueueList queueList) {
-        queues.clear();
-        queues.addAll(queueList.getQueues());
+        queues.setQueueList(queueList);
         swipeRefreshLayout.setRefreshing(false);
         updateView();
         adapter.notifyDataSetChanged();
@@ -269,7 +257,7 @@ public class MainActivity extends NetBaseActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         QueueList queueList = new QueueList();
-        queueList.setQueues(queues);
+        queueList.setQueues(queues.getQueueList().getQueues());
         outState.putSerializable(SAVED_STATE_QUEUE_LIST, queueList);
     }
 

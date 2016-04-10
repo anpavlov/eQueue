@@ -65,7 +65,7 @@ public class FindQueueActivity extends NetBaseActivity {
     private void gotQueue(Queue queue) {
         if (queue != null) {
             Intent intent = new Intent(this, QueueActivity.class);
-            intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue.getQid());
+            intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
             startActivity(intent);
             finish();
         }

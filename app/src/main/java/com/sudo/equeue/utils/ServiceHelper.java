@@ -98,7 +98,8 @@ public class ServiceHelper implements ServiceCallbackListener {
                 Toast.makeText(context, data.getString(NetService.ERROR_MSG, context.getString(R.string.error_msg_unknown)), Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(context, "Error in arguments", Toast.LENGTH_LONG).show();
+            throw new AssertionError("Error in arguments");
+//            Toast.makeText(context, "Error in arguments", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -184,8 +185,8 @@ public class ServiceHelper implements ServiceCallbackListener {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_GET_QUEUE, requestId);
 
-//        String token = prefs.getString(TOKEN_KEY, null);
-//        i.putExtra(NetService.EXTRA_TOKEN, token);
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
         i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
 
         application.startService(i);
@@ -276,6 +277,18 @@ public class ServiceHelper implements ServiceCallbackListener {
     public int joinQueue(int queueId) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_JOIN_QUEUE, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
+
+        application.startService(i);
+        return requestId;
+    }
+
+    public int leaveQueue(int queueId) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_LEAVE_QUEUE, requestId);
 
         String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
         i.putExtra(NetService.EXTRA_TOKEN, token);

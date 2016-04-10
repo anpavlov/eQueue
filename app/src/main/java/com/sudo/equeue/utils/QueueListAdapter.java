@@ -15,20 +15,21 @@ import java.util.List;
 public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.PersonViewHolder> {
 
     public interface ItemClickListener {
-        void onItemClick(int qid);
+        void onItemClick(Queue queue);
     }
 
-    private List<Queue> queues;
+//    private List<Queue> queues;
+    private QueueListWrapper queues;
     private ItemClickListener listener;
 
-    public QueueListAdapter(List<Queue> queues, ItemClickListener listener) {
+    public QueueListAdapter(QueueListWrapper queues, ItemClickListener listener) {
         this.queues = queues;
         this.listener = listener;
     }
 
     @Override
     public int getItemCount() {
-        return queues.size();
+        return queues.getQueueList().getQueues().size();
     }
 
     @Override
@@ -39,7 +40,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
 
     @Override
     public void onBindViewHolder(PersonViewHolder personViewHolder, int i) {
-        personViewHolder.bind(queues.get(i), listener);
+        personViewHolder.bind(queues.getQueueList().getQueues().get(i), listener);
     }
 
     @Override
@@ -70,11 +71,11 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
         void bind(Queue queue, ItemClickListener listener) {
             queueName.setText(queue.getName());
             queueDescription.setText(queue.getDescription());
-            queueLocation.setText("Адрес" /*queue.location*/);
-            queueRemaining.setText(Integer.toString(10/*queue.remaining*/) + " мин");
+            queueLocation.setText(queue.getAddress());
+            queueRemaining.setText(Integer.toString(queue.getWaitTime()) + " мин");
             queueTotal.setText(Integer.toString(queue.getUsersQuantity()) + " человек в очереди");
-            queueFront.setText(Integer.toString(2/*queue.frontOfYou*/) + " человек перед Вами");
-            cv.setOnClickListener(v -> listener.onItemClick(queue.getQid()));
+            queueFront.setText(Integer.toString(queue.getInFront()) + " человек перед Вами");
+            cv.setOnClickListener(v -> listener.onItemClick(queue));
         }
     }
 

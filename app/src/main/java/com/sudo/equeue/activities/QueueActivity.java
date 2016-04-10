@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -37,10 +38,11 @@ import java.util.Random;
 
 public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallback*/ {
 
-    public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.queue";
+    public static final String EXTRA_QUEUE = QueueApplication.prefix + ".extra.queue";
 
     private int joinQueueRequestId = -1;
     private int getQueueRequestId = -1;
+    private int leaveQueueRequestId = -1;
 
     private Queue queue;
     private Button joinButton;
@@ -49,10 +51,10 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
 //    private GoogleMap mMap;
 //    private Marker mMapMaker;
 
-    private ProgressBar toolbarProgressBar;
-    private ProgressBar statsInQueueProgressbar;
-    private ProgressBar statsBeforeProgressbar;
-    private ProgressBar statsTimeProgressbar;
+//    private ProgressBar toolbarProgressBar;
+//    private ProgressBar statsInQueueProgressbar;
+//    private ProgressBar statsBeforeProgressbar;
+//    private ProgressBar statsTimeProgressbar;
     private ProgressBar buttonProgressbar;
 
     private TextView statsInQueue;
@@ -67,40 +69,63 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        }
 
-
-        toolbarProgressBar = (ProgressBar) toolbar.findViewById(R.id.toolbar_loader);
-        toolbarProgressBar.setVisibility(View.VISIBLE);
+//        toolbarProgressBar = (ProgressBar) toolbar.findViewById(R.id.toolbar_loader);
+//        toolbarProgressBar.setVisibility(View.VISIBLE);
 
         buttonProgressbar = (ProgressBar) findViewById(R.id.button_loader);
 
-        statsInQueueProgressbar = (ProgressBar) findViewById(R.id.stats_in_queue_loader);
-        statsBeforeProgressbar = (ProgressBar) findViewById(R.id.stats_before_loader);
-        statsTimeProgressbar = (ProgressBar) findViewById(R.id.stats_time_loader);
+//        statsInQueueProgressbar = (ProgressBar) findViewById(R.id.stats_in_queue_loader);
+//        statsBeforeProgressbar = (ProgressBar) findViewById(R.id.stats_before_loader);
+//        statsTimeProgressbar = (ProgressBar) findViewById(R.id.stats_time_loader);
 
         if (savedInstanceState == null) {
-            int qid = getIntent().getIntExtra(EXTRA_QUEUE_ID, -1);
-            if (qid == -1) {
-                throw new AssertionError("No queue id in intent");
+            queue = (Queue) getIntent().getSerializableExtra(EXTRA_QUEUE);
+            if (queue == null) {
+                throw new AssertionError("No queue in intent");
             }
-            getQueueRequestId = getServiceHelper().getQueue(qid);
+            getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
+        } else {
+//            TODO: restore from savedInstanceState
         }
 
-        joinButton = (Button) findViewById(R.id.btn_join_queue);
-        joinButton.setEnabled(false);
-        joinButton.setText("");
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setTitle(queue.getName());
+        }
+
+//        joinButton.setEnabled(false);
+//        joinButton.setText("");
 
         swipeRefreshLayout = (StaticSwipeRefreshLayout) findViewById(R.id.refresh_queue_list);
-        swipeRefreshLayout.setOnRefreshListener(() -> getQueueRequestId = getServiceHelper().getQueue(queue.getQid()));
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (queue != null) {
+                getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
+            }
+        });
 
         ticketView = (ViewGroup) findViewById(R.id.ticket);
         statsInQueue = (TextView) findViewById(R.id.stats_in_queue);
         statsBefore = (TextView) findViewById(R.id.stats_before);
         statsTime = (TextView) findViewById(R.id.stats_time_left);
+
+        statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
+        statsBefore.setText(Integer.toString(queue.getInFront()));
+        statsTime.setText(Integer.toString(queue.getWaitTime()));
+
+        joinButton = (Button) findViewById(R.id.btn_join_queue);
+        if (queue.IsIn()) {
+            joinButton.setText("Покинуть");
+            joinButton.setOnClickListener((v) -> leaveQueue());
+
+            ticketView.setVisibility(View.VISIBLE);
+        } else {
+            joinButton.setOnClickListener((v) -> joinQueue());
+        }
 
 //        MapView mapView = (MapView) findViewById(R.id.lite_map);
 //        mapView.onCreate(null);
@@ -112,47 +137,30 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
         this.queue = newQueue;
         swipeRefreshLayout.setRefreshing(false);
 
-        toolbarProgressBar.setVisibility(View.GONE);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle(queue.getName());
-        }
+//        toolbarProgressBar.setVisibility(View.GONE);
+//        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setDisplayShowTitleEnabled(true);
+//            getSupportActionBar().setTitle(queue.getName());
+//        }
 
-        statsInQueueProgressbar.setVisibility(View.GONE);
-        statsInQueue.setVisibility(View.VISIBLE);
+//        statsInQueueProgressbar.setVisibility(View.GONE);
+//        statsInQueue.setVisibility(View.VISIBLE);
         statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
 
-        statsBeforeProgressbar.setVisibility(View.GONE);
-        statsBefore.setVisibility(View.VISIBLE);
-        statsBefore.setText(Integer.toString((new Random()).nextInt(50)));
+//        statsBeforeProgressbar.setVisibility(View.GONE);
+//        statsBefore.setVisibility(View.VISIBLE);
+        statsBefore.setText(Integer.toString(queue.getInFront()));
 
-        statsTimeProgressbar.setVisibility(View.GONE);
-        statsTime.setVisibility(View.VISIBLE);
-        statsTime.setText(Integer.toString((new Random()).nextInt(59)));
+//        statsTimeProgressbar.setVisibility(View.GONE);
+//        statsTime.setVisibility(View.VISIBLE);
+        statsTime.setText(Integer.toString(queue.getWaitTime()));
 
-        buttonProgressbar.setVisibility(View.GONE);
-        joinButton.setEnabled(true);
-        joinButton.setText("Присоединиться");
-        joinButton.setOnClickListener((v) -> joinQueue());
+//        buttonProgressbar.setVisibility(View.GONE);
+//        joinButton.setEnabled(true);
+//        joinButton.setText("Присоединиться");
+//        joinButton.setOnClickListener((v) -> joinQueue());
 
-//        LatLng place = this.queue.getLatLng();
-//        if (place != null) {
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 15f));
-//            mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
-//            findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
-//        }
     }
-
-//    private void refreshQueueData() {
-//        if (queue.isIn()) {
-//            ((TextView) findViewById(R.id.ticket_num)).setText(Integer.toString(2));
-//            ((TextView) findViewById(R.id.ticket_time)).setText("28.03.2016 18:06");
-//        } else {
-//            ((TextView) findViewById(R.id.stats_in_queue)).setText(Integer.toString(queue.getUsersQuantity()));
-//            ((TextView) findViewById(R.id.stats_before)).setText(Integer.toString(2));
-//            ((TextView) findViewById(R.id.stats_time_left)).setText(Integer.toString(15));
-//        }
-//    }
 
     private void joinQueue() {
         joinButton.setEnabled(false);
@@ -162,35 +170,46 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
         joinQueueRequestId = getServiceHelper().joinQueue(queue.getQid());
     }
 
+    private void joinSuccess() {
+        buttonProgressbar.setVisibility(View.GONE);
+        joinButton.setEnabled(true);
+        joinButton.setText("Покинуть");
+        joinButton.setOnClickListener((v) -> leaveQueue());
+
+        Animation bottomUp = AnimationUtils.loadAnimation(QueueActivity.this, R.anim.bottom_up);
+        ticketView.startAnimation(bottomUp);
+        ticketView.setVisibility(View.VISIBLE);
+    }
+
+    private void joinFail() {
+        buttonProgressbar.setVisibility(View.GONE);
+        joinButton.setEnabled(true);
+        joinButton.setText("Присоединиться");
+    }
+
     private void leaveQueue() {
-
-        ticketView.animate()
-                .alpha(0f)
-                .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-
-                    }
-                });
-
         joinButton.setEnabled(false);
         joinButton.setText("");
         buttonProgressbar.setVisibility(View.VISIBLE);
-//
-//        joinQueueRequestId = getServiceHelper().joinQueue(queue.getQid());
+
+        leaveQueueRequestId = getServiceHelper().leaveQueue(queue.getQid());
     }
 
     private void leaveSuccess() {
-        ticketView.animate()
-                .alpha(0f)
-                .setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
+        AlphaAnimation fade_out = new AlphaAnimation(1.0f, 0.0f);
+        fade_out.setDuration(500);
+        fade_out.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationStart(Animation arg0) {
+            }
 
-                    }
-                });
+            public void onAnimationRepeat(Animation arg0) {
+            }
+
+            public void onAnimationEnd(Animation arg0) {
+                ticketView.setVisibility(View.GONE);
+            }
+        });
+        ticketView.startAnimation(fade_out);
 
         buttonProgressbar.setVisibility(View.GONE);
         joinButton.setEnabled(true);
@@ -198,24 +217,10 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
         joinButton.setOnClickListener((v) -> joinQueue());
     }
 
-    private void joinSuccess() {
-
-
+    private void leaveFail() {
         buttonProgressbar.setVisibility(View.GONE);
         joinButton.setEnabled(true);
         joinButton.setText("Покинуть");
-        joinButton.setOnClickListener((v) -> leaveQueue());
-
-
-
-//        loadingStop();
-//        joinButton.setVisibility(View.GONE);
-////        queueInfo.setVisibility(View.GONE);
-        Animation bottomUp = AnimationUtils.loadAnimation(QueueActivity.this, R.anim.bottom_up);
-        ticketView.startAnimation(bottomUp);
-        ticketView.setVisibility(View.VISIBLE);
-//        queue.setIsIn(true);
-//        refreshQueueData();
     }
 
     @Override
@@ -224,9 +229,9 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
             case android.R.id.home:
                 onBackPressed();
                 break;
-            case R.id.show_map:
-//                TODO: start map activity
-                break;
+//            case R.id.show_map:
+////                TODO: start map activity
+//                break;
         }
 
         return true;
@@ -235,9 +240,11 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == joinQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, null, obj -> joinSuccess(), null);
+            getServiceHelper().handleResponse(this, resultCode, data, null, obj -> joinSuccess(), this::joinFail);
         } else if (requestId == getQueueRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> getQueueSuccess((Queue) obj), null);
+        } else if (requestId == leaveQueueRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, null, obj -> leaveSuccess(), this::leaveFail);
         }
     }
 
@@ -247,12 +254,12 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
         overridePendingTransition(R.anim.close_slide_in, R.anim.close_slide_out);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.queue_page_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.queue_page_menu, menu);
+//        return true;
+//    }
 
 //    public void onMapReady(GoogleMap googleMap) {
 //        mMap = googleMap;

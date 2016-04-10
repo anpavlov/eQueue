@@ -101,8 +101,8 @@ public class Processor {
         return makeSimpleRequest(queueApi.loginEmail(email, password), NetService.RETURN_USER);
     }
 
-    public Bundle getQueue(int queueId) {
-        return makeSimpleRequest(queueApi.getQueue(queueId), NetService.RETURN_QUEUE);
+    public Bundle getQueue(String token, int queueId) {
+        return makeSimpleRequest(queueApi.getQueue(token, queueId), NetService.RETURN_QUEUE);
     }
 
     public Bundle isIn(String token, int queueId) {
@@ -135,6 +135,10 @@ public class Processor {
 
     public Bundle joinQueue(String token, int queueId) {
         return makeSimpleRequest(queueApi.joinQueue(token, queueId), null);
+    }
+
+    public Bundle leaveQueue(String token, int queueId) {
+        return makeSimpleRequest(queueApi.leaveQueue(token, queueId), null);
     }
 
     public Bundle updateGcmId(String token, String gcmid) {

@@ -27,6 +27,7 @@ public class NetService extends IntentService {
     public static final String ACTION_CALL_NEXT = QueueApplication.prefix + ".action.CALL_NEXT";
     public static final String ACTION_FIND_QUEUE = QueueApplication.prefix + ".action.FIND_QUEUE";
     public static final String ACTION_JOIN_QUEUE = QueueApplication.prefix + ".action.JOIN_QUEUE";
+    public static final String ACTION_LEAVE_QUEUE = QueueApplication.prefix + ".action.LEAVE_QUEUE";
     public static final String ACTION_CREATE_USER = QueueApplication.prefix + ".action.CREATE_USER";
     public static final String ACTION_UPDATE_USER = QueueApplication.prefix + ".action.UPDATE_USER";
     public static final String ACTION_MY_QUEUES = QueueApplication.prefix + ".action.MY_QUEUES";
@@ -99,7 +100,8 @@ public class NetService extends IntentService {
                 }
                 case ACTION_GET_QUEUE: {
                     final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
-                    handleGetQueue(queueId);
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleGetQueue(token, queueId);
                     break;
                 }
                 case ACTION_IS_IN: {
@@ -129,6 +131,12 @@ public class NetService extends IntentService {
                     final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     handleJoinQueue(token, queueId);
+                    break;
+                }
+                case ACTION_LEAVE_QUEUE: {
+                    final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleLeaveQueue(token, queueId);
                     break;
                 }
                 case ACTION_CREATE_USER: {
@@ -268,13 +276,13 @@ public class NetService extends IntentService {
         receiver.send(CODE_OK, bundle);
     }
 
-    private void handleGetQueue(int queueId) {
-        if (queueId == -1) {
+    private void handleGetQueue(String token, int queueId) {
+        if (token == null || token.equals("") || queueId == -1) {
             receiver.send(CODE_FAILED, null);
             return;
         }
 
-        Bundle bundle = processor.getQueue(queueId);
+        Bundle bundle = processor.getQueue(token, queueId);
         receiver.send(CODE_OK, bundle);
     }
 
@@ -352,6 +360,17 @@ public class NetService extends IntentService {
         }
 
         Bundle bundle = processor.joinQueue(token, queueId);
+//        receiver.send(result, null);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleLeaveQueue(String token, int queueId) {
+        if (token == null || token.equals("") || queueId == -1) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.leaveQueue(token, queueId);
 //        receiver.send(result, null);
         receiver.send(CODE_OK, bundle);
     }

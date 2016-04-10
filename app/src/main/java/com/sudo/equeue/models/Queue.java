@@ -5,39 +5,55 @@ import com.sudo.equeue.models.basic.PossibleError;
 
 import java.util.List;
 
-/**
- * Created by orange on 24.02.16.
- */
 public class Queue extends PossibleError {
 
     private int qid;
     private String name;
-    private String alias;
-    private boolean isIn;
+//    private String alias;
+//    private boolean isIn;
     private String description;
+    private int users_quantity;
+    private String address;
+    private int wait_time;
+    private int in_front;
     private String coords;
 
-//    private List<Integer> users;
-    private int users_quantity;
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getWaitTime() {
+        return wait_time;
+    }
+
+    public void setWaitTime(int wait_time) {
+        this.wait_time = wait_time;
+    }
+
+    public int getInFront() {
+        return in_front;
+    }
+
+    public boolean IsIn() { return in_front != -1; }
+
+    public void setInFront(int in_front) {
+        this.in_front = in_front;
+    }
 
     public int getUsersQuantity() {
         return users_quantity;
     }
 
-    public boolean isIn() {
-        return isIn;
-    }
-
-    public void setIsIn(boolean isIn) {
-        this.isIn = isIn;
-    }
-
-//    public List<Integer> getUserlist() {
-//        return users;
+//    public boolean isIn() {
+//        return isIn;
 //    }
 //
-//    public void setUserlist(List<Integer> userlist) {
-//        this.users = userlist;
+//    public void setIsIn(boolean isIn) {
+//        this.isIn = isIn;
 //    }
 
     public int getQid() {
@@ -54,14 +70,6 @@ public class Queue extends PossibleError {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
     }
 
     public String getDescription() {

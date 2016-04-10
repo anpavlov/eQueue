@@ -40,32 +40,15 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2"
+                        android:id="@+id/stats_in_queue"
+                        android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true">
+                        android:textSize="40sp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="1"
-                            android:id="@+id/stats_in_queue"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:textSize="40sp"
-                            android:visibility="visible"/>
-
-                        <ProgressBar
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:id="@+id/stats_in_queue_loader"
-                            android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true"
-                            android:indeterminate="false" />
-
-                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="100dp"
@@ -84,96 +67,106 @@
                 <!-- Before stat -->
                 <RelativeLayout
                     android:layout_centerHorizontal="true"
-                    android:background="@drawable/stats_background_circle_filled"
+                    android:background="@drawable/stats_background_circle"
                     android:layout_width="100dp"
                     android:layout_height="100dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:textColor="@android:color/white"
-                            android:id="@+id/stats_before"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:textSize="40sp"
-                            android:visibility="visible"
-                            android:text="6" />
-
-                        <ProgressBar
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:id="@+id/stats_before_loader"
-                            android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true"
-                            android:theme="@style/WhiteProgress"/>
-
-                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="перед\nвами"
+                        android:text="1"
+                        android:id="@+id/stats_before"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:textSize="40sp" />
+
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/stats_background_label"
+                        android:text="перед вами"
                         android:textColor="@android:color/white"
                         android:textAllCaps="true"
+                        android:layout_centerHorizontal="true"
                         android:gravity="center"
                         android:layout_alignParentBottom="true"
-                        android:layout_marginBottom="6dp"
-                        android:layout_centerHorizontal="true"
                         android:textSize="11dp" />
+
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:id="@+id/stats_before"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:textSize="40sp"-->
+                        <!--android:text="6" />-->
+
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="перед\nвами"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:textAllCaps="true"-->
+                        <!--android:gravity="center"-->
+                        <!--android:layout_alignParentBottom="true"-->
+                        <!--android:layout_marginBottom="4dp"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:textSize="11dp" />-->
 
                 </RelativeLayout>
 
                 <!-- Time left stat -->
                 <RelativeLayout
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/stats_background_circle_filled"
+                    android:background="@drawable/stats_background_circle"
                     android:layout_width="100dp"
                     android:layout_height="100dp">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="60dp"
-                        android:layout_centerVertical="true"
-                        android:layout_centerHorizontal="true">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:text="12"
-                            android:textColor="@android:color/white"
-                            android:id="@+id/stats_time_left"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:textSize="40sp"
-                            android:visibility="visible"/>
-
-                        <ProgressBar
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:id="@+id/stats_time_loader"
-                            android:layout_centerVertical="true"
-                            android:layout_centerHorizontal="true"
-                            android:theme="@style/WhiteProgress"/>
-
-                    </RelativeLayout>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="21"
+                        android:id="@+id/stats_time_left"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:textSize="40sp" />
+
+
+                    <TextView
+                        android:layout_width="100dp"
+                        android:layout_height="20dp"
+                        android:background="@drawable/stats_background_label"
                         android:text="минут"
                         android:textColor="@android:color/white"
                         android:textAllCaps="true"
-                        android:gravity="center"
                         android:layout_centerHorizontal="true"
+                        android:gravity="center"
                         android:layout_alignParentBottom="true"
-                        android:layout_marginBottom="14dp"
                         android:textSize="11dp" />
+
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="12"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:id="@+id/stats_time_left"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:layout_centerVertical="true"-->
+                        <!--android:textSize="40sp"-->
+                        <!--android:visibility="visible"/>-->
+                    <!-- -->
+                    <!--<TextView-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:text="минут"-->
+                        <!--android:textColor="@android:color/white"-->
+                        <!--android:textAllCaps="true"-->
+                        <!--android:gravity="center"-->
+                        <!--android:layout_centerHorizontal="true"-->
+                        <!--android:layout_below="@id/stats_time_left"-->
+                        <!--android:textSize="11dp" />-->
 
                 </RelativeLayout>
 
@@ -232,7 +225,7 @@
             <Button
                 android:id="@+id/btn_join_queue"
                 android:layout_alignParentBottom="true"
-                android:text="Открыть"
+                android:text="Присоединиться"
                 style="@style/FlatButton" />
 
             <ProgressBar
@@ -242,7 +235,8 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="17dp"
                 android:layout_centerHorizontal="true"
-                android:theme="@style/WhiteProgress"/>
+                android:theme="@style/WhiteProgress"
+                android:visibility="gone" />
 
         </RelativeLayout>
         </ScrollView>

@@ -83,7 +83,7 @@ public class QRCodeActivity extends NetBaseActivity {
     private void openQueue(Queue queue) {
         loadingStop();
         Intent intent = new Intent(this, QueueActivity.class);
-        intent.putExtra(QueueActivity.EXTRA_QUEUE_ID, queue.getQid());
+        intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
         startActivity(intent);
         finish();
     }
