@@ -6,6 +6,7 @@
 package com.sudo.equeue.activities;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
@@ -33,20 +34,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mCamera = camera;
         previewCallback = previewCb;
         autoFocusCallback = autoFocusCb;
-        /*
-         * Set camera to continuous focus if supported, otherwise use
-         * software auto-focus. Only works for API level >=9.
-         */
-        /*
-        Camera.Parameters parameters = camera.getParameters();
-        for (String f : parameters.getSupportedFocusModes()) {
-            if (f == Parameters.FOCUS_MODE_CONTINUOUS_PICTURE) {
-                mCamera.setFocusMode(Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                autoFocusCallback = null;
-                break;
-            }
-        }
-        */
 
         // Install a SurfaceHolder.Callback so we get notified when the
         // underlying surface is created and destroyed.
@@ -96,8 +83,11 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 int bufferSize = previewSize.width * previewSize.height * ImageFormat.getBitsPerPixel(imageFormat) / 8;
                 cameraBuffer = new byte[bufferSize];
 
-                // Hard code camera surface rotation 90 degs to match Activity view in portrait
-                mCamera.setDisplayOrientation(90);
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    mCamera.setDisplayOrientation(90);
+                } else {
+                    mCamera.setDisplayOrientation(0);
+                }
 
                 mCamera.setPreviewDisplay(mHolder);
                 mCamera.setPreviewCallbackWithBuffer(null);

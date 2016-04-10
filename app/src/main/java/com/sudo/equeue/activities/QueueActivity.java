@@ -19,14 +19,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
-//import com.google.android.gms.maps.CameraUpdateFactory;
-//import com.google.android.gms.maps.GoogleMap;
-//import com.google.android.gms.maps.MapView;
-//import com.google.android.gms.maps.OnMapReadyCallback;
-//import com.google.android.gms.maps.UiSettings;
-//import com.google.android.gms.maps.model.LatLng;
-//import com.google.android.gms.maps.model.Marker;
-//import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
@@ -36,7 +36,7 @@ import com.sudo.equeue.utils.StaticSwipeRefreshLayout;
 
 import java.util.Random;
 
-public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallback*/ {
+public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback {
 
     public static final String EXTRA_QUEUE = QueueApplication.prefix + ".extra.queue";
 
@@ -48,8 +48,8 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
     private Button joinButton;
     private ViewGroup ticketView;
     private StaticSwipeRefreshLayout swipeRefreshLayout;
-//    private GoogleMap mMap;
-//    private Marker mMapMaker;
+    private GoogleMap mMap;
+    private Marker mMapMaker;
 
 //    private ProgressBar toolbarProgressBar;
 //    private ProgressBar statsInQueueProgressbar;
@@ -127,10 +127,18 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
             joinButton.setOnClickListener((v) -> joinQueue());
         }
 
-//        MapView mapView = (MapView) findViewById(R.id.lite_map);
-//        mapView.onCreate(null);
-//        mapView.getMapAsync(this);
-//        mapView.setVisibility(View.GONE);
+        MapView mapView = (MapView) findViewById(R.id.lite_map);
+        mapView.onCreate(null);
+        mapView.getMapAsync(this);
+        mapView.setVisibility(View.GONE);
+
+//        LatLng place = queue.getLatLng();
+//        if (place != null) {
+//            LatLng move_place = new LatLng(place.latitude + 0.0001, place.longitude);
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(move_place, 15f));
+//            mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
+//            findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
+//        }
     }
 
     private void getQueueSuccess(Queue newQueue) {
@@ -159,6 +167,14 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
 //        joinButton.setEnabled(true);
 //        joinButton.setText("Присоединиться");
 //        joinButton.setOnClickListener((v) -> joinQueue());
+
+        LatLng place = this.queue.getLatLng();
+        if (place != null) {
+            LatLng move_place = new LatLng(place.latitude + 0.0001, place.longitude);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(move_place, 15f));
+            mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
+            findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -254,18 +270,18 @@ public class QueueActivity extends NetBaseActivity/* implements OnMapReadyCallba
         overridePendingTransition(R.anim.close_slide_in, R.anim.close_slide_out);
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.queue_page_menu, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.queue_page_menu, menu);
+        return true;
+    }
 
-//    public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
-//        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-//        UiSettings mUiSettings = mMap.getUiSettings();
-//        mUiSettings.setMapToolbarEnabled(false);
-//        mUiSettings.setAllGesturesEnabled(false);
-//    }
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        UiSettings mUiSettings = mMap.getUiSettings();
+        mUiSettings.setMapToolbarEnabled(false);
+        mUiSettings.setAllGesturesEnabled(false);
+    }
 }

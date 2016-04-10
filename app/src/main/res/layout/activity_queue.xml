@@ -25,8 +25,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <com.google.android.gms.maps.MapView
+                            android:id="@+id/lite_map"
+                            android:layout_width="match_parent"
+                            android:layout_height="130dp"
+                            map:liteMode="true"
+                            map:mapType="none" />
+
             <!-- Queue stats layout -->
             <RelativeLayout
+                android:layout_marginTop="60dp"
                 android:id="@+id/queue_stats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
