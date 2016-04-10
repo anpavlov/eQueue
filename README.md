@@ -1,7 +1,8 @@
 # eQueue
 
 dependencies:
-`pip install flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql python-gcm`
+`sudo apt-get install build-essential gfortran libatlas-base-dev`
+`pip install flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql python-gcm numpy scipy matplotlib scikit-learn pandas`
 
 
 #API Documentation
