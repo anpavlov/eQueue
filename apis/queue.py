@@ -10,7 +10,7 @@ from taran import tarantool_manager
 from taran.helper import NoResult
 from gcm.gcm import GCMNotRegisteredException
 from prediction import predict
-from map import class_resolver
+from map import class_resolver, categories
 
 queue_api = Blueprint('queue', __name__)
 
@@ -545,6 +545,17 @@ def delete():
         user = tarantool_manager.get_user_by_token(token)
     except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
+
+
+@queue_api.route("/tags/", methods=['GET'])
+def tags():
+    response = {
+        'code': 200,
+        'body': {
+            'tags': categories.categories
+        }
+    }
+    return json.dumps(response)
 
 
 
