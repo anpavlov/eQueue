@@ -55,17 +55,15 @@ public class AdminQueueActivity extends NetBaseActivity {
         }
 
         if (queueInfo == null) {
-            Toast.makeText(this, "Error: queue is null", Toast.LENGTH_LONG).show();
-            finish();
-        } else {
-            findViewById(R.id.btn_next).setOnClickListener(v -> callNext());
-
-            swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_queue_view);
-            swipeRefreshLayout.setOnRefreshListener(() -> {
-                refresh();
-            });
-            updateQueueView();
+           throw new AssertionError("Queue is null");
         }
+
+        findViewById(R.id.btn_next).setOnClickListener(v -> callNext());
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.refresh_queue_view);
+        swipeRefreshLayout.setOnRefreshListener(this::refresh);
+        updateQueueView();
+
     }
 
     private void refresh() {
@@ -90,6 +88,8 @@ public class AdminQueueActivity extends NetBaseActivity {
         ((TextView) findViewById(R.id.name)).setText(queueInfo.getName());
         ((TextView) findViewById(R.id.description)).setText(queueInfo.getDescription());
         ((TextView) findViewById(R.id.inqueue)).setText("в очереди\n" + Integer.toString(queueInfo.getUsersQuantity()));
+        ((TextView) findViewById(R.id.out_quantity)).setText("прошло\n" + Integer.toString(queueInfo.getPassed()));
+        ((TextView) findViewById(R.id.total_time)).setText(Integer.toString(queueInfo.getWaitTime()) + " минут");
         swipeRefreshLayout.setRefreshing(false);
     }
 
@@ -152,15 +152,13 @@ public class AdminQueueActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> {
                 queueInfo = (Queue) obj;
                 updateQueueView();
-            }, NetService.RETURN_QUEUE);
+            }, null);
         } else
         if (requestId == callRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
-                Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
-            }, null);
+            getServiceHelper().handleResponse(this, resultCode, data, null, obj -> Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show(), null);
         }
     }
 }

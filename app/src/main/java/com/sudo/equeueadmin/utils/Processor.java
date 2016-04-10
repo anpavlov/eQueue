@@ -101,8 +101,8 @@ public class Processor {
         return makeSimpleRequest(queueApi.loginEmail(email, password), NetService.RETURN_USER);
     }
 
-    public Bundle getQueue(int queueId) {
-        return makeSimpleRequest(queueApi.getQueue(queueId), NetService.RETURN_QUEUE);
+    public Bundle getQueue(String token, int queueId) {
+        return makeSimpleRequest(queueApi.getQueue(token, queueId), NetService.RETURN_QUEUE);
     }
 
     public Bundle saveQueue(String token, Queue queue) {

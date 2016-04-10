@@ -21,7 +21,6 @@ public class StartActivity extends NetBaseActivity {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
-    private int createUserRequestId = -1;
     private int checkTokenRequestId = -1;
 
     private SharedPreferences prefs;
@@ -78,28 +77,28 @@ public class StartActivity extends NetBaseActivity {
         if (isValid.isValid()) {
             startApp();
         } else {
+            prefs.edit().remove(QueueApplication.PREFS_USER_TOKEN_KEY).commit();
             startLogin();
         }
     }
 
-//    TODO: вынести инициализацию юзера в Application
-    private void initUserPref(User user) {
-        if (user != null && user.getToken() != null && !user.getToken().equals("")) {
-            prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
-            prefs.edit()
-                    .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
-                    .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
-                    .commit();
-            startApp();
-        } else {
-            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    private void initUserPref(User user) {
+//        if (user != null && user.getToken() != null && !user.getToken().equals("")) {
+//            prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
+//            prefs.edit()
+//                    .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
+//                    .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
+//                    .commit();
+//            startApp();
+//        } else {
+//            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == checkTokenRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> isValidToken((IsTokenOkModel) obj), NetService.RETURN_IS_TOKEN_OK);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_IS_TOKEN_OK, obj -> isValidToken((IsTokenOkModel) obj), null);
         }
     }
 }

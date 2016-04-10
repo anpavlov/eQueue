@@ -1,6 +1,8 @@
 package com.sudo.equeueadmin.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
@@ -18,9 +20,11 @@ import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.models.QueueList;
+import com.sudo.equeueadmin.utils.QueueApplication;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 
 public class MainActivity extends NetBaseActivity {
@@ -106,30 +110,34 @@ public class MainActivity extends NetBaseActivity {
         startActivity(intent);
     }
 
-    //    TODO: вынести инициализацию юзера в Application
-//    private void initUserPref(User user) {
-//        if (user != null && user.getToken() != null && !user.getToken().equals("")) {
-//            prefs.edit()
-//                    .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
-//                    .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
-//                    .commit();
-//        } else {
-//            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((Queue) obj), NetService.RETURN_QUEUE);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> openQueue((Queue) obj), null);
         } else
         if (requestId == getQueueListRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> updateQueueList((QueueList) obj), NetService.RETURN_QUEUE_LIST);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE_LIST, obj -> updateQueueList((QueueList) obj), null);
         }
     }
 
     private void onAddCLick() {
         Intent intent = new Intent(this, CreateQueueActivity.class);
+        startActivity(intent);
+    }
+
+//    private void openProfile() {
+//        startActivity(new Intent(this, ProfileActivity.class));
+//    }
+
+    private void logout() {
+        SharedPreferences prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
+        prefs.edit()
+                .remove(QueueApplication.PREFS_USER_TOKEN_KEY)
+                .remove(QueueApplication.PREFS_USER_ID_KEY)
+                .remove(QueueApplication.PREFS_USER_IS_LOGGED_IN)
+                .commit();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
@@ -145,11 +153,15 @@ public class MainActivity extends NetBaseActivity {
         switch (item.getItemId()) {
             case R.id.action_add:
                 onAddCLick();
-                break;
-            default:
-                break;
+                return true;
+//            case R.id.profile:
+//                openProfile();
+//                return true;
+            case R.id.logout:
+                logout();
+                return true;
         }
 
-        return true;
+        return false;
     }
 }

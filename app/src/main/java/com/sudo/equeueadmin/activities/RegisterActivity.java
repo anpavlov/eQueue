@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -57,24 +58,23 @@ public class RegisterActivity extends NetBaseActivity {
 
     private void startApp() {
         Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish();
     }
 
-    //    TODO: вынести инициализацию юзера в Application
     private void initUserPref(User user) {
 //        ((QueueApplication) getApplicationContext()).
         if (user != null && user.getToken() != null && !user.getToken().equals("")) {
             SharedPreferences prefs = getSharedPreferences(QueueApplication.APP_PREFS, Context.MODE_PRIVATE);
             prefs.edit()
                     .putString(QueueApplication.PREFS_USER_TOKEN_KEY, user.getToken())
-                    .putString(QueueApplication.PREFS_USER_NAME, user.getUsername())
-                    .putString(QueueApplication.PREFS_USER_EMAIL, user.getEmail())
+//                    .putString(QueueApplication.PREFS_USER_NAME, user.getUsername())
+//                    .putString(QueueApplication.PREFS_USER_EMAIL, user.getEmail())
                     .putInt(QueueApplication.PREFS_USER_ID_KEY, user.getUid())
                     .putBoolean(QueueApplication.PREFS_USER_IS_LOGGED_IN, true)
                     .commit();
-            setResult(RESULT_OK, null);
+//            setResult(RESULT_OK, null);
             startApp();
         } else {
             Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
@@ -93,7 +93,7 @@ public class RegisterActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == createUserRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> initUserPref((User) obj), NetService.RETURN_USER);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_USER, obj -> initUserPref((User) obj), null);
         }
     }
 }

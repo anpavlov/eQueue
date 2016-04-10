@@ -51,6 +51,7 @@
         <activity android:name=".activities.CreateQueueActivity" />
         <activity android:name=".activities.AdminQueueActivity" />
         <activity android:name=".activities.EditQueueActivity" />
+        <activity android:name=".activities.WebViewActivity" />
         <activity android:name=".activities.MapActivity" />
         <activity android:name=".activities.QueueTerminalActivity"
             android:screenOrientation="landscape">

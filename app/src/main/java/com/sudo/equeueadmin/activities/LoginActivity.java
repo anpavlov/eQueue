@@ -25,16 +25,16 @@ public class LoginActivity extends NetBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Авторизация");
-        }
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+//        setSupportActionBar(toolbar);
+//        if (getSupportActionBar() != null) {
+////            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            getSupportActionBar().setTitle("Авторизация");
+//        }
 
         findViewById(R.id.btn_login_email).setOnClickListener(v -> loginViaEmail());
         findViewById(R.id.btn_register).setOnClickListener(v -> register());
-//        findViewById(R.id.btn_login_vk).setOnClickListener(v -> loginViaVk());
+        findViewById(R.id.btn_vkauth).setOnClickListener(v -> loginViaVk());
     }
 
     private void loginViaEmail() {
@@ -62,26 +62,26 @@ public class LoginActivity extends NetBaseActivity {
         finish();
     }
 
-//    private void loginViaVk() {
-//        Intent intent = new Intent(this, WebViewActivity.class);
-//        startActivityForResult(intent, WEB_VIEW_REQUEST_ID);
-//    }
+    private void loginViaVk() {
+        Intent intent = new Intent(this, WebViewActivity.class);
+        startActivityForResult(intent, 1234);
+    }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (requestCode == WEB_VIEW_REQUEST_ID) {
-//            if (data == null || resultCode != RESULT_OK) {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1234) {
+            if (data == null || resultCode != RESULT_OK) {
 //                Toast.makeText(this, "Error while logging", Toast.LENGTH_SHORT).show();
-//            } else {
-//                int vkuid = data.getIntExtra(WebViewActivity.EXTRA_VKUID, -1);
-//                if (vkuid == -1) {
-//                    Toast.makeText(this, "Error while logging", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    loginRequestId = getServiceHelper().loginVk(vkuid);
-//                }
-//            }
-//        }
-//    }
+            } else {
+                int vkuid = data.getIntExtra(WebViewActivity.EXTRA_VKUID, -1);
+                if (vkuid == -1) {
+                    Toast.makeText(this, "Error while logging", Toast.LENGTH_SHORT).show();
+                } else {
+                    loginRequestId = getServiceHelper().loginVk(vkuid);
+                }
+            }
+        }
+    }
 
     //    TODO: вынести инициализацию юзера в Application
     private void initUserPref(User user) {
@@ -101,7 +101,7 @@ public class LoginActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == loginRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> initUserPref((User) obj), NetService.RETURN_USER);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_USER, obj -> initUserPref((User) obj), null);
         }
     }
 }

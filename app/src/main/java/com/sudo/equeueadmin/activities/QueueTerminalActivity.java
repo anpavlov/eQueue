@@ -149,14 +149,14 @@ public class QueueTerminalActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getQueueRequestId || requestId == getRefreshQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> {
                 queueInfo = (Queue) obj;
                 updateQueueView();
-            }, NetService.RETURN_QUEUE);
+            }, null);
         } else if (requestId == createUserRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> joinQueue((User) obj), NetService.RETURN_USER);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_USER, obj -> joinQueue((User) obj), null);
         } if (requestId == joinRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> {
 
                 findViewById(R.id.bar_code).setVisibility(View.GONE);
 
@@ -168,7 +168,7 @@ public class QueueTerminalActivity extends NetBaseActivity {
 
                 getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
 
-            }, NetService.RETURN_QUEUE);
+            }, null);
 
         }
     }

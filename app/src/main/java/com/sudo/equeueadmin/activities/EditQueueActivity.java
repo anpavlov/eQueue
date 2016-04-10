@@ -80,7 +80,7 @@ public class EditQueueActivity extends NetBaseActivity {
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == saveInfoRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, obj -> {
+            getServiceHelper().handleResponse(this, resultCode, data, null, obj -> {
                 Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent();
                 intent.putExtra(AdminQueueActivity.EXTRA_QUEUE, queueInfo);

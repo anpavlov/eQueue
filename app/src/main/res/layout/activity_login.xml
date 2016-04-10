@@ -7,10 +7,11 @@
     android:orientation="vertical"
     android:background="@color/mainColor">
 
-    <include layout="@layout/toolbar"/>
+    <!--<include layout="@layout/toolbar"/>-->
 
     <ImageView
         android:id="@+id/logo"
+
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:src="@drawable/trans_eq"
@@ -52,6 +53,14 @@
         android:layout_height="wrap_content"
         android:background="@drawable/button_white"
         android:text="Зарегистрироваться"
+        android:layout_marginTop="10dp"/>
+
+    <Button
+        android:id="@+id/btn_vkauth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_white"
+        android:text="Войти через ВК"
         android:layout_marginTop="10dp"/>
 
 </LinearLayout>

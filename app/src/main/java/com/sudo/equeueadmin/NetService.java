@@ -98,8 +98,9 @@ public class NetService extends IntentService {
                     break;
                 }
                 case ACTION_GET_QUEUE: {
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
                     final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
-                    handleGetQueue(queueId);
+                    handleGetQueue(token, queueId);
                     break;
                 }
                 case ACTION_SAVE_QUEUE: {
@@ -272,13 +273,13 @@ public class NetService extends IntentService {
         receiver.send(CODE_OK, bundle);
     }
 
-    private void handleGetQueue(int queueId) {
-        if (queueId == -1) {
+    private void handleGetQueue(String token, int queueId) {
+        if (token == null || token.equals("") || queueId == -1) {
             receiver.send(CODE_FAILED, null);
             return;
         }
 
-        Bundle bundle = processor.getQueue(queueId);
+        Bundle bundle = processor.getQueue(token, queueId);
         receiver.send(CODE_OK, bundle);
     }
 

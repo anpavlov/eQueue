@@ -76,23 +76,31 @@ public class ServiceHelper implements ServiceCallbackListener {
 //    ======= Public custom methods to call from activities =========
 //    ===============================================================
 
-    public interface HandleCallbackIntf {
-        void call(Object obj);
+    public interface HandleSuccessCallbackIntf {
+        void call(Serializable obj);
     }
 
-    public void handleResponse(Context context, int resultCode, Bundle data, HandleCallbackIntf callback, String returnKey) {
+    public interface HandleFailCallbackIntf {
+        void call();
+    }
+
+    public void handleResponse(Context context, int resultCode, Bundle data, String returnKey, HandleSuccessCallbackIntf successCallback, HandleFailCallbackIntf failCallback) {
         if (resultCode == NetService.CODE_OK) {
             if (data.getInt(NetService.RETURN_CODE) == NetService.CODE_OK) {
                 if (returnKey != null) {
-                    callback.call(data.get(returnKey));
+                    successCallback.call(data.getSerializable(returnKey));
                 } else {
-                    callback.call(null);
+                    successCallback.call(null);
                 }
             } else {
+                if (failCallback != null) {
+                    failCallback.call();
+                }
                 Toast.makeText(context, data.getString(NetService.ERROR_MSG, context.getString(R.string.error_msg_unknown)), Toast.LENGTH_LONG).show();
             }
         } else {
-            Toast.makeText(context, "Error in arguments", Toast.LENGTH_LONG).show();
+            throw new AssertionError("Error in arguments");
+//            Toast.makeText(context, "Error in arguments", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -180,8 +188,8 @@ public class ServiceHelper implements ServiceCallbackListener {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_GET_QUEUE, requestId);
 
-//        String token = prefs.getString(TOKEN_KEY, null);
-//        i.putExtra(NetService.EXTRA_TOKEN, token);
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
         i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
 
         application.startService(i);

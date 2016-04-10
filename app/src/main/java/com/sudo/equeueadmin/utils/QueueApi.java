@@ -63,8 +63,9 @@ public interface QueueApi {
     @POST("/api/queue/create/")
     Call<ResponseBase<Queue>> createQueue(@Field("token") String token, @Field("name") String name, @Field("description") String desc);
 
-    @GET("/api/queue/info/")
-    Call<ResponseBase<Queue>> getQueue(@Query("qid") int qid);
+    @FormUrlEncoded
+    @POST("/api/queue/info-admin/")
+    Call<ResponseBase<Queue>> getQueue(@Field("token") String token, @Field("qid") int qid);
 
     @FormUrlEncoded
     @POST("/api/queue/update/")

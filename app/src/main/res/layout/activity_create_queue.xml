@@ -7,45 +7,44 @@
 
     <include layout="@layout/toolbar" />
 
-    <LinearLayout
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:id="@+id/name_field"
+        android:hint="Название"
+        style="@style/FullWidthEditText"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"/>
 
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/name_field"
-            android:hint="Название"
-            style="@style/FullWidthEditText"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textMultiLine"
+        android:hint="Описание"
+        android:ems="10"
+        android:id="@+id/description_field"
+        style="@style/FullWidthEditText"/>
 
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textMultiLine"
-            android:hint="Описание"
-            android:ems="10"
-            android:id="@+id/description_field"
-            style="@style/FullWidthEditText"/>
+    <Spinner
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tags_spinner"
+        android:layout_gravity="center_horizontal" />
 
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Создать"
-            android:id="@+id/btn_create"
-            android:shadowRadius="0"
-            android:textColor="@android:color/white"
-            android:background="@drawable/button_custom"/>
-
-    </LinearLayout>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Создать"
+        android:id="@+id/btn_create"
+        android:shadowRadius="0"
+        android:textColor="@android:color/white"
+        android:background="@drawable/button_custom"/>
 
 </LinearLayout>

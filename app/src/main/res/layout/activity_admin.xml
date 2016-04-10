@@ -53,15 +53,7 @@
 
 
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Следующий"
-                android:id="@+id/btn_next"
-                android:shadowRadius="0"
-                android:textColor="@android:color/white"
-                android:background="@drawable/button_custom"/>
+
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -96,7 +88,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:background="@drawable/grid_box"
-                    android:text="15 минут"
+                    android:text="0 минут"
                     android:textColor="@android:color/white"
                     android:layout_alignParentRight="true"
                     android:drawableTop="@drawable/clock"
@@ -105,6 +97,15 @@
                     android:gravity="center_horizontal"/>
             </RelativeLayout>
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Следующий"
+                android:id="@+id/btn_next"
+                android:shadowRadius="0"
+                android:textColor="@android:color/white"
+                android:background="@drawable/button_custom"/>
 
 
         </LinearLayout>
