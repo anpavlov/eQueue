@@ -70,7 +70,6 @@ public class Queue extends PossibleError {
         this.description = description;
     }
 
-
     public String getCoords() {
         return coords;
     }

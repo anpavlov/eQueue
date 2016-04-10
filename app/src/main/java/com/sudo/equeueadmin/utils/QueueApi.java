@@ -73,6 +73,11 @@ public interface QueueApi {
                                                 @Field("name") String name, @Field("description") String description);
 
     @FormUrlEncoded
+    @POST("/api/queue/update/")
+    Call<ResponseBase<PossibleError>> saveCoords(@Field("token") String token, @Field("qid") int qid,
+                                                @Field("coords") String coords);
+
+    @FormUrlEncoded
     @POST("/api/queue/call/")
     Call<ResponseBase<PossibleError>> callNext(@Field("token") String token, @Field("qid") int qid);
 
