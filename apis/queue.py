@@ -427,11 +427,17 @@ def in_queue():
             return json.dumps(responses.ACCESS_DENIED)
         stands = standings.select(queue[0]['id'], index='qid')
         users = [u[1] for u in stands]
+        in_front = tarantool_manager.get_user_position(q_id, user['id'])
+        if in_front > 0:
+            in_front -= 1
         info.append({
             'qid': queue[0]['id'],
             'name': queue[0]['name'],
             'description': queue[0]['description'],
-            'users_quantity': len(users)
+            'users_quantity': len(users),
+            'address': 'lorem ipsum',  # TODO: get address string
+            'wait_time': predict.predict(),
+            'in_front': in_front
         })
 
 
