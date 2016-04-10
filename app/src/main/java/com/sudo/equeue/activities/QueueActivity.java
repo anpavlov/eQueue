@@ -57,6 +57,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //    private ProgressBar statsTimeProgressbar;
     private ProgressBar buttonProgressbar;
 
+    private TextView ticketNum;
     private TextView statsInQueue;
     private TextView statsBefore;
     private TextView statsTime;
@@ -109,6 +110,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         });
 
         ticketView = (ViewGroup) findViewById(R.id.ticket);
+        ticketNum = (TextView) findViewById(R.id.ticket_num);
         statsInQueue = (TextView) findViewById(R.id.stats_in_queue);
         statsBefore = (TextView) findViewById(R.id.stats_before);
         statsTime = (TextView) findViewById(R.id.stats_time_left);
@@ -116,6 +118,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
         statsBefore.setText(Integer.toString(queue.getInFront()));
         statsTime.setText(Integer.toString(queue.getWaitTime()));
+        ticketNum.setText(Integer.toString(queue.getInFront() + 1));
 
         joinButton = (Button) findViewById(R.id.btn_join_queue);
         if (queue.IsIn()) {
@@ -158,6 +161,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //        statsBeforeProgressbar.setVisibility(View.GONE);
 //        statsBefore.setVisibility(View.VISIBLE);
         statsBefore.setText(Integer.toString(queue.getInFront()));
+        ticketNum.setText(Integer.toString(queue.getInFront() + 1));
 
 //        statsTimeProgressbar.setVisibility(View.GONE);
 //        statsTime.setVisibility(View.VISIBLE);
@@ -270,12 +274,12 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         overridePendingTransition(R.anim.close_slide_in, R.anim.close_slide_out);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.queue_page_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.queue_page_menu, menu);
+//        return true;
+//    }
 
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

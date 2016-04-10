@@ -202,11 +202,11 @@
 
                     android:minHeight="324dp"
                     android:id="@+id/ticket"
-                    android:visibility="gone">
+                    android:visibility="visible">
                     <ImageView
-                        android:layout_width="300dp"
+                        android:layout_width="230dp"
                         android:layout_height="324dp"
-                        android:src="@drawable/ticket"
+                        android:src="@drawable/ticket2"
                         android:layout_centerHorizontal="true"
                         android:scaleType="fitXY" />
                     <TextView
@@ -215,14 +215,14 @@
                         android:layout_height="wrap_content"
                         android:text="17"
                         android:textColor="@color/mainColor"
-                        android:layout_marginTop="80dp"
+                        android:layout_marginTop="70dp"
                         android:layout_centerHorizontal="true"
                         android:textSize="25pt" />
                     <TextView
                         android:id="@+id/ticket_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="90dp"
+
                         android:text="2016 03/02 12:34"
                         android:layout_centerHorizontal="true"
                         android:layout_below="@id/ticket_num"/>
