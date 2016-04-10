@@ -168,7 +168,7 @@ def info_user():
             'description': q['description'],
             'date_opened': int(q['created']),
             'users_quantity': len(users),
-            'address': 'lorem ipsum',  # TODO: get address string
+            'address': class_resolver.get_address_by_coords(q['coords']),
             'wait_time': predict.predict(),
             'in_front': in_front
         }
@@ -218,7 +218,7 @@ def info_admin():
             'description': q['description'],
             'date_opened': int(q['created']),
             'users_quantity': len(users),
-            'address': 'lorem ipsum',  # TODO: get address string
+            'address': class_resolver.get_address_by_coords(q['coords']),  # TODO: get address string
             'wait_time': predict.predict(),
             'passed': len(passed)
         }
@@ -435,7 +435,7 @@ def in_queue():
             'name': queue[0]['name'],
             'description': queue[0]['description'],
             'users_quantity': len(users),
-            'address': 'lorem ipsum',  # TODO: get address string
+            'address': class_resolver.get_address_by_coords(queue[0]['coords']),
             'wait_time': predict.predict(),
             'in_front': in_front
         })
