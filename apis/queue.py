@@ -501,9 +501,9 @@ def leave():
     else:
         #  means user was not in the queue
         response = {
-            'code': 200,
+            'code': 400,
             'body': {
-                'status': 0
+                'error': 'not in this queue'
             }
         }
         return json.dumps(response)
