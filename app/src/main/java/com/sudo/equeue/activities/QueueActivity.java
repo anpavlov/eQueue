@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -38,6 +39,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 
     private int joinQueueRequestId = -1;
     private int getQueueRequestId = -1;
+    int screenWidth;
 
     private Queue queue;
     private Button joinButton;
@@ -137,7 +139,8 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 
         LatLng place = this.queue.getLatLng();
         if (place != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place, 15f));
+            LatLng move_place = new LatLng(place.latitude + 0.0001, place.longitude);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(move_place, 15f));
             mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
             findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
         }
@@ -217,8 +220,13 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        screenWidth = displaymetrics.widthPixels;
+
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setPadding(0,0,0,80);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setMapToolbarEnabled(false);
         mUiSettings.setAllGesturesEnabled(false);

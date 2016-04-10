@@ -10,32 +10,20 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="40dp">
-
-        <TextView
-            android:id="@+id/scanDesc"
-            android:text="Наведите камеру на QR-код очереди"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textColor="@android:color/black"
-            android:layout_above="@+id/cameraPreview"
-            android:layout_marginBottom="40dp"
-            android:layout_centerHorizontal="true"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+        android:layout_marginTop="30dp">
 
         <FrameLayout
             android:id="@+id/cameraPreview"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:layout_gravity="center"
             android:background="@color/colorPrimary"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true" />
 
         <View
             android:id="@+id/myRectangleView"
-            android:layout_width="312dp"
-            android:layout_height="312dp"
+            android:layout_width="262dp"
+            android:layout_height="262dp"
             android:layout_gravity="center"
             android:background="@drawable/border_cam"
             android:layout_centerInParent="true"/>
@@ -46,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="5dp"
             android:textColor="@android:color/black"
             android:layout_below="@+id/cameraPreview"
             android:layout_centerHorizontal="true"
