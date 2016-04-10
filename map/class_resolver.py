@@ -20,6 +20,8 @@ def get_class_by_coords(coords):
 
 
 def get_address_by_coords(coords):
+    if coords == [0, 0]:
+        return 'Неизвестно'
     r = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json?location={},{}&radius=50&language=ru&key={}'.
                      format(coords[0], coords[1], settings.GOOGLE_PLACE_ID))
     res = r.json()
