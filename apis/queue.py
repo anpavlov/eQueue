@@ -47,7 +47,9 @@ def create():
     response = {
         'code': 200,
         'body': {
-            'qid': q['id']
+            'qid': q['id'],
+            'name': name,
+            'description': description,
         }
     }
     return json.dumps(response)
