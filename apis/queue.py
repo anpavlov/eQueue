@@ -381,7 +381,7 @@ def find_near():
                     'description': queue['description'],
                     'coords': str(queue['coords'][0]) + ',' + str(queue['coords'][1]),
                     'users_quantity': len(users),
-                    'address': class_resolver.get_address_by_coords(q['coords'])
+                    'address': class_resolver.get_address_by_coords(map(int, q['coords']))
                 }
             )
     else:
