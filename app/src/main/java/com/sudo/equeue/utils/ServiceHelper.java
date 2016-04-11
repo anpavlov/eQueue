@@ -263,6 +263,15 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
+    public int getNearQueues(String coords) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_FIND_NEAR_QUEUES, requestId);
+
+        i.putExtra(NetService.EXTRA_COORDS, coords);
+        application.startService(i);
+        return requestId;
+    }
+
     public int myQueues() {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_MY_QUEUES, requestId);

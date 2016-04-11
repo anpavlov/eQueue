@@ -68,7 +68,13 @@
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activities.QRCodeActivity" >
         </activity>
-        <activity android:name=".activities.QueueActivity" >
+
+
+        <activity android:name=".activities.QueueActivity">
+        </activity>
+
+        <activity android:name=".activities.FindNearActivity" >
+
         </activity>
         <!--<activity android:name=".activities.QueueViewerActivity" >-->
         <!--</activity>-->

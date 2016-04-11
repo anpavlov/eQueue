@@ -80,6 +80,9 @@ public interface QueueApi {
     @GET("/api/queue/find/")
     Call<ResponseBase<QueueList>> findQueue(@Query("query") String query);
 
+    @GET("/api/queue/find_near/")
+    Call<ResponseBase<QueueList>> findNearQueues(@Query("coords") String coords);
+
     @FormUrlEncoded
     @POST("/api/queue/join/")
     Call<ResponseBase<PossibleError>> joinQueue(@Field("token") String token, @Field("qid") int qid);
