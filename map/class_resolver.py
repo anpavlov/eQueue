@@ -13,7 +13,7 @@ def get_class_by_coords(coords):
             for category in result['types']:
                 if category in categories.categories:
                     return category
-    except KeyError:
+    except (KeyError, IndexError):
         return -1
 
     return 'undefined'
@@ -27,6 +27,6 @@ def get_address_by_coords(coords):
     res = r.json()
     try:
         resp = res['results'][0]['name']
-    except KeyError:
+    except (KeyError, IndexError):
         return 'Неизвестно'
     return resp
