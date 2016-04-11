@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,6 +51,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     private StaticSwipeRefreshLayout swipeRefreshLayout;
     private GoogleMap mMap;
     private Marker mMapMaker;
+    int screenWidth;
 
 //    private ProgressBar toolbarProgressBar;
 //    private ProgressBar statsInQueueProgressbar;
@@ -278,8 +280,13 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     }
 
     public void onMapReady(GoogleMap googleMap) {
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        screenWidth = displaymetrics.widthPixels;
+
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        mMap.setPadding(0,0,0,80);
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setMapToolbarEnabled(false);
         mUiSettings.setAllGesturesEnabled(false);

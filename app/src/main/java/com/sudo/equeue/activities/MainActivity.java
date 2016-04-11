@@ -138,30 +138,6 @@ public class MainActivity extends NetBaseActivity {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(() -> getMyQueuesRequestId = getServiceHelper().meInQueues());
 
-//        ========== Location ============
-        int minTime = 5000;
-        float minDistance = 5;
-        MyLocationListener myLocListener = new MyLocationListener();
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-        Criteria criteria = new Criteria();
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setCostAllowed(true);
-        criteria.setSpeedRequired(false);
-
-        String bestProvider = locationManager.getBestProvider(criteria, false);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            return;
-        }
-
-        locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
-//        ===============================
-
         updateView();
     }
 
@@ -239,7 +215,8 @@ public class MainActivity extends NetBaseActivity {
         });
 
         txtNearby.setOnClickListener(v -> {
-            // search nearby queues
+            Intent intent = new Intent(MainActivity.this, FindNearActivity.class);
+            startActivity(intent);
             mBottomSheetDialog.dismiss();
         });
 
@@ -285,32 +262,5 @@ public class MainActivity extends NetBaseActivity {
 //        else if (requestId == isInQueueRequestId) {
 //            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((IsInModel) obj), NetService.RETURN_IS_IN);
 //        }
-    }
-
-    private class MyLocationListener implements LocationListener {
-        @Override
-        public void onLocationChanged(Location loc) {
-            if (loc != null) {
-//                Toast.makeText(MainActivity.this,
-//                        "lat: " + String.valueOf(loc.getLatitude()) + ", long: " + String.valueOf(loc.getLongitude()),
-//                        Toast.LENGTH_LONG).show();
-//                TODO: save coords somewhere to get when needed
-            }
-        }
-
-        @Override
-        public void onProviderDisabled(String arg0) {
-            Toast.makeText(MainActivity.this, "Вы отключили систему навигации", Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onProviderEnabled(String arg0) {
-            // Do something here if you would like to know when the provider is enabled by the user
-        }
-
-        @Override
-        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-            // Do something here if you would like to know when the provider status changes
-        }
     }
 }

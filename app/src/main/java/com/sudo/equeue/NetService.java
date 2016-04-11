@@ -34,6 +34,7 @@ public class NetService extends IntentService {
     public static final String ACTION_LOGIN_VK = QueueApplication.prefix + ".action.LOGIN_VK";
     public static final String ACTION_LOGIN_EMAIL = QueueApplication.prefix + ".action.LOGIN_EMAIL";
     public static final String ACTION_ME_IN_QUEUES = QueueApplication.prefix + ".action.ME_IN_QUEUES";
+    public static final String ACTION_FIND_NEAR_QUEUES = QueueApplication.prefix + ".action.FIND_NEAR_QUEUES";
     public static final String ACTION_UPDATE_GCM = QueueApplication.prefix + ".action.UPDATE_GCM";
     public static final String ACTION_IS_IN = QueueApplication.prefix + ".action.IS_IN";
     public static final String ACTION_CHECK_TOKEN = QueueApplication.prefix + ".action.CHECK_TOKEN";
@@ -53,6 +54,7 @@ public class NetService extends IntentService {
     public static final String EXTRA_PASSWORD = QueueApplication.prefix + ".extra.PASSWORD";
     public static final String EXTRA_QUERY = QueueApplication.prefix + ".extra.QUERY";
     public static final String EXTRA_GCMID = QueueApplication.prefix + ".extra.GCMID";
+    public static final String EXTRA_COORDS = QueueApplication.prefix + ".extra.COORDS";
 
 //    public static final String EXTRA_EMPLOYER_ID = QueueApplication.prefix + ".extra.EMPLOYER_ID";
 //    public static final String EXTRA_SEARCH_TEXT = QueueApplication.prefix + ".extra.SEARCH_TEXT";
@@ -125,6 +127,11 @@ public class NetService extends IntentService {
                 case ACTION_FIND_QUEUE: {
                     final String query = intent.getStringExtra(EXTRA_QUERY);
                     handleFindQueue(query);
+                    break;
+                }
+                case ACTION_FIND_NEAR_QUEUES: {
+                    final String coords = intent.getStringExtra(EXTRA_COORDS);
+                    handleFindNearsQueues(coords);
                     break;
                 }
                 case ACTION_JOIN_QUEUE: {
@@ -330,6 +337,11 @@ public class NetService extends IntentService {
 
     private void handleFindQueue(String query) {
         Bundle bundle = processor.findQueue(query);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleFindNearsQueues(String coords) {
+        Bundle bundle = processor.findNearQueue(coords);
         receiver.send(CODE_OK, bundle);
     }
 

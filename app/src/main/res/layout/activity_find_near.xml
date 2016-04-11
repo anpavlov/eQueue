@@ -1,0 +1,81 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical">
+
+    <include layout="@layout/toolbar"/>
+
+    <com.sudo.equeue.utils.MultiSwipeRefreshLayout
+        android:id="@+id/refresh_queue_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/queue_list_view">
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:isScrollContainer="false"
+                    android:id="@+id/rv"/>
+
+            </LinearLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:id="@+id/no_queues_view">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:layout_width="128dp"
+                        android:layout_height="128dp"
+                        android:id="@+id/queueImg"
+                        android:layout_centerVertical="true"
+                        android:layout_centerHorizontal="true"
+                        android:src="@drawable/people_pur"
+                        android:maxHeight="64dp"
+                        android:maxWidth="64dp"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Поблизости не найдено ни одной очереди"
+                        android:textColor="@color/mainColor"
+                        android:id="@+id/noQueues"
+                        android:layout_below="@+id/queueImg"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="10dp"/>
+
+                </RelativeLayout>
+
+            </ScrollView>
+
+            <ProgressBar
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/button_loader"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:theme="@style/WhiteProgress"
+                />
+
+        </RelativeLayout>
+
+    </com.sudo.equeue.utils.MultiSwipeRefreshLayout>
+
+
+</LinearLayout>
