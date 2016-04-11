@@ -9,16 +9,18 @@
         <!--app:showAsAction="ifRoom"/>-->
 
     <item
-        android:id="@+id/logout"
-        android:icon="@drawable/arrow"
-        android:title="Выйти"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_add"
         android:icon="@drawable/ic_action_add"
         android:title="Создать очередь"
         app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_arrow_forward"
+        android:title="Выйти"
+        app:showAsAction="ifRoom"/>
+
+
 
 
 
