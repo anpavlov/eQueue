@@ -368,8 +368,22 @@ def find_near():
         }
         return json.dumps(response)
 
+    q = []
     if queues[0]:
-        q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description'], 'coords': str(queue['coords'][0]) + ',' + str(queue['coords'][1])} for queue in queues]
+        for queue in queues:
+            stands = standings.select(queue['id'], index='qid')
+            users = [u[1] for u in stands]
+
+            q.append(
+                {
+                    'qid': queue['id'],
+                    'name': queue['name'],
+                    'description': queue['description'],
+                    'coords': str(queue['coords'][0]) + ',' + str(queue['coords'][1]),
+                    'users_quantity': len(users),
+                    'address': class_resolver.get_address_by_coords(q['coords'])
+                }
+            )
     else:
         q = []
     response = {
