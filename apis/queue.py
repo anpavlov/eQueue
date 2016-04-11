@@ -47,7 +47,9 @@ def create():
     response = {
         'code': 200,
         'body': {
-            'qid': q['id']
+            'qid': q['id'],
+            'name': name,
+            'description': description,
         }
     }
     return json.dumps(response)
@@ -367,7 +369,7 @@ def find_near():
         return json.dumps(response)
 
     if queues[0]:
-        q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description'], 'coords': queue['coords']} for queue in queues]
+        q = [{'qid': queue['id'], 'name': queue['name'], 'description': queue['description'], 'coords': str(queue['coords'][0]) + ',' + str(queue['coords'][1])} for queue in queues]
     else:
         q = []
     response = {
