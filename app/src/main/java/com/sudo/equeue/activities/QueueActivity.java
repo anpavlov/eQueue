@@ -1,13 +1,13 @@
 package com.sudo.equeue.activities;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +30,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
+import com.sudo.equeue.WebSocketService;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.StaticSwipeRefreshLayout;
-
-import java.util.Random;
 
 public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback {
 
@@ -61,6 +60,9 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     private TextView statsInQueue;
     private TextView statsBefore;
     private TextView statsTime;
+
+    private QueueBroadcastReceiver queueBroadcastReceiver;
+    private boolean isReceiverRegistered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +144,14 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //            mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
 //            findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
 //        }
+
+        queueBroadcastReceiver = new QueueBroadcastReceiver();
+        registerReceiver();
+
+        Intent intent = new Intent(this, WebSocketService.class);
+        intent.setAction(WebSocketService.ACTION_QID);
+        intent.putExtra(WebSocketService.EXTRA_QUEUE_ID, queue.getQid());
+        startService(intent);
     }
 
     private void getQueueSuccess(Queue newQueue) {
@@ -274,6 +284,27 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         overridePendingTransition(R.anim.close_slide_in, R.anim.close_slide_out);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(queueBroadcastReceiver);
+        isReceiverRegistered = false;
+        super.onPause();
+    }
+
+    private void registerReceiver(){
+        if(!isReceiverRegistered) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(queueBroadcastReceiver,
+                    new IntentFilter(WebSocketService.ACTION_QUEUE_CHANGE));
+            isReceiverRegistered = true;
+        }
+    }
+
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        MenuInflater inflater = getMenuInflater();
@@ -287,5 +318,40 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         UiSettings mUiSettings = mMap.getUiSettings();
         mUiSettings.setMapToolbarEnabled(false);
         mUiSettings.setAllGesturesEnabled(false);
+    }
+
+    public class QueueBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Receiver", "Got it");
+            String type = intent.getStringExtra(WebSocketService.EXTRA_QUEUE_CHANGE_TYPE);
+            String action = intent.getStringExtra(WebSocketService.EXTRA_QUEUE_CHANGE_ACTION);
+            int queueId = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+
+            if (queueId == queue.getQid()) {
+                switch (type) {
+                    case "all":
+                        if (action.equals("add")) {
+                            queue.setUsersQuantity(queue.getUsersQuantity() + 1);
+                        } else if (action.equals("sub")) {
+                            queue.setUsersQuantity(queue.getUsersQuantity() - 1);
+                        }
+                        break;
+                    case "infront":
+                        if (action.equals("add")) {
+                            queue.setInFront(queue.getInFront() + 1);
+                        } else if (action.equals("sub")) {
+                            queue.setInFront(queue.getInFront() - 1);
+                        }
+                        break;
+                    case "time":
+//                        TODO
+                        break;
+                }
+
+                getQueueSuccess(queue);
+            }
+        }
     }
 }

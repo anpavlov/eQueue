@@ -202,7 +202,7 @@
 
                     android:minHeight="324dp"
                     android:id="@+id/ticket"
-                    android:visibility="visible">
+                    android:visibility="gone">
                     <ImageView
                         android:layout_width="230dp"
                         android:layout_height="324dp"

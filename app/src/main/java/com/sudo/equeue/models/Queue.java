@@ -48,7 +48,12 @@ public class Queue extends PossibleError {
         return users_quantity;
     }
 
-//    public boolean isIn() {
+    public void setUsersQuantity(int users_quantity) {
+        this.users_quantity = users_quantity;
+    }
+
+
+    //    public boolean isIn() {
 //        return isIn;
 //    }
 //

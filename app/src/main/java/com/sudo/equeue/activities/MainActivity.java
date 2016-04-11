@@ -32,6 +32,7 @@ import com.sudo.equeue.R;
 //import com.sudo.equeue.fragments.LoginFragment;
 //import com.sudo.equeue.fragments.MyQueuesFragment;
 //import com.sudo.equeue.fragments.ProfileFragment;
+import com.sudo.equeue.WebSocketService;
 import com.sudo.equeue.models.IsInModel;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
@@ -162,6 +163,13 @@ public class MainActivity extends NetBaseActivity {
         locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
 //        ===============================
 
+//        startService(new Intent(this, WebSocketService.class));
+        ((QueueApplication) getApplication()).startWebSocketService();
+
+        Intent intent = new Intent(this, WebSocketService.class);
+        intent.setAction(WebSocketService.ACTION_BIND);
+        startService(intent);
+
         updateView();
     }
 
@@ -181,6 +189,8 @@ public class MainActivity extends NetBaseActivity {
         Intent intent = new Intent(this, QueueActivity.class);
         intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
         startActivity(intent);
+
+//        startService(new Intent(this, WebSocketService.class));
     }
 
     private void updateQueueList(QueueList queueList) {
@@ -202,6 +212,10 @@ public class MainActivity extends NetBaseActivity {
         switch (item.getItemId()) {
             case R.id.action_add:
                 openBottomSheet();
+//                stopService(new Intent(this, WebSocketService.class));
+//                Intent intent = new Intent(this, WebSocketService.class);
+//                intent.setAction(WebSocketService.ACTION_MES);
+//                startService(intent);
                 break;
             default:
                 break;
@@ -261,7 +275,15 @@ public class MainActivity extends NetBaseActivity {
         outState.putSerializable(SAVED_STATE_QUEUE_LIST, queueList);
     }
 
-//    private void loadingStart() {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Intent intent = new Intent(this, WebSocketService.class);
+        intent.setAction(WebSocketService.ACTION_UNBIND);
+        startService(intent);
+    }
+
+    //    private void loadingStart() {
 //        AlphaAnimation inAnimation;
 //        inAnimation = new AlphaAnimation(0f, 1f);
 //        inAnimation.setDuration(200);
