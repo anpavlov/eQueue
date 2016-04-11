@@ -5,6 +5,7 @@ import tarantool
 import settings
 import responses
 import time
+import requests
 from gcm import *
 from taran import tarantool_manager
 from taran.helper import NoResult
@@ -254,6 +255,8 @@ def join():
             'ok': 'ok'
         }
     }
+    payload = {'qid': qid, 'type': 'all', 'action': 'add'}
+    r = requests.get('http://localhost:8888/post/', params=payload)
     return json.dumps(response)
 
 
@@ -312,6 +315,11 @@ def call():
             'user': user[0][1]
         }
     }
+    payload = {'qid': qid, 'type': 'all', 'action': 'sub'}
+    r = requests.get('http://localhost:8888/post/', params=payload)
+    
+    payload = {'qid': qid, 'type': 'infront', 'action': 'sub'}
+    r = requests.get('http://localhost:8888/post/', params=payload)
     return json.dumps(response)
 
 @queue_api.route("/find/", methods=['GET'])
@@ -519,6 +527,8 @@ def leave():
                 'status': 1
             }
         }
+        payload = {'qid': qid, 'type': 'all', 'action': 'sub'}
+        r = requests.get('http://localhost:8888/post/', params=payload)
         return json.dumps(response)
     else:
         #  means user was not in the queue
