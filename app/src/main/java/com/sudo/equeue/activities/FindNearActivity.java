@@ -145,7 +145,6 @@ public class FindNearActivity extends NetBaseActivity {
 
     private void onItemClick(Queue queue) {
         Intent intent = new Intent(this, QueueActivity.class);
-        queue.setInFront(-1); //TODO delete!!!!
         intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
         startActivity(intent);
     }

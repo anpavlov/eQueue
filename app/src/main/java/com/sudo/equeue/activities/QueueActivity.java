@@ -118,7 +118,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         statsTime = (TextView) findViewById(R.id.stats_time_left);
 
         statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
-        statsBefore.setText(Integer.toString(queue.getInFront()));
+        statsBefore.setText(queue.getInFront()==-1?"-":String.valueOf(queue.getInFront()));
         statsTime.setText(Integer.toString(queue.getWaitTime()));
         ticketNum.setText(Integer.toString(queue.getInFront() + 1));
 
@@ -162,7 +162,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 
 //        statsBeforeProgressbar.setVisibility(View.GONE);
 //        statsBefore.setVisibility(View.VISIBLE);
-        statsBefore.setText(Integer.toString(queue.getInFront()));
+        statsBefore.setText(queue.getInFront()==-1?"-":String.valueOf(queue.getInFront()));
         ticketNum.setText(Integer.toString(queue.getInFront() + 1));
 
 //        statsTimeProgressbar.setVisibility(View.GONE);
@@ -173,6 +173,15 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //        joinButton.setEnabled(true);
 //        joinButton.setText("Присоединиться");
 //        joinButton.setOnClickListener((v) -> joinQueue());
+
+        if (queue.getInFront()==-1) {
+            ticketView.setVisibility(View.GONE);
+        }
+
+        if (!queue.IsIn()) {
+            joinButton.setText("Присоединиться");
+            joinButton.setOnClickListener((v) -> joinQueue());
+        }
 
         LatLng place = this.queue.getLatLng();
         if (place != null) {
@@ -197,10 +206,15 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         joinButton.setEnabled(true);
         joinButton.setText("Покинуть");
         joinButton.setOnClickListener((v) -> leaveQueue());
+        queue.setInFront(queue.getUsersQuantity());
+        queue.setUsersQuantity(queue.getUsersQuantity() + 1);
+        statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
+        statsBefore.setText(Integer.toString(queue.getInFront()));
 
         Animation bottomUp = AnimationUtils.loadAnimation(QueueActivity.this, R.anim.bottom_up);
         ticketView.startAnimation(bottomUp);
         ticketView.setVisibility(View.VISIBLE);
+        ticketNum.setText(String.valueOf(queue.getUsersQuantity()));
     }
 
     private void joinFail() {
@@ -237,6 +251,10 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         joinButton.setEnabled(true);
         joinButton.setText("Присоединиться");
         joinButton.setOnClickListener((v) -> joinQueue());
+        queue.setUsersQuantity(queue.getUsersQuantity() - 1);
+        queue.setInFront(-1);
+        statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
+        statsBefore.setText("-");
     }
 
     private void leaveFail() {
