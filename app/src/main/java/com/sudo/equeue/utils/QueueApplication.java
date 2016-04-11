@@ -1,6 +1,9 @@
 package com.sudo.equeue.utils;
 
 import android.app.Application;
+import android.content.Intent;
+
+import com.sudo.equeue.WebSocketService;
 
 public class QueueApplication extends Application {
 
@@ -14,6 +17,7 @@ public class QueueApplication extends Application {
     public static final String PREFS_SENT_TOKEN = "com.sudo.equeue.preferences.sent_token";
 
     private ServiceHelper serviceHelper;
+    private boolean serviceStarted = false;
 
     public void initServiceHelper() {
         serviceHelper = new ServiceHelper(this);
@@ -23,5 +27,12 @@ public class QueueApplication extends Application {
         return serviceHelper;
     }
 
-//    public void updateUserData
+    public void startWebSocketService() {
+        if (!serviceStarted) {
+            Intent intent = new Intent(this, WebSocketService.class);
+            intent.setAction(WebSocketService.ACTION_SOCKET);
+            startService(intent);
+            serviceStarted = true;
+        }
+    }
 }
