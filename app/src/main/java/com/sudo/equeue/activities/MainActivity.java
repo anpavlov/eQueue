@@ -80,7 +80,7 @@ public class MainActivity extends NetBaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("eQueue");
+            getSupportActionBar().setTitle("Очереди");
         }
 
 //        ========== Queue List ============
