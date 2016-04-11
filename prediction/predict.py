@@ -1,5 +1,9 @@
 import random
 
 
-def predict():
-    return random.randint(1, 20)
+def predict(position):
+    if position == -1:
+        return 3
+    if position == 0:
+        return 1
+    return position * 3
