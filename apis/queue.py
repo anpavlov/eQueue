@@ -284,7 +284,7 @@ def call():
 
     # push notification
     gcm = GCM(settings.GCM_SERVER_ID)
-    data = {'notification': 'true', 'title': q[0]['name']}
+    data = {'notification': 'true', 'title': q[0]['name'], 'qid': qid}
     try:
         out_user = tarantool_manager.select_assoc('users', (user[0][1]))
     except NoResult:
