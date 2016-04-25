@@ -163,6 +163,11 @@ def info_user():
     if in_front > 0:
         in_front -= 1
 
+    try:
+        passed = tarantool_manager.select_assoc('stats', (qid), index='qid')
+    except NoResult:
+        passed = []
+
     response = {
         'code': 200,
         'body': {
@@ -173,7 +178,8 @@ def info_user():
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(q['coords']),
             'wait_time': predict.predict(in_front),
-            'in_front': in_front
+            'in_front': in_front,
+            'number': in_front + len(passed) + 1
         }
     }
 
