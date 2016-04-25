@@ -15,9 +15,9 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <permission
-        android:name="com.sudo.equeue.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+    <!--<permission-->
+        <!--android:name="com.sudo.equeue.permission.C2D_MESSAGE"-->
+        <!--android:protectionLevel="signature" />-->
 
     <application
         android:name=".utils.QueueApplication"

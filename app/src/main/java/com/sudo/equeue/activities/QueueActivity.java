@@ -9,8 +9,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.DisplayMetrics;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -150,7 +148,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //        }
 
         queueBroadcastReceiver = new QueueBroadcastReceiver();
-        registerReceiver();
+        registerCustomReceiver();
 
         Intent intent = new Intent(this, WebSocketService.class);
         intent.setAction(WebSocketService.ACTION_QID);
@@ -309,7 +307,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
-        registerReceiver();
+        registerCustomReceiver();
     }
 
     @Override
@@ -319,7 +317,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         super.onPause();
     }
 
-    private void registerReceiver(){
+    private void registerCustomReceiver(){
         if(!isReceiverRegistered) {
             LocalBroadcastManager.getInstance(this).registerReceiver(queueBroadcastReceiver,
                     new IntentFilter(WebSocketService.ACTION_QUEUE_CHANGE));

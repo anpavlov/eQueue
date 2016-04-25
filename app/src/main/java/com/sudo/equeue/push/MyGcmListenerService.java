@@ -8,20 +8,25 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 import com.sudo.equeue.R;
+import com.sudo.equeue.WebSocketService;
 import com.sudo.equeue.activities.StartActivity;
 
 public class MyGcmListenerService extends GcmListenerService {
+
+    public static final String ACTION_PUSH_INCOMING = "com.sudo.equeue.gcmlistener.action.incoming";
+    public static final String EXTRA_QUEUE_ID = "com.sudo.equeue.gcmlistener.extra.qid";
 
     private static final String TAG = "MyGcmListenerService";
 
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("title");
-//        int qid = data.getInt("qid");
+        int qid = Integer.parseInt(data.getString("qid"));
         Log.d(TAG, "From: " + from);
         Log.d(TAG, "Message: " + message);
 
@@ -41,6 +46,11 @@ public class MyGcmListenerService extends GcmListenerService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(7 /* ID of notification */, notificationBuilder.build());
+
+
+        Intent pushMsg = new Intent(ACTION_PUSH_INCOMING);
+        pushMsg.putExtra(EXTRA_QUEUE_ID, qid);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(pushMsg);
 
     }
 

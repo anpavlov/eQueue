@@ -1,20 +1,17 @@
 package com.sudo.equeue.activities;
 
-import android.Manifest;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +20,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
@@ -33,15 +29,14 @@ import com.sudo.equeue.R;
 //import com.sudo.equeue.fragments.MyQueuesFragment;
 //import com.sudo.equeue.fragments.ProfileFragment;
 import com.sudo.equeue.WebSocketService;
-import com.sudo.equeue.models.IsInModel;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
+import com.sudo.equeue.push.MyGcmListenerService;
 import com.sudo.equeue.utils.MultiSwipeRefreshLayout;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.QueueListAdapter;
 import com.sudo.equeue.utils.QueueListWrapper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //import com.sudo.equeue.fragments.AboutFragment;
@@ -69,8 +64,11 @@ public class MainActivity extends NetBaseActivity {
 //    private List<Queue> queues;
     private QueueListWrapper queues;
     private QueueListAdapter adapter;
+    private List<Integer> passedQueues;
 //    private FrameLayout progressBarHolder;
     private MultiSwipeRefreshLayout swipeRefreshLayout;
+    private PushBroadcastReceiver pushBroadcastReceiver;
+    private boolean isReceiverRegistered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +122,34 @@ public class MainActivity extends NetBaseActivity {
             }
         });
 
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+//            @Override
+//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+//                int pos = viewHolder.getAdapterPosition();
+//                if (queues.getQueueList().getQueues().get(pos).isPassed()) {
+//                    queues.getQueueList().getQueues().remove(pos);
+//                    adapter.notifyDataSetChanged();
+//                }
+//            }
+//
+//            @Override
+//            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+//                int pos = viewHolder.getAdapterPosition();
+//                if (!queues.getQueueList().getQueues().get(pos).isPassed()) {
+//                    return 0;
+//                }
+//                return super.getSwipeDirs(recyclerView, viewHolder);
+//            }
+//        });
+//
+//        itemTouchHelper.attachToRecyclerView(rv);
+
+
 //        ========== Add button ============
         Button addQueue = (Button) findViewById(R.id.btn_add_queue);
         if (addQueue != null) {
@@ -140,6 +166,11 @@ public class MainActivity extends NetBaseActivity {
         swipeRefreshLayout.setOnRefreshListener(() -> getMyQueuesRequestId = getServiceHelper().meInQueues());
         updateView();
 
+//        ========== Broadcast receiver ============
+        pushBroadcastReceiver = new PushBroadcastReceiver();
+        registerCustomReceiver();
+
+//        ========== WebSocket ============
         ((QueueApplication) getApplication()).startWebSocketService();
 
         Intent intent = new Intent(this, WebSocketService.class);
@@ -172,6 +203,18 @@ public class MainActivity extends NetBaseActivity {
         swipeRefreshLayout.setRefreshing(false);
         updateView();
         adapter.notifyDataSetChanged();
+    }
+
+    private void updatePassedQueues(int qid) {
+//        for (int i = 0; i < queues.getQueueList().getQueues().size(); ++i) {
+//            if (queues.getQueueList().getQueues().get(i).getQid() == qid) {
+//                Queue tempQueue = queues.getQueueList().getQueues().get(i);
+//                queues.getQueueList().getQueues().remove(i);
+//                queues.getQueueList().getQueues().add(0, tempQueue);
+//                tempQueue.setPassed(true);
+//                adapter.notifyDataSetChanged();
+//            }
+//        }
     }
 
     @Override
@@ -238,8 +281,16 @@ public class MainActivity extends NetBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        registerCustomReceiver();
         getMyQueuesRequestId = getServiceHelper().meInQueues();
         swipeRefreshLayout.setRefreshing(true);
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver);
+        isReceiverRegistered = false;
+        super.onPause();
     }
 
     @Override
@@ -256,6 +307,14 @@ public class MainActivity extends NetBaseActivity {
         Intent intent = new Intent(this, WebSocketService.class);
         intent.setAction(WebSocketService.ACTION_UNBIND);
         startService(intent);
+    }
+
+    private void registerCustomReceiver(){
+        if(!isReceiverRegistered) {
+            LocalBroadcastManager.getInstance(this).registerReceiver(pushBroadcastReceiver,
+                    new IntentFilter(MyGcmListenerService.ACTION_PUSH_INCOMING));
+            isReceiverRegistered = true;
+        }
     }
 
     //    private void loadingStart() {
@@ -282,5 +341,20 @@ public class MainActivity extends NetBaseActivity {
 //        else if (requestId == isInQueueRequestId) {
 //            getServiceHelper().handleResponse(this, resultCode, data, obj -> openQueue((IsInModel) obj), NetService.RETURN_IS_IN);
 //        }
+    }
+
+    public class PushBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("Push receiver", "Got it");
+//            String type = intent.getStringExtra(WebSocketService.EXTRA_QUEUE_CHANGE_TYPE);
+//            String action = intent.getStringExtra(WebSocketService.EXTRA_QUEUE_CHANGE_ACTION);
+            int queueId = intent.getIntExtra(MyGcmListenerService.EXTRA_QUEUE_ID, -1);
+            if (queueId != -1) {
+                updatePassedQueues(queueId);
+            }
+
+        }
     }
 }

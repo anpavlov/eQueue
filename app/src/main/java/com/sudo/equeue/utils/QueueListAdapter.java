@@ -49,6 +49,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
     }
 
     public static class PersonViewHolder extends RecyclerView.ViewHolder {
+
         private CardView cv;
         private TextView queueName;
         private TextView queueDescription;
@@ -57,7 +58,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
         private TextView queueTotal;
         private TextView queueFront;
 
-        PersonViewHolder(View itemView) {
+        public PersonViewHolder(View itemView) {
             super(itemView);
             cv = (CardView)itemView.findViewById(R.id.queueCard);
             queueName = (TextView)itemView.findViewById(R.id.queue_name);
@@ -68,7 +69,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
             queueFront = (TextView)itemView.findViewById(R.id.front_of_you);
         }
 
-        void bind(Queue queue, ItemClickListener listener) {
+        public void bind(Queue queue, ItemClickListener listener) {
             queueName.setText(queue.getName());
             queueDescription.setText(queue.getDescription());
             queueLocation.setText(queue.getAddress());
@@ -76,6 +77,9 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
             queueTotal.setText(Integer.toString(queue.getUsersQuantity()) + " человек в очереди");
             queueFront.setText(Integer.toString(queue.getInFront()) + " человек перед Вами");
             cv.setOnClickListener(v -> listener.onItemClick(queue));
+            if (queue.isPassed()) {
+                cv.setCardBackgroundColor(R.color.colorPrimary);
+            }
         }
     }
 

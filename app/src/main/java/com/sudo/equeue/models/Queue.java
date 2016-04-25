@@ -17,6 +17,15 @@ public class Queue extends PossibleError {
     private int wait_time;
     private int in_front;
     private String coords;
+    private boolean isPassed = false;
+
+    public boolean isPassed() {
+        return isPassed;
+    }
+
+    public void setPassed(boolean isPassed) {
+        this.isPassed = isPassed;
+    }
 
     public String getAddress() {
         return address;
