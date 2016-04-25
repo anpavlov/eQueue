@@ -350,30 +350,15 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("Receiver", "Got it");
-            String type = intent.getStringExtra(WebSocketService.EXTRA_QUEUE_CHANGE_TYPE);
-            String action = intent.getStringExtra(WebSocketService.EXTRA_QUEUE_CHANGE_ACTION);
             int queueId = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+            int users_quantity = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+            int in_front = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+            int wait_time = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
 
             if (queueId == queue.getQid()) {
-                switch (type) {
-                    case "all":
-                        if (action.equals("add")) {
-                            queue.setUsersQuantity(queue.getUsersQuantity() + 1);
-                        } else if (action.equals("sub")) {
-                            queue.setUsersQuantity(queue.getUsersQuantity() - 1);
-                        }
-                        break;
-                    case "infront":
-                        if (action.equals("add")) {
-                            queue.setInFront(queue.getInFront() + 1);
-                        } else if (action.equals("sub")) {
-                            queue.setInFront(queue.getInFront() - 1);
-                        }
-                        break;
-                    case "time":
-//                        TODO
-                        break;
-                }
+                queue.setUsersQuantity(users_quantity);
+                queue.setInFront(in_front);
+                queue.setWaitTime(wait_time);
 
                 getQueueSuccess(queue);
             }

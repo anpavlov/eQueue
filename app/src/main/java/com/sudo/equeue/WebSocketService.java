@@ -29,8 +29,9 @@ public class WebSocketService extends NonStopIntentService {
     public static final String ACTION_QUEUE_CHANGE = "com.sudo.equeue.websocket.action.queue_chenge";
 
     public static final String EXTRA_QUEUE_ID = "com.sudo.equeue.websocket.extra.QUEUE_ID";
-    public static final String EXTRA_QUEUE_CHANGE_TYPE = "com.sudo.equeue.websocket.extra.QUEUE_change_type";
-    public static final String EXTRA_QUEUE_CHANGE_ACTION = "com.sudo.equeue.websocket.extra.QUEUE_change_action";
+    public static final String EXTRA_QUEUE_USERS_QUANTITY = "com.sudo.equeue.websocket.extra.QUEUE_usrs_quant";
+    public static final String EXTRA_QUEUE_IN_FRONT = "com.sudo.equeue.websocket.extra.QUEUE_in_front";
+    public static final String EXTRA_QUEUE_WAIT_TIME = "com.sudo.equeue.websocket.extra.QUEUE_wait time";
 
     private AtomicInteger count = new AtomicInteger(0);
 //    private int qid = -1;
@@ -127,14 +128,17 @@ public class WebSocketService extends NonStopIntentService {
 //            gson.fromJson(text, PossibleError.class);
             JsonElement jelem = new JsonParser().parse(text);
             JsonObject jobj = jelem.getAsJsonObject();
-            String type = jobj.get("type").getAsString();
-            String action = jobj.get("action").getAsString();
             int queueId = jobj.get("qid").getAsInt();
+            int users_quantity = jobj.get("users_quantity").getAsInt();
+            int in_front = jobj.get("in_front").getAsInt();
+            int wait_time = jobj.get("wait_time").getAsInt();
 
             Intent queueMessage = new Intent(ACTION_QUEUE_CHANGE);
-            queueMessage.putExtra(EXTRA_QUEUE_CHANGE_ACTION, action);
             queueMessage.putExtra(EXTRA_QUEUE_ID, queueId);
-            queueMessage.putExtra(EXTRA_QUEUE_CHANGE_TYPE, type);
+            queueMessage.putExtra(EXTRA_QUEUE_USERS_QUANTITY, users_quantity);
+            queueMessage.putExtra(EXTRA_QUEUE_IN_FRONT, in_front);
+            queueMessage.putExtra(EXTRA_QUEUE_WAIT_TIME, wait_time);
+
             LocalBroadcastManager.getInstance(WebSocketService.this).sendBroadcast(queueMessage);
         }
     }
