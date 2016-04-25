@@ -12,6 +12,7 @@ from taran.helper import NoResult
 from gcm.gcm import GCMNotRegisteredException
 from prediction import predict
 from map import class_resolver, categories
+from tasks import notify
 
 queue_api = Blueprint('queue', __name__)
 
@@ -261,8 +262,8 @@ def join():
             'ok': 'ok'
         }
     }
-    payload = {'qid': qid, 'type': 'all', 'action': 'add'}
-    r = requests.get('http://localhost:8888/post/', params=payload)
+    payload = {'qid': qid, 'in-front': 5, 'users_quantity': 21, 'wait_time': 31}
+    notify.delay(payload)
     return json.dumps(response)
 
 
@@ -321,11 +322,8 @@ def call():
             'user': user[0][1]
         }
     }
-    payload = {'qid': qid, 'type': 'all', 'action': 'sub'}
-    r = requests.get('http://localhost:8888/post/', params=payload)
-    
-    payload = {'qid': qid, 'type': 'infront', 'action': 'sub'}
-    r = requests.get('http://localhost:8888/post/', params=payload)
+    payload = {'qid': qid, 'in-front': 5, 'users_quantity': 21, 'wait_time': 31}
+    notify.delay(payload)
     return json.dumps(response)
 
 @queue_api.route("/find/", methods=['GET'])
@@ -533,8 +531,8 @@ def leave():
                 'status': 1
             }
         }
-        payload = {'qid': qid, 'type': 'all', 'action': 'sub'}
-        r = requests.get('http://localhost:8888/post/', params=payload)
+        payload = {'qid': qid, 'in-front': 5, 'users_quantity': 21, 'wait_time': 31}
+        notify.delay(payload)
         return json.dumps(response)
     else:
         #  means user was not in the queue
