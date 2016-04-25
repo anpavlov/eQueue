@@ -46,7 +46,7 @@ class ApiHandler(web.RequestHandler):
         self.finish()
         qid = self.get_argument("qid")
         qid = int(qid)
-        in_front = self.get_argument("in_front")
+        in_front = self.get_argument("in-front")
         users_quantity = self.get_argument("users_quantity")
         wait_time = self.get_argument("wait_time")
 
