@@ -61,6 +61,14 @@
             android:text=""
             android:id="@+id/count_field"/>
 
+        <Button
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:textSize="5pt"
+            android:textColor="@color/white"
+            android:text="Играй"
+            android:id="@+id/btn_sound"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
