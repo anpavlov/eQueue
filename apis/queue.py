@@ -580,6 +580,28 @@ def delete():
         user = tarantool_manager.get_user_by_token(token)
     except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
+    try:
+        q = tarantool_manager.select_assoc('queues', (qid, user['id']), index='qid_user')
+    except NoResult:
+        return json.dumps(responses.QUEUE_NOT_FOUND)
+
+    # clear standings for this queue
+    # TODO: stats
+    # TODO: socket to users
+    stands = standings.select(qid, index='qid')
+    for s in stands:
+        standings.delete((s[0], s[1]))
+
+    tarantool_manager.delete('queues', (q[0]['id']))
+
+    response = {
+        'code': 200,
+        'body': {
+            'ok': 'ok'
+        }
+    }
+    return json.dumps(response)
+
 
 
 @queue_api.route("/tags/", methods=['GET'])
@@ -591,7 +613,6 @@ def tags():
         }
     }
     return json.dumps(response)
-
 
 
 @queue_api.route("/pretty/", methods=['GET'])

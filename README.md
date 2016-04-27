@@ -2,7 +2,7 @@
 
 dependencies:
 `sudo apt-get install build-essential gfortran libatlas-base-dev`
-`pip install flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql python-gcm numpy scipy matplotlib scikit-learn pandas`
+`pip install flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql python-gcm celery numpy scipy matplotlib scikit-learn pandas`
 
 
 #API Documentation

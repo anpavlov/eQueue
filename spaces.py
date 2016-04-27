@@ -36,7 +36,8 @@ schema = {
             ('created', TARANTOOL_NUM, 0),
             ('closed', TARANTOOL_NUM, 0),
             ('class', TARANTOOL_STR, ''),
-            ('coords', TARANTOOL_ARRAY, [])
+            ('coords', TARANTOOL_ARRAY, []),
+            ('is_closed', TARANTOOL_NUM, False)  # have no implementation yet
         ]
     },
     'stats': {
