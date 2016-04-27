@@ -5,7 +5,6 @@ import tarantool
 import settings
 import responses
 import time
-import requests
 from gcm import *
 from taran import tarantool_manager
 from taran.helper import NoResult
