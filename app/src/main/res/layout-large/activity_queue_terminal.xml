@@ -64,7 +64,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
             android:layout_marginTop="40dp"
             android:textSize="16pt"
             android:text="Текущий номер:"
@@ -73,7 +72,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
             android:textColor="#000"
             android:textStyle="bold"
             android:textSize="20pt"

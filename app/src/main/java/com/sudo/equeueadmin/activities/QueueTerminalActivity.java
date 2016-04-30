@@ -5,7 +5,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +22,7 @@ import com.sudo.equeueadmin.models.User;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 import java.util.EnumMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Random;
 
@@ -42,10 +42,11 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     private Queue queueInfo;
     Handler mHandler = new Handler();
 
-    int[] tracks = new int[4];
-    int currentTrack = 0;
-    int currentSize = 0;
+    LinkedList<Integer> tracks = new LinkedList<>();
     private MediaPlayer mediaPlayer = null;
+    public int current_number = 0;
+    Thread period_task;
+    boolean running = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 
         findViewById(R.id.number_lbl).setVisibility(View.INVISIBLE);
         findViewById(R.id.number_field).setVisibility(View.INVISIBLE);
+        findViewById(R.id.current_lbl).setVisibility(View.INVISIBLE);
+        findViewById(R.id.current_field).setVisibility(View.INVISIBLE);
         findViewById(R.id.code_lbl).setVisibility(View.INVISIBLE);
         findViewById(R.id.code_field).setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_hide).setVisibility(View.INVISIBLE);
@@ -72,11 +75,11 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         findViewById(R.id.btn_hide).setOnClickListener(v -> hide());
         bar_code = (ImageView) findViewById(R.id.bar_code);
 
-        new Thread(() -> {
+        period_task = new Thread(() -> {
             // TODO Auto-generated method stub
-            while (true) {
+            while (running) {
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(2000);
                     mHandler.post(() -> {
                         // TODO Auto-generated method stub
                         getRefreshQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
@@ -85,143 +88,85 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
                     // TODO: handle exception
                 }
             }
-        }).start();
-
-        View sound = findViewById(R.id.btn_sound);
-        assert sound != null;
-        sound.setOnClickListener(v -> {
-            Random ran = new Random();
-            int number = ran.nextInt(1000);
-            Toast.makeText(QueueTerminalActivity.this, String.valueOf(number), Toast.LENGTH_SHORT).show();
-
-            tracks[0] = R.raw.number;
-            currentTrack = 0;
-
-            if (number / 100 > 0) {
-                currentSize = 3;
-                if (number/100 == 1) tracks[1] = R.raw.num100;
-                if (number/100 == 2) tracks[1] = R.raw.num200;
-                if (number/100 == 3) tracks[1] = R.raw.num300;
-                if (number/100 == 4) tracks[1] = R.raw.num400;
-                if (number/100 == 5) tracks[1] = R.raw.num500;
-                if (number/100 == 6) tracks[1] = R.raw.num600;
-                if (number/100 == 7) tracks[1] = R.raw.num700;
-                if (number/100 == 8) tracks[1] = R.raw.num800;
-                if (number/100 == 9) tracks[1] = R.raw.num900;
-                number = number % 100;
-                if (number < 20 && number > 9) {
-                    currentSize = 2;
-                    if (number == 10) tracks[2] = R.raw.num10;
-                    if (number == 11) tracks[2] = R.raw.num11;
-                    if (number == 12) tracks[2] = R.raw.num12;
-                    if (number == 13) tracks[2] = R.raw.num13;
-                    if (number == 14) tracks[2] = R.raw.num14;
-                    if (number == 15) tracks[2] = R.raw.num15;
-                    if (number == 16) tracks[2] = R.raw.num16;
-                    if (number == 17) tracks[2] = R.raw.num17;
-                    if (number == 18) tracks[2] = R.raw.num18;
-                    if (number == 19) tracks[2] = R.raw.num19;
-                } else {
-                    if (number/10 > 0) {
-                        if (number / 10 == 2) tracks[2] = R.raw.num20;
-                        if (number / 10 == 3) tracks[2] = R.raw.num30;
-                        if (number / 10 == 4) tracks[2] = R.raw.num40;
-                        if (number / 10 == 5) tracks[2] = R.raw.num50;
-                        if (number / 10 == 6) tracks[2] = R.raw.num60;
-                        if (number / 10 == 7) tracks[2] = R.raw.num70;
-                        if (number / 10 == 8) tracks[2] = R.raw.num80;
-                        if (number / 10 == 9) tracks[2] = R.raw.num90;
-                        number = number % 10;
-                        if (number == 0) {
-                            currentSize = 2;
-                        } else {
-                            if (number == 1) tracks[3] = R.raw.num1;
-                            if (number == 2) tracks[3] = R.raw.num2;
-                            if (number == 3) tracks[3] = R.raw.num3;
-                            if (number == 4) tracks[3] = R.raw.num4;
-                            if (number == 5) tracks[3] = R.raw.num5;
-                            if (number == 6) tracks[3] = R.raw.num6;
-                            if (number == 7) tracks[3] = R.raw.num7;
-                            if (number == 8) tracks[3] = R.raw.num8;
-                            if (number == 9) tracks[3] = R.raw.num9;
-                        }
-                    } else {
-                        currentSize = 2;
-                        number = number % 10;
-                        if (number == 1) tracks[2] = R.raw.num1;
-                        if (number == 2) tracks[2] = R.raw.num2;
-                        if (number == 3) tracks[2] = R.raw.num3;
-                        if (number == 4) tracks[2] = R.raw.num4;
-                        if (number == 5) tracks[2] = R.raw.num5;
-                        if (number == 6) tracks[2] = R.raw.num6;
-                        if (number == 7) tracks[2] = R.raw.num7;
-                        if (number == 8) tracks[2] = R.raw.num8;
-                        if (number == 9) tracks[2] = R.raw.num9;
-                    }
-                }
-            } else
-            if (number / 10 > 0) {
-                currentSize = 2;
-                if (number < 20) {
-                    currentSize = 1;
-                    if (number == 10) tracks[1] = R.raw.num10;
-                    if (number == 11) tracks[1] = R.raw.num11;
-                    if (number == 12) tracks[1] = R.raw.num12;
-                    if (number == 13) tracks[1] = R.raw.num13;
-                    if (number == 14) tracks[1] = R.raw.num14;
-                    if (number == 15) tracks[1] = R.raw.num15;
-                    if (number == 16) tracks[1] = R.raw.num16;
-                    if (number == 17) tracks[1] = R.raw.num17;
-                    if (number == 18) tracks[1] = R.raw.num18;
-                    if (number == 19) tracks[1] = R.raw.num19;
-                } else {
-                    if (number / 10 == 1) tracks[1] = R.raw.num10;
-                    if (number / 10 == 2) tracks[1] = R.raw.num20;
-                    if (number / 10 == 3) tracks[1] = R.raw.num30;
-                    if (number / 10 == 4) tracks[1] = R.raw.num40;
-                    if (number / 10 == 5) tracks[1] = R.raw.num50;
-                    if (number / 10 == 6) tracks[1] = R.raw.num60;
-                    if (number / 10 == 7) tracks[1] = R.raw.num70;
-                    if (number / 10 == 8) tracks[1] = R.raw.num80;
-                    if (number / 10 == 9) tracks[1] = R.raw.num90;
-                    number = number % 10;
-                    if (number == 1) tracks[2] = R.raw.num1;
-                    if (number == 2) tracks[2] = R.raw.num2;
-                    if (number == 3) tracks[2] = R.raw.num3;
-                    if (number == 4) tracks[2] = R.raw.num4;
-                    if (number == 5) tracks[2] = R.raw.num5;
-                    if (number == 6) tracks[2] = R.raw.num6;
-                    if (number == 7) tracks[2] = R.raw.num7;
-                    if (number == 8) tracks[2] = R.raw.num8;
-                    if (number == 9) tracks[2] = R.raw.num9;
-                }
-            } else {
-                currentSize = 1;
-                if (number == 1) tracks[1] = R.raw.num1;
-                if (number == 2) tracks[1] = R.raw.num2;
-                if (number == 3) tracks[1] = R.raw.num3;
-                if (number == 4) tracks[1] = R.raw.num4;
-                if (number == 5) tracks[1] = R.raw.num5;
-                if (number == 6) tracks[1] = R.raw.num6;
-                if (number == 7) tracks[1] = R.raw.num7;
-                if (number == 8) tracks[1] = R.raw.num8;
-                if (number == 9) tracks[1] = R.raw.num9;
-            }
-            mediaPlayer = MediaPlayer.create(getApplicationContext(), tracks[currentTrack]);
-            mediaPlayer.setOnCompletionListener(this);
-            mediaPlayer.start();
         });
-
-
+        period_task.start();
     }
 
-    public void onCompletion(MediaPlayer arg0) {
-        arg0.release();
-        if (currentTrack < currentSize) {
-            currentTrack++;
-            arg0 = MediaPlayer.create(getApplicationContext(), tracks[currentTrack]);
-            arg0.setOnCompletionListener(this);
-            arg0.start();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (period_task != null) running = false;
+    }
+
+    public void say_number(int number) {
+        switch (number / 100) {
+            case 0:  break;
+            case 1:  tracks.addLast(R.raw.num100); break;
+            case 2:  tracks.addLast(R.raw.num200); break;
+            case 3:  tracks.addLast(R.raw.num300); break;
+            case 4:  tracks.addLast(R.raw.num400); break;
+            case 5:  tracks.addLast(R.raw.num500); break;
+            case 6:  tracks.addLast(R.raw.num600); break;
+            case 7:  tracks.addLast(R.raw.num700); break;
+            case 8:  tracks.addLast(R.raw.num800); break;
+            case 9:  tracks.addLast(R.raw.num900); break;
+            default: break;
+        }
+        number %= 100;
+
+        switch (number/10) {
+            case 0:  break;
+            case 1:
+                switch (number) {
+                    case 10: tracks.addLast(R.raw.num10); break;
+                    case 11: tracks.addLast(R.raw.num11); break;
+                    case 12: tracks.addLast(R.raw.num12); break;
+                    case 13: tracks.addLast(R.raw.num13); break;
+                    case 14: tracks.addLast(R.raw.num14); break;
+                    case 15: tracks.addLast(R.raw.num15); break;
+                    case 16: tracks.addLast(R.raw.num16); break;
+                    case 17: tracks.addLast(R.raw.num17); break;
+                    case 18: tracks.addLast(R.raw.num18); break;
+                    case 19: tracks.addLast(R.raw.num19); break;
+                }
+                break;
+            case 2:  tracks.addLast(R.raw.num20); break;
+            case 3:  tracks.addLast(R.raw.num30); break;
+            case 4:  tracks.addLast(R.raw.num40); break;
+            case 5:  tracks.addLast(R.raw.num50); break;
+            case 6:  tracks.addLast(R.raw.num60); break;
+            case 7:  tracks.addLast(R.raw.num70); break;
+            case 8:  tracks.addLast(R.raw.num80); break;
+            case 9:  tracks.addLast(R.raw.num90); break;
+            default: break;
+        }
+        if (number < 10 || number > 19) {
+            number %= 10;
+            switch (number) {
+                case 0:break;
+                case 1: tracks.addLast(R.raw.num1); break;
+                case 2: tracks.addLast(R.raw.num2); break;
+                case 3: tracks.addLast(R.raw.num3); break;
+                case 4: tracks.addLast(R.raw.num4); break;
+                case 5: tracks.addLast(R.raw.num5); break;
+                case 6: tracks.addLast(R.raw.num6); break;
+                case 7: tracks.addLast(R.raw.num7); break;
+                case 8: tracks.addLast(R.raw.num8); break;
+                case 9: tracks.addLast(R.raw.num9); break;
+            }
+        }
+
+        mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.number);
+        mediaPlayer.setOnCompletionListener(QueueTerminalActivity.this);
+        mediaPlayer.start();
+    }
+
+    public void onCompletion(MediaPlayer mp) {
+        mediaPlayer.release();
+        if (tracks.size() > 0) {
+            mediaPlayer = MediaPlayer.create(getApplicationContext(), tracks.pop());
+            mediaPlayer.setOnCompletionListener(QueueTerminalActivity.this);
+            mediaPlayer.start();
         }
     }
 
@@ -244,6 +189,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         findViewById(R.id.lbl_terminal).setVisibility(View.VISIBLE);
         findViewById(R.id.lbl_lost).setVisibility(View.VISIBLE);
         findViewById(R.id.btn_join).setVisibility(View.VISIBLE);
+        findViewById(R.id.current_lbl).setVisibility(View.VISIBLE);
+        findViewById(R.id.current_field).setVisibility(View.VISIBLE);
 
         ((TextView) findViewById(R.id.name_field)).setText(queueInfo.getName());
 
@@ -256,21 +203,16 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         }
 
         generateCodeImage("http://equeue/" + queueInfo.getQid());
+        int current = queueInfo.getPassed();
+        ((TextView) findViewById(R.id.count_field))
+                .setText(String.valueOf(queueInfo.getUsersQuantity()));
+        ((TextView) findViewById(R.id.current_field)).setText(String.valueOf(current));
 
+        if (current_number != 0 && current_number != current ) {
+            say_number(current);
+        }
+        current_number = current;
 
-//        if (queueInfo. != null && !queueInfo.getUserlist().isEmpty()) {
-        int count = queueInfo.getUsersQuantity();
-//        int current = queueInfo.getUserlist().get(0);
-        ((TextView) findViewById(R.id.count_field)).setText(String.valueOf(count));
-
-//        findViewById(R.id.current_lbl).setVisibility(View.VISIBLE);
-//        findViewById(R.id.current_field).setVisibility(View.VISIBLE);
-//            ((TextView) findViewById(R.id.current_field)).setText(String.valueOf(current));
-//        } else {
-        findViewById(R.id.current_lbl).setVisibility(View.INVISIBLE);
-        findViewById(R.id.current_field).setVisibility(View.INVISIBLE);
-//        ((TextView) findViewById(R.id.count_field)).setText("0");
-//        }
     }
 
     //    TODO: вынести инициализацию юзера в Application
@@ -279,7 +221,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
             joinRequestId = getServiceHelper().joinQueueAnonym(queueInfo.getQid(), user.getToken());
             Random rnd = new Random();
             int code = 100 + rnd.nextInt(900);
-            ((TextView) findViewById(R.id.number_field)).setText(String.valueOf(user.getUid()));
+            ((TextView) findViewById(R.id.number_field))
+                    .setText(String.valueOf(queueInfo.getPassed()+queueInfo.getUsersQuantity()+1));
             ((TextView) findViewById(R.id.code_field)).setText(String.valueOf(code));
         } else {
             Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
