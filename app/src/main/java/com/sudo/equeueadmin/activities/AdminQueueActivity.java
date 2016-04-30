@@ -158,7 +158,9 @@ public class AdminQueueActivity extends NetBaseActivity {
             }, null);
         } else
         if (requestId == callRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, null, obj -> Toast.makeText(this, "Done", Toast.LENGTH_SHORT).show(), null);
+            getServiceHelper().handleResponse(this, resultCode, data, null,
+                    obj -> getQueueRequestId = getServiceHelper().getQueue(queueInfo.getQid()),
+                    null);
         }
     }
 }
