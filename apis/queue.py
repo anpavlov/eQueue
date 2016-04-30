@@ -325,6 +325,7 @@ def call():
     notify.delay(payload)
     return json.dumps(response)
 
+
 @queue_api.route("/find/", methods=['GET'])
 def find():
 
@@ -457,6 +458,12 @@ def in_queue():
         in_front = tarantool_manager.get_user_position(q_id, user['id'])
         if in_front > 0:
             in_front -= 1
+
+        try:
+            passed = tarantool_manager.select_assoc('stats', (q_id), index='qid')
+        except NoResult:
+            passed = []
+
         info.append({
             'qid': queue[0]['id'],
             'name': queue[0]['name'],
@@ -464,9 +471,9 @@ def in_queue():
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(queue[0]['coords']),
             'wait_time': predict.predict(in_front),
-            'in_front': in_front
+            'in_front': in_front,
+            'number': in_front + len(passed) + 1
         })
-
 
     response = {
         'code': 200,
