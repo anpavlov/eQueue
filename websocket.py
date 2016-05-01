@@ -1,7 +1,10 @@
 from tornado import websocket, web, ioloop
 from tornado.tcpserver import TCPServer
 from tornado.netutil import bind_unix_socket
+from tornado.options import options, define
 import json
+
+define("sockfile", default="")
 
 # clients[<queue_id>] = []
 clients = {}
@@ -62,8 +65,13 @@ app = web.Application([
 ])
 
 if __name__ == '__main__':
+    options.parse_command_line()
+    sockfile_path = options.sockfile
+    if sockfile_path == "":
+        print "Need '--sockfile=<path/to/socket>' arg"
+        exit(1)
+    unix_socket = bind_unix_socket(sockfile_path)
     server = EchoServer()
-    unix_socket = bind_unix_socket('/tmp/foo.sock')
     server.add_socket(unix_socket)
     # server.listen(8889)
     app.listen(8888)
