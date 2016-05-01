@@ -41,24 +41,6 @@ class SocketHandler(websocket.WebSocketHandler):
                 clients[qid].remove(self)
 
 
-# class ApiHandler(web.RequestHandler):
-#
-#     @web.asynchronous
-#     def post(self):
-#         self.finish()
-#         qid = self.get_argument("qid")
-#         qid = int(qid)
-#         in_front = self.get_argument("in_front")
-#         users_quantity = self.get_argument("users_quantity")
-#         wait_time = self.get_argument("wait_time")
-#
-#         data = {"qid": qid, "in_front": in_front, "users_quantity": users_quantity, "wait_time": wait_time}
-#         j = json.dumps(data)
-#         if qid in clients and isinstance(clients[qid], list):
-#             for c in clients[qid]:
-#                 c.write_message(j)
-
-
 def read_callback(data_bytes):
     print "received '" + data_bytes + "'"
     data = json.loads(data_bytes)
@@ -72,16 +54,6 @@ class EchoServer(TCPServer):
 
     def handle_stream(self, stream, address):
         stream.read_bytes(1000, streaming_callback=read_callback)
-
-        # self._stream = stream
-        # self._read_line()
-
-    # def _read_line(self):
-    #     self._stream.read_until('\n', self._handle_read)
-    #
-    # def _handle_read(self, data):
-    #     self._stream.write(data)
-    #     self._read_line()
 
 
 app = web.Application([
