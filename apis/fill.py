@@ -36,7 +36,7 @@ def create_queue():
     input_times = list(np.random.poisson(input_lambda, count_people))
     output_times = list(np.random.exponential(output_mu, count_people))
     # create queue
-    created_time = time.time() - random.randint(10, 100000)
+    created_time = time.time() - random.randint(100000, 10000000)
     queue = {
         'name': ' '.join(fake.words()),
         'description': ' '.join(fake.words()),
