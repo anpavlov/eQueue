@@ -16,6 +16,7 @@ public class Queue extends PossibleError {
     private String address;
     private int wait_time;
     private int in_front;
+    private int number;
     private String coords;
     private boolean isPassed = false;
 
@@ -103,5 +104,13 @@ public class Queue extends PossibleError {
             return new LatLng(lat, lon);
         } else
             return null;
+    }
+
+    public int getNumber() {
+        return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 }

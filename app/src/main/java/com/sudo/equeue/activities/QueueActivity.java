@@ -51,6 +51,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private Marker mMapMaker;
     int screenWidth;
+    private boolean joinFlag = false;
 
 //    private ProgressBar toolbarProgressBar;
 //    private ProgressBar statsInQueueProgressbar;
@@ -103,9 +104,6 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
             getSupportActionBar().setTitle(queue.getName());
         }
 
-//        joinButton.setEnabled(false);
-//        joinButton.setText("");
-
         swipeRefreshLayout = (StaticSwipeRefreshLayout) findViewById(R.id.refresh_queue_list);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (queue != null) {
@@ -122,7 +120,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
         statsBefore.setText(queue.getInFront()==-1?"-":String.valueOf(queue.getInFront()));
         statsTime.setText(Integer.toString(queue.getWaitTime()));
-        ticketNum.setText(Integer.toString(queue.getInFront() + 1));
+        ticketNum.setText(Integer.toString(queue.getNumber()));
 
         joinButton = (Button) findViewById(R.id.btn_join_queue);
         if (queue.IsIn()) {
@@ -160,32 +158,15 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         this.queue = newQueue;
         swipeRefreshLayout.setRefreshing(false);
 
-//        toolbarProgressBar.setVisibility(View.GONE);
-//        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setDisplayShowTitleEnabled(true);
-//            getSupportActionBar().setTitle(queue.getName());
-//        }
-
-//        statsInQueueProgressbar.setVisibility(View.GONE);
-//        statsInQueue.setVisibility(View.VISIBLE);
         statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
-
-//        statsBeforeProgressbar.setVisibility(View.GONE);
-//        statsBefore.setVisibility(View.VISIBLE);
-        statsBefore.setText(queue.getInFront()==-1?"-":String.valueOf(queue.getInFront()));
-        ticketNum.setText(Integer.toString(queue.getInFront() + 1));
-
-//        statsTimeProgressbar.setVisibility(View.GONE);
-//        statsTime.setVisibility(View.VISIBLE);
+        statsBefore.setText( queue.getInFront() == -1 ? "-" : String.valueOf(queue.getInFront()));
+        ticketNum.setText(Integer.toString(queue.getNumber()));
         statsTime.setText(Integer.toString(queue.getWaitTime()));
-
-//        buttonProgressbar.setVisibility(View.GONE);
-//        joinButton.setEnabled(true);
-//        joinButton.setText("Присоединиться");
-//        joinButton.setOnClickListener((v) -> joinQueue());
 
         if (queue.getInFront()==-1) {
             ticketView.setVisibility(View.GONE);
+        } else if (joinFlag) {
+            joinSuccess();
         }
 
         if (!queue.IsIn()) {
@@ -216,15 +197,15 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         joinButton.setEnabled(true);
         joinButton.setText("Покинуть");
         joinButton.setOnClickListener((v) -> leaveQueue());
-        queue.setInFront(queue.getUsersQuantity());
-        queue.setUsersQuantity(queue.getUsersQuantity() + 1);
-        statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
-        statsBefore.setText(Integer.toString(queue.getInFront()));
+//        queue.setInFront(queue.getUsersQuantity());
+//        queue.setUsersQuantity(queue.getUsersQuantity());
+//        statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
+//        statsBefore.setText(Integer.toString(queue.getInFront()));
 
         Animation bottomUp = AnimationUtils.loadAnimation(QueueActivity.this, R.anim.bottom_up);
         ticketView.startAnimation(bottomUp);
         ticketView.setVisibility(View.VISIBLE);
-        ticketNum.setText(String.valueOf(queue.getUsersQuantity()));
+//        ticketNum.setText(String.valueOf(queue.getNumber()+1));
     }
 
     private void joinFail() {
@@ -290,7 +271,10 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == joinQueueRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, null, obj -> joinSuccess(), this::joinFail);
+            getServiceHelper().handleResponse(this, resultCode, data, null,
+                    obj -> { getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
+                        joinFlag = true;},
+                    this::joinFail);
         } else if (requestId == getQueueRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> getQueueSuccess((Queue) obj), null);
         } else if (requestId == leaveQueueRequestId) {
@@ -325,13 +309,6 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         }
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        MenuInflater inflater = getMenuInflater();
-//        inflater.inflate(R.menu.queue_page_menu, menu);
-//        return true;
-//    }
-
     public void onMapReady(GoogleMap googleMap) {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -350,18 +327,18 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.d("Receiver", "Got it");
-            int queueId = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
-            int users_quantity = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
-            int in_front = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
-            int wait_time = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
-
-            if (queueId == queue.getQid()) {
-                queue.setUsersQuantity(users_quantity);
-                queue.setInFront(in_front);
-                queue.setWaitTime(wait_time);
-
-                getQueueSuccess(queue);
-            }
+//            int queueId = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+//            int users_quantity = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+//            int in_front = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+//            int wait_time = intent.getIntExtra(WebSocketService.EXTRA_QUEUE_ID, -1);
+//
+//            if (queueId == queue.getQid()) {
+//                queue.setUsersQuantity(users_quantity);
+//                queue.setInFront(in_front);
+//                queue.setWaitTime(wait_time);
+//
+//                getQueueSuccess(queue);
+//            }
         }
     }
 }
