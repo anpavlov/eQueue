@@ -1,6 +1,5 @@
 # coding=utf-8
 from flask import request, Blueprint
-from sqlalchemy.orm.exc import NoResultFound
 import werkzeug
 import json
 import responses
@@ -10,6 +9,7 @@ import time
 
 user_api = Blueprint('user', __name__)
 SESSION_TIME = 24*60*60
+
 
 @user_api.route("/create/", methods=['POST'])
 def create():
@@ -171,7 +171,7 @@ def update():
 
     try:
         user = tarantool_manager.get_user_by_token(token)
-    except NoResultFound:
+    except NoResult:
         return json.dumps(responses.INVALID_TOKEN)
 
     to_update = {}

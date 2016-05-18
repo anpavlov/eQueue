@@ -1,1 +1,1 @@
-flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql python-gcm
+flask flask-migrate flask-sqlalchemy flask-script tarantool flask-mysql python-gcm celery numpy scipy matplotlib scikit-learn pandas fake-factory
