@@ -122,32 +122,32 @@ public class MainActivity extends NetBaseActivity {
             }
         });
 
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-//                int pos = viewHolder.getAdapterPosition();
-//                if (queues.getQueueList().getQueues().get(pos).isPassed()) {
-//                    queues.getQueueList().getQueues().remove(pos);
-//                    adapter.notifyDataSetChanged();
-//                }
-//            }
-//
-//            @Override
-//            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-//                int pos = viewHolder.getAdapterPosition();
-//                if (!queues.getQueueList().getQueues().get(pos).isPassed()) {
-//                    return 0;
-//                }
-//                return super.getSwipeDirs(recyclerView, viewHolder);
-//            }
-//        });
-//
-//        itemTouchHelper.attachToRecyclerView(rv);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                int pos = viewHolder.getAdapterPosition();
+                if (queues.getQueueList().getQueues().get(pos).isPassed()) {
+                    queues.getQueueList().getQueues().remove(pos);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                int pos = viewHolder.getAdapterPosition();
+                if (!queues.getQueueList().getQueues().get(pos).isPassed()) {
+                    return 0;
+                }
+                return super.getSwipeDirs(recyclerView, viewHolder);
+            }
+        });
+
+        itemTouchHelper.attachToRecyclerView(rv);
 
 
 //        ========== Add button ============
@@ -206,15 +206,15 @@ public class MainActivity extends NetBaseActivity {
     }
 
     private void updatePassedQueues(int qid) {
-//        for (int i = 0; i < queues.getQueueList().getQueues().size(); ++i) {
-//            if (queues.getQueueList().getQueues().get(i).getQid() == qid) {
-//                Queue tempQueue = queues.getQueueList().getQueues().get(i);
-//                queues.getQueueList().getQueues().remove(i);
-//                queues.getQueueList().getQueues().add(0, tempQueue);
-//                tempQueue.setPassed(true);
-//                adapter.notifyDataSetChanged();
-//            }
-//        }
+        for (int i = 0; i < queues.getQueueList().getQueues().size(); ++i) {
+            if (queues.getQueueList().getQueues().get(i).getQid() == qid) {
+                Queue tempQueue = queues.getQueueList().getQueues().get(i);
+                queues.getQueueList().getQueues().remove(i);
+                queues.getQueueList().getQueues().add(0, tempQueue);
+                tempQueue.setPassed(true);
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @Override
