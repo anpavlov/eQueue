@@ -70,7 +70,8 @@
         </activity>
 
 
-        <activity android:name=".activities.QueueActivity">
+        <activity android:name=".activities.QueueActivity"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity android:name=".activities.FindNearActivity" >
