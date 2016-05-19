@@ -16,4 +16,13 @@
         android:src="@drawable/trans_eq"
         android:minHeight="512dp"
         android:minWidth="512dp" />
+
+    <ProgressBar
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/button_loader"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true"
+        android:theme="@style/WhiteProgress" />
 </RelativeLayout>
