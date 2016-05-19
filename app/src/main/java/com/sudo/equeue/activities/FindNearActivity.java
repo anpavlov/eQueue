@@ -41,6 +41,8 @@ public class FindNearActivity extends NetBaseActivity {
     private MultiSwipeRefreshLayout swipeRefreshLayout;
     private String coords;
     private ProgressBar buttonProgressBar;
+    private LocationManager locationManager;
+    private MyLocationListener myLocListener;
 
 
     @Override
@@ -106,10 +108,10 @@ public class FindNearActivity extends NetBaseActivity {
 
 
         //========== Location ============
-        int minTime = 1000;
-        float minDistance = 10;
-        MyLocationListener myLocListener = new MyLocationListener();
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        int minTime = 0;
+        float minDistance = 0;
+        myLocListener = new MyLocationListener();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         Criteria criteria = new Criteria();
         criteria.setPowerRequirement(Criteria.POWER_LOW);
@@ -124,6 +126,12 @@ public class FindNearActivity extends NetBaseActivity {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
+        }
+
+        Location lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
+        if(lastKnownLocation != null) {
+            coords = String.valueOf(lastKnownLocation.getLatitude()) + ',' + String.valueOf(lastKnownLocation.getLongitude());
+            getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
         }
 
         locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
@@ -176,6 +184,13 @@ public class FindNearActivity extends NetBaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.locationManager = null;
+        this.myLocListener = null;
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         QueueList queueList = new QueueList();
@@ -190,12 +205,22 @@ public class FindNearActivity extends NetBaseActivity {
         }
     }
 
+    public void removeLocationListener() {
+        if(this.locationManager != null && this.myLocListener != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                this.locationManager.removeUpdates(this.myLocListener);
+            }
+        }
+    }
+
     private class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
             if (loc != null) {
                 coords = String.valueOf(loc.getLatitude()) + ',' + String.valueOf(loc.getLongitude());
                 getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
+                FindNearActivity.this.removeLocationListener();
             }
         }
 
