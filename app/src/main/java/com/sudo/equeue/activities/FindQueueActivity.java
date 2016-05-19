@@ -4,18 +4,21 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
 import com.sudo.equeue.models.Queue;
+import com.sudo.equeue.utils.CustomSnackBar;
 
 public class FindQueueActivity extends NetBaseActivity {
 
@@ -57,7 +60,13 @@ public class FindQueueActivity extends NetBaseActivity {
             Integer qid = Integer.parseInt(hashField.getText().toString());
             searchQueueRequestId = getServiceHelper().getQueue(qid);
         } catch (NumberFormatException e) {
-            Toast.makeText(this, "It's not a queue id", Toast.LENGTH_LONG).show();
+            RelativeLayout findQueueLayout= (RelativeLayout) findViewById(R.id.findQueueLayout);
+            if(findQueueLayout != null) {
+                CustomSnackBar.show(findQueueLayout, "ID должен быть числом");
+            }
+            buttonSearch.setEnabled(true);
+            buttonSearch.setText("Открыть");
+            buttonProgressBar.setVisibility(View.GONE);
         }
 
     }
