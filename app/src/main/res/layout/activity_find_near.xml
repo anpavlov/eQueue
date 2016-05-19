@@ -70,7 +70,7 @@
                 android:id="@+id/button_loader"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:theme="@style/WhiteProgress"
+                android:theme="@style/PurpleProgress"
                 />
 
         </RelativeLayout>

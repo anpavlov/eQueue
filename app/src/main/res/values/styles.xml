@@ -63,6 +63,14 @@
         <item name="android:textColor">@android:color/white</item>
     </style>
 
+    <style name="PurpleProgress">
+        <item name="colorPrimary">@color/mainColor</item>
+        <item name="colorPrimaryDark">@color/mainColor</item>
+        <item name="colorAccent">@color/mainColor</item>
+        <item name="colorButtonNormal">@color/mainColor</item>
+        <item name="android:textColor">@color/mainColor</item>
+    </style>
+
     <!--<style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">-->
         <!--<item name="android:actionButtonStyle">@style/Widget.AppCompat.ActionButton</item>-->
     <!--</style>-->
