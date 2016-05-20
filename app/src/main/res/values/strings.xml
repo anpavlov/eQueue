@@ -14,10 +14,10 @@
     <!--<string name="server_ip">192.168.0.101:5000</string>-->
 
     <!-- Error messages (also for Toasts)-->
-    <string name="error_msg_server_timeout">Server timed out</string>
-    <string name="error_msg_conn_timeout">Connection timed out</string>
-    <string name="error_msg_server_error">Server error occurred. Please contact developers</string>
-    <string name="error_msg_unknown">Unknown error occurred. Please contact developers</string>
+    <string name="error_msg_server_timeout">Истекло время ожидания сервера</string>
+    <string name="error_msg_conn_timeout">Истекло время подключения</string>
+    <string name="error_msg_server_error">Произошла ошибка на сервере</string>
+    <string name="error_msg_unknown">Произошла ошибка. Вероятно нет интернета</string>
     <string name="title_activity_main2">Main2Activity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>

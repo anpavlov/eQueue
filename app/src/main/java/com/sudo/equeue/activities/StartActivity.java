@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -16,6 +15,8 @@ import com.sudo.equeue.models.IsTokenOkModel;
 import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.models.User;
 import com.sudo.equeue.push.RegistrationIntentService;
+import com.sudo.equeue.utils.AlertDialogHelper;
+import com.sudo.equeue.utils.CustomSnackBar;
 import com.sudo.equeue.utils.QueueApplication;
 
 import java.util.Map;
@@ -54,7 +55,7 @@ public class StartActivity extends NetBaseActivity {
 
     private void startApp(QueueList queueList) {
         if (queueList == null) {
-            Toast.makeText(this, "Error: qlist is null", Toast.LENGTH_LONG).show();
+            AlertDialogHelper.show(this, "Ошибка: qlist is null"); // TODO: remove
             Log.e(null, "Error: qlist is null");
         } else {
             Intent intent = new Intent(StartActivity.this, MainActivity.class);
@@ -81,7 +82,7 @@ public class StartActivity extends NetBaseActivity {
                     .commit();
             getMyQueuesRequestId = getServiceHelper().meInQueues();
         } else {
-            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Ошибка в запросе");
             Log.e(null, "Got error: user==0 -> " + Boolean.toString(user == null));
             if (user != null) {
                 Log.e(null, "Got error: token='" + user.getToken() + "'");

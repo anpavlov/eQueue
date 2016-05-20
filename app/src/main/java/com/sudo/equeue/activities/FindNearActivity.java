@@ -15,14 +15,15 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
+import com.sudo.equeue.utils.CustomSnackBar;
 import com.sudo.equeue.utils.MultiSwipeRefreshLayout;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.QueueListAdapter;
@@ -226,7 +227,10 @@ public class FindNearActivity extends NetBaseActivity {
 
         @Override
         public void onProviderDisabled(String arg0) {
-            Toast.makeText(FindNearActivity.this, "Вы отключили систему навигации", Toast.LENGTH_LONG).show();
+            LinearLayout findNearLayout = (LinearLayout) findViewById(R.id.findNearLayout);
+            if(findNearLayout != null) {
+                CustomSnackBar.show(findNearLayout, "Вы отключили систему навигации");
+            }
         }
 
         @Override
