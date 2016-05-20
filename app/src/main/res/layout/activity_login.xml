@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/button_white"
-        android:text="Войти через ВК"
+        android:text="Войти через ВКонтакте"
         android:layout_marginTop="10dp"/>
 
 </LinearLayout>

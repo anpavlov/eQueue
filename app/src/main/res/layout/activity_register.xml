@@ -26,7 +26,9 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
+            android:background="?android:attr/listDivider"
+            android:layout_below="@id/field_email"
+            android:id="@+id/delim_field_email"/>
 
         <EditText
             android:id="@+id/field_name"
@@ -34,13 +36,15 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:hint="Имя"
-            android:layout_below="@id/field_email"
+            android:layout_below="@id/delim_field_email"
             style="@style/FullWidthEditText"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
+            android:background="?android:attr/listDivider"
+            android:id="@+id/delim_field_name"
+            android:layout_below="@id/field_name"/>
 
         <EditText
             android:id="@+id/field_password_one"
@@ -48,13 +52,16 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:hint="Пароль"
-            android:layout_below="@id/field_name"
+            android:layout_below="@id/delim_field_name"
             style="@style/FullWidthEditText"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
+            android:background="?android:attr/listDivider"
+            android:id="@+id/delim_field_password_one"
+            android:layout_below="@id/field_password_one"
+            />
 
         <EditText
             android:id="@+id/field_password_two"
@@ -62,13 +69,15 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:hint="Пароль (еще раз)"
-            android:layout_below="@id/field_password_one"
+            android:layout_below="@id/delim_field_password_one"
             style="@style/FullWidthEditText"/>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="?android:attr/listDivider"/>
+            android:background="?android:attr/listDivider"
+            android:id="@+id/delim_field_password_two"
+            android:layout_below="@id/field_password_two" />
 
         <Button
             android:id="@+id/btn_register"
@@ -76,7 +85,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_white"
             android:text="Зарегистрироваться"
-            android:layout_below="@id/field_password_two"
+            android:layout_below="@id/delim_field_password_two"
             android:layout_marginTop="20dp"/>
     </RelativeLayout>
 </LinearLayout>

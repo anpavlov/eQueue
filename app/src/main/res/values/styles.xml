@@ -52,4 +52,20 @@
         <item name="android:actionBarTabTextStyle">@android:color/white</item>
     </style>
 
+    <style name="WhiteProgress">
+        <item name="colorPrimary">@android:color/white</item>
+        <item name="colorPrimaryDark">@android:color/white</item>
+        <item name="colorAccent">@android:color/white</item>
+        <item name="colorButtonNormal">@android:color/white</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="PurpleProgress">
+        <item name="colorPrimary">@color/mainColor</item>
+        <item name="colorPrimaryDark">@color/mainColor</item>
+        <item name="colorAccent">@color/mainColor</item>
+        <item name="colorButtonNormal">@color/mainColor</item>
+        <item name="android:textColor">@color/mainColor</item>
+    </style>
+
 </resources>
