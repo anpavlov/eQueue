@@ -1,3 +1,5 @@
+# coding=utf-8
+
 BAD_REQUEST = {'code': 400, 'body': {'error': 'Неверные параметры для запроса'}}
 INVALID_TOKEN = {'code': 403, 'body': {'error': 'Ваша сессия устарела'}}
 QUEUE_NOT_FOUND = {'code': 404, 'body': {'error': 'Очередь не найдена'}}
