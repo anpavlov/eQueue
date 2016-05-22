@@ -3,6 +3,7 @@ import socket
 import json
 
 app = Celery('tasks', broker='amqp://guest@localhost//')
+app.config_from_object('celeryconfig')
 
 
 @app.task
@@ -12,3 +13,8 @@ def notify(payload):
     s.send(json.dumps(payload))
     s.close()
     # requests.post('http://localhost:8888/post/', data=payload)
+
+
+@app.task
+def update_coefs():
+    print 'updating'
