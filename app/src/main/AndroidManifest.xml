@@ -57,9 +57,11 @@
             android:screenOrientation="landscape">
         </activity>
 
-        <activity android:name=".activities.LoginActivity" >
+        <activity android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".activities.RegisterActivity" >
+        <activity android:name=".activities.RegisterActivity"
+            android:screenOrientation="portrait">
         </activity>
 
         <!-- =================== GCM =====================-->
