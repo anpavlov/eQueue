@@ -6,8 +6,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,6 +21,7 @@ import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
+import com.sudo.equeueadmin.utils.CustomSnackBar;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 import java.util.List;
@@ -58,7 +59,10 @@ public class EditQueueActivity extends NetBaseActivity implements OnMapReadyCall
         }
 
         if (queueInfo == null) {
-            Toast.makeText(this, "Error: queue is null", Toast.LENGTH_LONG).show();
+            LinearLayout editQueueLayout = (LinearLayout) findViewById(R.id.edit_queue_layout);
+            if(editQueueLayout != null) {
+                CustomSnackBar.show(editQueueLayout, "Ошибка: queue is null");
+            }
             finish();
         } else {
             ((EditText) findViewById(R.id.name_field)).setText(queueInfo.getName());
@@ -120,7 +124,10 @@ public class EditQueueActivity extends NetBaseActivity implements OnMapReadyCall
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == saveInfoRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, null, obj -> {
-                Toast.makeText(this, "Сохранено", Toast.LENGTH_SHORT).show();
+                LinearLayout editQueueLayout = (LinearLayout) findViewById(R.id.edit_queue_layout);
+                if(editQueueLayout != null) {
+                    CustomSnackBar.show(editQueueLayout, "Сохранено");
+                }
 
                 Intent intent = new Intent();
                 intent.putExtra(AdminQueueActivity.EXTRA_QUEUE, queueInfo);

@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -19,6 +18,7 @@ import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.models.User;
+import com.sudo.equeueadmin.utils.AlertDialogHelper;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 import java.util.EnumMap;
@@ -225,7 +225,7 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
                     .setText(String.valueOf(queueInfo.getPassed()+queueInfo.getUsersQuantity()+1));
             ((TextView) findViewById(R.id.code_field)).setText(String.valueOf(code));
         } else {
-            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Ошибка при запросе");
         }
     }
 

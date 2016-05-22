@@ -8,12 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.User;
+import com.sudo.equeueadmin.utils.AlertDialogHelper;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 public class RegisterActivity extends NetBaseActivity {
@@ -41,15 +41,15 @@ public class RegisterActivity extends NetBaseActivity {
         String passwordOne = ((EditText) findViewById(R.id.field_password_one)).getText().toString();
         String passwordTwo = ((EditText) findViewById(R.id.field_password_two)).getText().toString();
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "It's not an email", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Необходимо ввести корректный email");
             return;
         }
         if (!passwordOne.equals(passwordTwo)) {
-            Toast.makeText(this, "Different passwords", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Пароли не совпадают");
             return;
         }
         if (email.equals("") || passwordOne.equals("") || passwordTwo.equals("")) {
-            Toast.makeText(this, "Empty field", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Необходимо заполнить все поля");
             return;
         }
 
@@ -77,7 +77,7 @@ public class RegisterActivity extends NetBaseActivity {
 //            setResult(RESULT_OK, null);
             startApp();
         } else {
-            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Ошибка при запросе");
         }
     }
 

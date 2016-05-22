@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.os.ResultReceiver;
-import android.widget.Toast;
 
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
@@ -96,10 +95,11 @@ public class ServiceHelper implements ServiceCallbackListener {
                 if (failCallback != null) {
                     failCallback.call();
                 }
-                Toast.makeText(context, data.getString(NetService.ERROR_MSG, context.getString(R.string.error_msg_unknown)), Toast.LENGTH_LONG).show();
+                String errMessage = data.getString(NetService.ERROR_MSG, context.getString(R.string.error_msg_unknown));
+                AlertDialogHelper.show(context, errMessage);
             }
         } else {
-            throw new AssertionError("Error in arguments");
+//            throw new AssertionError("Error in arguments"); //TODO: wtf
 //            Toast.makeText(context, "Error in arguments", Toast.LENGTH_LONG).show();
         }
     }

@@ -6,12 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.User;
+import com.sudo.equeueadmin.utils.AlertDialogHelper;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 public class LoginActivity extends NetBaseActivity {
@@ -41,11 +41,11 @@ public class LoginActivity extends NetBaseActivity {
         String email = ((EditText) findViewById(R.id.field_email)).getText().toString();
         String password = ((EditText) findViewById(R.id.field_password)).getText().toString();
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            Toast.makeText(this, "It's not an email", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Введите корректный email адрес");
             return;
         }
         if (email.equals("") || password.equals("")) {
-            Toast.makeText(this, "Empty field", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Необходимо заполнить все поля");
             return;
         }
 
@@ -75,7 +75,7 @@ public class LoginActivity extends NetBaseActivity {
             } else {
                 int vkuid = data.getIntExtra(WebViewActivity.EXTRA_VKUID, -1);
                 if (vkuid == -1) {
-                    Toast.makeText(this, "Error while logging", Toast.LENGTH_SHORT).show();
+                    AlertDialogHelper.show(this, "Ошибка авторизации");
                 } else {
                     loginRequestId = getServiceHelper().loginVk(vkuid);
                 }
@@ -94,7 +94,7 @@ public class LoginActivity extends NetBaseActivity {
                     .commit();
             startApp();
         } else {
-            Toast.makeText(this, "Error in request", Toast.LENGTH_SHORT).show();
+            AlertDialogHelper.show(this, "Ошибка в запросе");
         }
     }
 

@@ -6,13 +6,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
+import com.sudo.equeueadmin.utils.CustomSnackBar;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 import java.util.List;
@@ -164,7 +165,10 @@ public class CreateQueueActivity extends NetBaseActivity {
             startActivity(intent);
             finish();
         } else {
-            Toast.makeText(this, "Error: queue is null", Toast.LENGTH_LONG).show();
+            LinearLayout createQueueLayout = (LinearLayout) findViewById(R.id.create_queue_layout);
+            if(createQueueLayout != null) {
+                CustomSnackBar.show(createQueueLayout, "Ошибка: queue is null");
+            }
         }
     }
 
