@@ -30,6 +30,7 @@ import com.sudo.equeue.utils.QueueListAdapter;
 import com.sudo.equeue.utils.QueueListWrapper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FindNearActivity extends NetBaseActivity {
@@ -105,35 +106,69 @@ public class FindNearActivity extends NetBaseActivity {
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setRefreshing(true);
         swipeRefreshLayout.setOnRefreshListener(() ->
-        {if (coords != null) getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);});
+        {
+            if (coords != null) getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
+        });
 
 
         //========== Location ============
-        int minTime = 0;
-        float minDistance = 0;
         myLocListener = new MyLocationListener();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        long minTime = System.currentTimeMillis() - 30 * 60 * 1000;
+        float minDistance = 100;
+        float bestAccuracy = 2000;
+        Location bestResult = null;
+        long bestTime = 0;
+
+        List<String> matchingProviders = locationManager.getAllProviders();
+        for (String provider: matchingProviders) {
+            Location location = locationManager.getLastKnownLocation(provider);
+            if (location != null) {
+                float accuracy = location.getAccuracy();
+                long time = location.getTime();
+
+                if ((time > minTime && accuracy < bestAccuracy)) {
+                    bestResult = location;
+                    bestAccuracy = accuracy;
+                    bestTime = time;
+                }
+                else if (time < minTime &&
+                        bestAccuracy == Float.MAX_VALUE && time > bestTime){
+                    bestResult = location;
+                    bestTime = time;
+                }
+            }
+        }
+
+        if(bestResult != null) {
+            coords = String.valueOf(bestResult.getLatitude()) + ',' + String.valueOf(bestResult.getLongitude());
+            getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
+            return;
+        }
+
+
+
 
         Criteria criteria = new Criteria();
-        criteria.setPowerRequirement(Criteria.POWER_LOW);
-        criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
         criteria.setAltitudeRequired(false);
         criteria.setBearingRequired(false);
         criteria.setCostAllowed(true);
-        criteria.setSpeedRequired(false);
+        criteria.setSpeedRequired(true);
 
-        String bestProvider = locationManager.getBestProvider(criteria, false);
+        String bestProvider = locationManager.getBestProvider(criteria, true);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
         }
 
-        Location lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
-        if(lastKnownLocation != null) {
-            coords = String.valueOf(lastKnownLocation.getLatitude()) + ',' + String.valueOf(lastKnownLocation.getLongitude());
-            getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
-        }
+//        Location lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
+//        if(lastKnownLocation != null) {
+//            coords = String.valueOf(lastKnownLocation.getLatitude()) + ',' + String.valueOf(lastKnownLocation.getLongitude());
+//            getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
+//        }
 
         locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
     }
@@ -219,6 +254,10 @@ public class FindNearActivity extends NetBaseActivity {
     private class MyLocationListener implements LocationListener {
         @Override
         public void onLocationChanged(Location loc) {
+            LinearLayout findNearLayout = (LinearLayout) findViewById(R.id.findNearLayout);
+            if(findNearLayout != null) {
+                CustomSnackBar.show(findNearLayout, "Получили координаты, ищем очереди");
+            }
             if (loc != null) {
                 coords = String.valueOf(loc.getLatitude()) + ',' + String.valueOf(loc.getLongitude());
                 getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
