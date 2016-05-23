@@ -36,6 +36,10 @@ local stats = box.schema.space.create('stats', {if_not_exists = true})
 stats:create_index('primary', {type = 'tree', parts = {1, 'NUM'}, if_not_exists = true})
 stats:create_index('qid', {type = 'tree', parts = {2, 'NUM'}, unique = false, if_not_exists = true})
 
+local coefs = box.schema.space.create('coefs', {if_not_exists = true})
+coefs:create_index('primary', {type='tree', parts = {1, 'NUM'}, if_not_exists = true})
+
+
 
 -- functions area:
 function auto_inc_insert(space_name, ...)

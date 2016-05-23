@@ -5,3 +5,5 @@ venv/
 # tarantool
 *.snap
 *.xlog
+
+celerybeat-schedule

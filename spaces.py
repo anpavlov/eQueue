@@ -50,5 +50,12 @@ schema = {
             ('time_out', TARANTOOL_NUM, 0),
             ('class', TARANTOOL_STR, '')
         ]
+    },
+    'coefs': {
+        'fields': [
+            ('id', TARANTOOL_NUM64, None),
+            ('class', TARANTOOL_STR, ''),
+            ('wait_avg', TARANTOOL_NUM, 0)
+        ]
     }
 }

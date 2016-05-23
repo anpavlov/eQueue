@@ -1,6 +1,7 @@
 from celery import Celery
 import socket
 import json
+from taran import tarantool_manager
 
 app = Celery('tasks', broker='amqp://guest@localhost//')
 app.config_from_object('celeryconfig')
@@ -18,3 +19,8 @@ def notify(payload):
 @app.task
 def update_coefs():
     print 'updating'
+    coefs = {
+        'class': '',
+        'wait_avg': 19
+    }
+    tarantool_manager.insert('coefs', coefs)
