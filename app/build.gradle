@@ -49,8 +49,8 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.neovisionaries:nv-websocket-client:1.25'
-    //    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
-    compile files('libs/zbar.jar')
+    // compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
+    compile 'me.dm7.barcodescanner:zbar:1.8.3'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -30,15 +30,10 @@ public class QRCodeActivity extends NetBaseActivity {
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
     private FrameLayout preview;
-//    private TextView scanText;
     private ImageScanner scanner;
     private boolean previewing = true;
     private Image codeImage;
     private FrameLayout progressBarHolder;
-
-    static {
-        System.loadLibrary("iconv");
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +59,6 @@ public class QRCodeActivity extends NetBaseActivity {
         scanner.setConfig(0, Config.Y_DENSITY, 3);
 
         progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
-//        scanText = (TextView) findViewById(R.id.scanText);
     }
 
     private void handleScannedText(String text) {
