@@ -73,7 +73,7 @@ class Manager:
         res = self.conn.call("user_number", qid, uid)
         if not res:
             return 0
-        return res[0][0]
+        return int(res[0][0])
 
     def get_stand_timestamp(self, qid, uid):
         res = self.conn.call("user_timestamp", qid, uid)

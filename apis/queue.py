@@ -163,6 +163,8 @@ def info_user():
     if in_front > 0:
         in_front -= 1
 
+    stand_timestamp = tarantool_manager.get_stand_timestamp(q['id'], user['id'])
+
     try:
         passed = tarantool_manager.select_assoc('stats', (qid), index='qid')
     except NoResult:
@@ -177,7 +179,7 @@ def info_user():
             'date_opened': int(q['created']),
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(q['coords']),
-            'wait_time': predict.predict(in_front),
+            'wait_time': predict.predict(in_front, stand_timestamp),
             'in_front': in_front,
             'number': in_front + len(passed) + 1
         }
