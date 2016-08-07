@@ -75,6 +75,15 @@ class Manager:
             return 0
         return res[0][0]
 
+    def get_stand_timestamp(self, qid, uid):
+        res = self.conn.call("user_timestamp", qid, uid)
+        if not res:
+            return 0
+        try:
+            return int(res[0][0])
+        except ValueError:
+            return 0
+
     def _get_position_by_key(self, space_name, key):
         for i, val in enumerate(self.schema[space_name]['fields']):
             if val[0] == key:

@@ -446,10 +446,11 @@ def in_queue():
         return json.dumps(responses.INVALID_TOKEN)
 
     queues = standings.select(user['id'], index='user_id', iterator=0)
-    q = [queue[0] for queue in queues]
+    # q = [queue[0] for queue in queues]
 
     info = []
-    for q_id in q:
+    for queue_s in queues:
+        q_id = queue_s[0]
         try:
             queue = tarantool_manager.select_assoc('queues', (q_id))
         except NoResult:
@@ -471,7 +472,7 @@ def in_queue():
             'description': queue[0]['description'],
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(queue[0]['coords']),
-            'wait_time': predict.predict(in_front),
+            'wait_time': predict.predict(in_front, queue_s[4]),
             'in_front': in_front,
             'number': in_front + len(passed) + 1
         })
@@ -624,5 +625,8 @@ def tags():
 
 @queue_api.route("/pretty/", methods=['GET'])
 def pretty():
-    res = tarantool_manager.select_assoc('queues', ())
+    try:
+        res = tarantool_manager.select_assoc('queues', ())
+    except NoResult:
+        res = {}
     return json.dumps(res)

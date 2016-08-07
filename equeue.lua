@@ -79,6 +79,12 @@ function user_number(qid, uid)
     return -1
 end
 
+-- returns user's timestamp of standing
+function user_timestamp(qid, uid)
+    local result = box.space.standings.index.primary:select{qid, uid}
+    return result[1][5]
+end
+
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})
 
 local console = require 'console'

@@ -100,7 +100,6 @@ def update_gcmid():
     return json.dumps(response)
 
 
-
 @user_api.route("/login/", methods=['POST'])
 def login():
 
