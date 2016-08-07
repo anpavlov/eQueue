@@ -54,6 +54,7 @@ def create():
     }
     return json.dumps(response)
 
+
 @queue_api.route("/update/", methods=['POST'])
 def update():
     try:
@@ -236,6 +237,7 @@ def info_admin():
         response['body']['coords'] = str(q['coords'][0]) + ',' + str(q['coords'][1])
 
     return json.dumps(response)
+
 
 @queue_api.route("/join/", methods=['POST'])
 def join():
@@ -607,7 +609,6 @@ def delete():
         }
     }
     return json.dumps(response)
-
 
 
 @queue_api.route("/tags/", methods=['GET'])

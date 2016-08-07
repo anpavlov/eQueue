@@ -6,7 +6,7 @@ class NoResult(Exception):
     pass
 
 
-class Manager():
+class Manager:
     def __init__(self, conn, schema):
         self.conn = conn
         self.schema = schema
