@@ -84,6 +84,15 @@ class Manager:
         except ValueError:
             return 0
 
+    def get_total_count_in_queue(self, qid):
+        res = self.conn.call("total_count", qid)
+        if not res:
+            return 0
+        try:
+            return int(res[0][0])
+        except ValueError:
+            return 0
+
     def _get_position_by_key(self, space_name, key):
         for i, val in enumerate(self.schema[space_name]['fields']):
             if val[0] == key:

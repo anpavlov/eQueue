@@ -85,6 +85,16 @@ function user_timestamp(qid, uid)
     return result[1][5]
 end
 
+-- returns total count in particular queue
+function total_count(qid)
+    local result = box.space.standings.index.qid:select{qid}
+    local count = 0
+    for _ in pairs(result) do
+        count = count + 1
+    end
+    return count
+end
+
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})
 
 local console = require 'console'
