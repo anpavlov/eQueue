@@ -163,7 +163,10 @@ def info_user():
     if in_front > 0:
         in_front -= 1
 
-    stand_timestamp = tarantool_manager.get_stand_timestamp(q['id'], user['id'])
+    if in_front != -1:
+        stand_timestamp = tarantool_manager.get_stand_timestamp(q['id'], user['id'])
+    else:
+        stand_timestamp = 0
 
     try:
         passed = tarantool_manager.select_assoc('stats', (qid), index='qid')

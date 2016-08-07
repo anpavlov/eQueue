@@ -11,7 +11,8 @@ def predict(position, stand_time):
         wait_time = position * USER_AVG + random.randint(-1, 1)
 
     # subtract elapsed time
-    wait_time -= float(int(time.time()) - stand_time) / 60.
+    if stand_time != 0:
+        wait_time -= float(int(time.time()) - stand_time) / 60.
 
     if wait_time < 0:
         return 1
