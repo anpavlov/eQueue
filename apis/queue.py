@@ -233,7 +233,7 @@ def info_admin():
             'date_opened': int(q['created']),
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(q['coords']),
-            'wait_time': predict.predict(2),  # TODO: remove magic))
+            'wait_time': 26,  # TODO: remove magic))
             'passed': len(passed)
         }
     }

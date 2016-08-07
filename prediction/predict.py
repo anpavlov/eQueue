@@ -8,7 +8,7 @@ def predict(position, stand_time):
     if position == -1:
         wait_time = 18  # TODO: change it
     else:
-        wait_time = position * USER_AVG + random.randint(-1, 1)
+        wait_time = position * USER_AVG
 
     # subtract elapsed time
     if stand_time != 0:
