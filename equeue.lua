@@ -95,6 +95,19 @@ function total_count(qid)
     return count
 end
 
+-- returns avg wait time by qid
+function avg_by_queue(qid)
+    local result = box.space.stats.index.qid:select{qid}
+    local total_sum = 0
+    local count = 0
+    for i,q in ipairs(result) do
+        total_sum = total_sum + q[4]
+        count = count + 1
+    end
+    local avg = total_sum / count
+    return avg
+end
+
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})
 
 local console = require 'console'

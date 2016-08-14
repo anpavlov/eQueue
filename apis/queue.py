@@ -12,6 +12,7 @@ from gcm.gcm import GCMNotRegisteredException
 from prediction import predict
 from map import class_resolver, categories
 
+
 queue_api = Blueprint('queue', __name__)
 
 
@@ -173,6 +174,8 @@ def info_user():
     else:
         total_in_queue = 0
 
+    avg = tarantool_manager.avg_by_queue(q['id'])
+
     try:
         passed = tarantool_manager.select_assoc('stats', (qid), index='qid')
     except NoResult:
@@ -187,7 +190,7 @@ def info_user():
             'date_opened': int(q['created']),
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(q['coords']),
-            'wait_time': predict.predict(in_front, stand_timestamp, total_in_queue),
+            'wait_time': predict.predict(in_front, stand_timestamp, avg, total_in_queue),
             'in_front': in_front,
             'number': in_front + len(passed) + 1
         }
@@ -471,6 +474,8 @@ def in_queue():
         if in_front > 0:
             in_front -= 1
 
+        avg = tarantool_manager.avg_by_queue(q_id)
+
         try:
             passed = tarantool_manager.select_assoc('stats', (q_id), index='qid')
         except NoResult:
@@ -482,7 +487,7 @@ def in_queue():
             'description': queue[0]['description'],
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(queue[0]['coords']),
-            'wait_time': predict.predict(in_front, queue_s[4]),
+            'wait_time': predict.predict(in_front, avg, queue_s[4]),
             'in_front': in_front,
             'number': in_front + len(passed) + 1
         })

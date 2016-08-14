@@ -1,12 +1,18 @@
 import random
 import time
 
-USER_AVG = 19
+USER_AVG = 19  # koef
+
+START_AVG = 3  # start using avg
 
 
-def predict(position, stand_time, pos=0):
+def predict(position, stand_time, avg=0, total_in_queue=0):
+    global USER_AVG
+    if total_in_queue > START_AVG:
+        USER_AVG = avg
+
     if position == -1:
-        wait_time = pos * USER_AVG
+        wait_time = total_in_queue * USER_AVG
     else:
         wait_time = position * USER_AVG
 
