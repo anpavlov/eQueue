@@ -169,10 +169,10 @@ def info_user():
     else:
         stand_timestamp = 0
 
-    # if in_front == -1:
-    #     total_in_queue = tarantool_manager.get_total_count_in_queue(q['id'])
-    # else:
-    #     total_in_queue = 0
+    if in_front == -1:
+        total_in_queue = tarantool_manager.get_total_count_in_queue(q['id'])
+    else:
+        total_in_queue = 0
 
     avg = tarantool_manager.avg_by_queue(q['id'])
 
@@ -190,7 +190,7 @@ def info_user():
             'date_opened': int(q['created']),
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(q['coords']),
-            'wait_time': predict.predict(in_front, stand_timestamp, avg, len(passed)),
+            'wait_time': predict.predict(in_front, stand_timestamp, avg, total_in_queue, len(passed)),
             'in_front': in_front,
             'number': in_front + len(passed) + 1
         }
@@ -487,7 +487,7 @@ def in_queue():
             'description': queue[0]['description'],
             'users_quantity': len(users),
             'address': class_resolver.get_address_by_coords(queue[0]['coords']),
-            'wait_time': predict.predict(in_front, queue_s[4], avg, len(passed)),
+            'wait_time': predict.predict(in_front, queue_s[4], avg, len(users), len(passed)),
             'in_front': in_front,
             'number': in_front + len(passed) + 1
         })

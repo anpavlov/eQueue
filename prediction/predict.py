@@ -6,7 +6,7 @@ USER_AVG = 19  # koef
 START_AVG = 3  # start using avg
 
 
-def predict(position, stand_time, avg=0, total_in_queue=0):
+def predict(position, stand_time, avg=0, total_in_queue=0, passed=0):
     global USER_AVG
     if total_in_queue > START_AVG:
         USER_AVG = avg
