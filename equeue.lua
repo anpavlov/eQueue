@@ -108,6 +108,15 @@ function avg_by_queue(qid)
     return avg
 end
 
+-- returns passed people
+function passed(qid)
+    local result = box.space.stats.index.qid:select{qid}
+    local count = 0
+    for _ in ipairs(result) do
+        count = count + 1
+    end
+end
+
 box.schema.user.grant('guest', 'read,write,execute', 'universe', nil, {if_not_exists=true})
 
 local console = require 'console'
