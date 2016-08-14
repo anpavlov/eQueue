@@ -39,9 +39,8 @@ class Predictor(object):
         return self.quality
 
     def predict(self, arr, index):
-        users_before = index - len(arr)
         median = pandas.Series(arr[-self.param:]).median()
-        return median * users_before
+        return median * index
 
 
 def prepare_predict_data(arr):
@@ -58,9 +57,9 @@ def test_predictor(data, pr):
 
     for i in range(100):
         arr, index, true_time = prepare_predict_data(data)
-        pred_time = pr.predict(arr, index)
-
         distance = index - len(arr)
+
+        pred_time = pr.predict(arr, distance)
         distance_arr.append(distance)
 
         error_arr.append(abs(true_time-pred_time))
