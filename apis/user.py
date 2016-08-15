@@ -1,6 +1,7 @@
 # coding=utf-8
 from flask import request, Blueprint
 import werkzeug
+from werkzeug import security
 import json
 import responses
 from taran import tarantool_manager
@@ -33,7 +34,7 @@ def create():
         if res:
             return json.dumps(responses.EMAIL_BUSY)
         password = request.form['password']
-        password = werkzeug.security.generate_password_hash(password, method='pbkdf2:sha256:2400', salt_length=8)
+        password = security.generate_password_hash(password, method='pbkdf2:sha256:2400', salt_length=8)
     except KeyError:
         email = None
 
@@ -117,7 +118,7 @@ def login():
         return json.dumps(responses.ACCESS_DENIED)
     user = user[0]
 
-    if werkzeug.security.check_password_hash(user['password'], password):
+    if security.check_password_hash(user['password'], password):
         token = tarantool_manager.create_session(user)
     else:
         return json.dumps(responses.ACCESS_DENIED)
