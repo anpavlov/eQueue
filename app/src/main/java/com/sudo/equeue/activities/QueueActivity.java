@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -36,6 +37,10 @@ import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.StaticSwipeRefreshLayout;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback {
 
     public static final String EXTRA_QUEUE = QueueApplication.prefix + ".extra.queue";
@@ -66,6 +71,8 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 
     private QueueBroadcastReceiver queueBroadcastReceiver;
     private boolean isReceiverRegistered;
+
+    Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,15 +153,24 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //        }
 
         queueBroadcastReceiver = new QueueBroadcastReceiver();
-        registerCustomReceiver();
+//        registerCustomReceiver();
+//
+//        Intent intent = new Intent(this, WebSocketService.class);
+//        intent.setAction(WebSocketService.ACTION_QID);
+//        intent.putExtra(WebSocketService.EXTRA_QUEUE_ID, queue.getQid());
+//        startService(intent);
 
-        Intent intent = new Intent(this, WebSocketService.class);
-        intent.setAction(WebSocketService.ACTION_QID);
-        intent.putExtra(WebSocketService.EXTRA_QUEUE_ID, queue.getQid());
-        startService(intent);
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                //do something
+                getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
+                mHandler.postDelayed(this, 1000);
+            }
+        }, 1000);
     }
 
     private void getQueueSuccess(Queue newQueue) {
+        Queue prev = this.queue;
         this.queue = newQueue;
         swipeRefreshLayout.setRefreshing(false);
 
@@ -166,6 +182,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         if (queue.getInFront()==-1) {
             ticketView.setVisibility(View.GONE);
         } else if (joinFlag) {
+            joinFlag = false;
             joinSuccess();
         }
 
@@ -173,6 +190,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
             joinButton.setText("Присоединиться");
             joinButton.setOnClickListener((v) -> joinQueue());
         }
+
 
         LatLng place = this.queue.getLatLng();
         if (place != null) {
@@ -197,6 +215,11 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         joinButton.setEnabled(true);
         joinButton.setText("Покинуть");
         joinButton.setOnClickListener((v) -> leaveQueue());
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+        Date date = new Date();
+        TextView tick_time = (TextView) findViewById(R.id.ticket_time);
+        tick_time.setText(dateFormat.format(date));
+//        System.out.println(dateFormat.format(date)); //2014/08/06 15:59:48
 //        queue.setInFront(queue.getUsersQuantity());
 //        queue.setUsersQuantity(queue.getUsersQuantity());
 //        statsInQueue.setText(Integer.toString(queue.getUsersQuantity()));
@@ -291,12 +314,12 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
-        registerCustomReceiver();
+//        registerCustomReceiver();
     }
 
     @Override
     protected void onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(queueBroadcastReceiver);
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(queueBroadcastReceiver);
         isReceiverRegistered = false;
         super.onPause();
     }

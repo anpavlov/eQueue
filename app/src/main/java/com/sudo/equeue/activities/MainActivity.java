@@ -171,11 +171,11 @@ public class MainActivity extends NetBaseActivity {
         registerCustomReceiver();
 
 //        ========== WebSocket ============
-        ((QueueApplication) getApplication()).startWebSocketService();
-
-        Intent intent = new Intent(this, WebSocketService.class);
-        intent.setAction(WebSocketService.ACTION_BIND);
-        startService(intent);
+//        ((QueueApplication) getApplication()).startWebSocketService();
+//
+//        Intent intent = new Intent(this, WebSocketService.class);
+//        intent.setAction(WebSocketService.ACTION_BIND);
+//        startService(intent);
     }
 
     private void updateView() {
@@ -301,13 +301,13 @@ public class MainActivity extends NetBaseActivity {
         outState.putSerializable(SAVED_STATE_QUEUE_LIST, queueList);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Intent intent = new Intent(this, WebSocketService.class);
-        intent.setAction(WebSocketService.ACTION_UNBIND);
-        startService(intent);
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        Intent intent = new Intent(this, WebSocketService.class);
+//        intent.setAction(WebSocketService.ACTION_UNBIND);
+//        startService(intent);
+//    }
 
     private void registerCustomReceiver(){
         if(!isReceiverRegistered) {
