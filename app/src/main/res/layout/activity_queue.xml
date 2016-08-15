@@ -218,15 +218,6 @@
                         android:layout_marginTop="62dp"
                         android:layout_centerHorizontal="true"
                         android:textSize="25pt" />
-                    <TextView
-                        android:id="@+id/ticket_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="47dp"
-
-                        android:text="2016 03/02 12:34"
-                        android:layout_centerHorizontal="true"
-                        android:layout_below="@id/ticket_num"/>
                 </RelativeLayout>
             </RelativeLayout>
 

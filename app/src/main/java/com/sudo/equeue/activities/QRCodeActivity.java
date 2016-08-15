@@ -14,6 +14,7 @@ import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
 import com.sudo.equeue.models.Queue;
+import com.sudo.equeue.utils.AlertDialogHelper;
 
 import net.sourceforge.zbar.Config;
 import net.sourceforge.zbar.Image;
@@ -36,8 +37,14 @@ public class QRCodeActivity extends NetBaseActivity {
     private Image codeImage;
     private FrameLayout progressBarHolder;
 
+    private static boolean work = true;
+
     static {
-        System.loadLibrary("iconv");
+        try {
+            System.loadLibrary("iconv");
+        } catch (UnsatisfiedLinkError e) {
+            work = false;
+        }
     }
 
     @Override
@@ -54,16 +61,25 @@ public class QRCodeActivity extends NetBaseActivity {
             getSupportActionBar().setTitle("Сканировать QR");
         }
 
+        if (!work) {
+            AlertDialogHelper.show(this, "Эта функция не поддкрживается в этой версии Android");
+            finish();
+        }
+
         autoFocusHandler = new Handler();
 
         preview = (FrameLayout) findViewById(R.id.cameraPreview);
 
         /* Instance barcode scanner */
-        scanner = new ImageScanner();
-        scanner.setConfig(0, Config.X_DENSITY, 3);
-        scanner.setConfig(0, Config.Y_DENSITY, 3);
+        try {
+            scanner = new ImageScanner();
+            scanner.setConfig(0, Config.X_DENSITY, 3);
+            scanner.setConfig(0, Config.Y_DENSITY, 3);
 
-        progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
+            progressBarHolder = (FrameLayout) findViewById(R.id.progress_overlay);
+        } catch (Exception e) {
+
+        }
 //        scanText = (TextView) findViewById(R.id.scanText);
     }
 

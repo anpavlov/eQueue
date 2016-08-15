@@ -12,14 +12,12 @@ import com.sudo.equeue.NetBaseActivity;
 import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
 import com.sudo.equeue.models.IsTokenOkModel;
+import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.models.User;
 import com.sudo.equeue.push.RegistrationIntentService;
 import com.sudo.equeue.utils.AlertDialogHelper;
-import com.sudo.equeue.utils.CustomSnackBar;
 import com.sudo.equeue.utils.QueueApplication;
-
-import java.util.Map;
 
 public class StartActivity extends NetBaseActivity {
 
@@ -28,8 +26,17 @@ public class StartActivity extends NetBaseActivity {
     private int createUserRequestId = -1;
     private int getMyQueuesRequestId = -1;
     private int checkTokenRequestId = -1;
+    private int getQueueRequestId = -1;
+
+    boolean isNotif = false;
+    int notifQid = -1;
 
     private SharedPreferences prefs;
+
+    Queue mNotQueue;
+    QueueList mQueueList;
+    boolean gotList = false;
+    boolean gotQueue = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,18 +58,54 @@ public class StartActivity extends NetBaseActivity {
             checkTokenRequestId = getServiceHelper().checkToken();
 //            getMyQueuesRequestId = getServiceHelper().meInQueues();
         }
+
+        Intent i = getIntent();
+        isNotif = i.getBooleanExtra("isNot", false);
+        Log.d("notif", "isnot = " + Boolean.toString(isNotif));
+        if (isNotif) {
+            notifQid = i.getIntExtra("qid", -1);
+            Log.d("notif", "qid = " + Integer.toString(notifQid));
+            if (notifQid != -1)
+                getQueueRequestId = getServiceHelper().getQueue(notifQid);
+
+        }
     }
 
-    private void startApp(QueueList queueList) {
+    private void gotQueueList(QueueList queueList) {
         if (queueList == null) {
             AlertDialogHelper.show(this, "Ошибка: qlist is null"); // TODO: remove
             Log.e(null, "Error: qlist is null");
         } else {
-            Intent intent = new Intent(StartActivity.this, MainActivity.class);
-            intent.putExtra(MainActivity.EXTRA_QUEUE_LIST, queueList);
-            startActivity(intent);
-            finish();
+            mQueueList = queueList;
+            gotList = true;
+            tryStartApp();
         }
+    }
+
+    private void gotNotQueue(Queue queue) {
+        if (queue == null) {
+            AlertDialogHelper.show(this, "Ошибка: queue is null"); // TODO: remove
+            Log.e(null, "Error: queue is null");
+        } else {
+            mNotQueue = queue;
+            gotQueue = true;
+            tryStartApp();
+        }
+    }
+
+    private void tryStartApp() {
+        if (isNotif && !gotQueue)
+            return;
+        if(!gotList)
+            return;
+        Intent intent = new Intent(StartActivity.this, MainActivity.class);
+        intent.putExtra(MainActivity.EXTRA_QUEUE_LIST, mQueueList);
+        if (isNotif) {
+            intent.putExtra("isNot", true);
+            intent.putExtra("notQueue", mNotQueue);
+        }
+        startActivity(intent);
+        finish();
     }
 
     private void handleTokenCheck(IsTokenOkModel isOk) {
@@ -95,9 +138,11 @@ public class StartActivity extends NetBaseActivity {
         if (requestId == createUserRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_USER, obj -> initUserPref((User) obj), null);
         } else if (requestId == getMyQueuesRequestId) {
-            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE_LIST, obj -> startApp((QueueList) obj), null);
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE_LIST, obj -> gotQueueList((QueueList) obj), null);
         } else if (requestId == checkTokenRequestId) {
             getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_IS_TOKEN_OK, obj -> handleTokenCheck((IsTokenOkModel) obj), null);
+        } else if (requestId == getQueueRequestId) {
+            getServiceHelper().handleResponse(this, resultCode, data, NetService.RETURN_QUEUE, obj -> gotNotQueue((Queue) obj), null);
         }
     }
 

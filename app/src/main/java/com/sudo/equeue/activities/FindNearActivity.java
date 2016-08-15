@@ -23,6 +23,7 @@ import com.sudo.equeue.NetService;
 import com.sudo.equeue.R;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
+import com.sudo.equeue.utils.AlertDialogHelper;
 import com.sudo.equeue.utils.CustomSnackBar;
 import com.sudo.equeue.utils.MultiSwipeRefreshLayout;
 import com.sudo.equeue.utils.QueueApplication;
@@ -121,49 +122,48 @@ public class FindNearActivity extends NetBaseActivity {
         Location bestResult = null;
         long bestTime = 0;
 
-        List<String> matchingProviders = locationManager.getAllProviders();
-        for (String provider: matchingProviders) {
-            Location location = locationManager.getLastKnownLocation(provider);
-            if (location != null) {
-                float accuracy = location.getAccuracy();
-                long time = location.getTime();
+        try {
 
-                if ((time > minTime && accuracy < bestAccuracy)) {
-                    bestResult = location;
-                    bestAccuracy = accuracy;
-                    bestTime = time;
-                }
-                else if (time < minTime &&
-                        bestAccuracy == Float.MAX_VALUE && time > bestTime){
-                    bestResult = location;
-                    bestTime = time;
+            List<String> matchingProviders = locationManager.getAllProviders();
+            for (String provider : matchingProviders) {
+                Location location = locationManager.getLastKnownLocation(provider);
+                if (location != null) {
+                    float accuracy = location.getAccuracy();
+                    long time = location.getTime();
+
+                    if ((time > minTime && accuracy < bestAccuracy)) {
+                        bestResult = location;
+                        bestAccuracy = accuracy;
+                        bestTime = time;
+                    } else if (time < minTime &&
+                            bestAccuracy == Float.MAX_VALUE && time > bestTime) {
+                        bestResult = location;
+                        bestTime = time;
+                    }
                 }
             }
-        }
 
-        if(bestResult != null) {
-            coords = String.valueOf(bestResult.getLatitude()) + ',' + String.valueOf(bestResult.getLongitude());
-            getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
-            return;
-        }
-
+            if (bestResult != null) {
+                coords = String.valueOf(bestResult.getLatitude()) + ',' + String.valueOf(bestResult.getLongitude());
+                getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
+                return;
+            }
 
 
+            Criteria criteria = new Criteria();
+            criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
+            criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+            criteria.setAltitudeRequired(false);
+            criteria.setBearingRequired(false);
+            criteria.setCostAllowed(true);
+            criteria.setSpeedRequired(true);
 
-        Criteria criteria = new Criteria();
-        criteria.setPowerRequirement(Criteria.POWER_MEDIUM);
-        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setCostAllowed(true);
-        criteria.setSpeedRequired(true);
+            String bestProvider = locationManager.getBestProvider(criteria, true);
 
-        String bestProvider = locationManager.getBestProvider(criteria, true);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            return;
-        }
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                return;
+            }
 
 //        Location lastKnownLocation = locationManager.getLastKnownLocation(bestProvider);
 //        if(lastKnownLocation != null) {
@@ -171,7 +171,10 @@ public class FindNearActivity extends NetBaseActivity {
 //            getNearQueuesRequestId = getServiceHelper().getNearQueues(coords);
 //        }
 
-        locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
+            locationManager.requestLocationUpdates(bestProvider, minTime, minDistance, myLocListener);
+        } catch (Exception e) {
+            AlertDialogHelper.show(this, "Включите соответствующее разрешение в настройках");
+        }
     }
 
     private void updateView() {

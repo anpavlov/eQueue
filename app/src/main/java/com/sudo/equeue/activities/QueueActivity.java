@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.DisplayMetrics;
@@ -95,9 +96,10 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //        statsInQueueProgressbar = (ProgressBar) findViewById(R.id.stats_in_queue_loader);
 //        statsBeforeProgressbar = (ProgressBar) findViewById(R.id.stats_before_loader);
 //        statsTimeProgressbar = (ProgressBar) findViewById(R.id.stats_time_loader);
+        Intent i = getIntent();
 
         if (savedInstanceState == null) {
-            queue = (Queue) getIntent().getSerializableExtra(EXTRA_QUEUE);
+            queue = (Queue) i.getSerializableExtra(EXTRA_QUEUE);
             if (queue == null) {
                 throw new AssertionError("No queue in intent");
             }
@@ -160,6 +162,15 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //        intent.putExtra(WebSocketService.EXTRA_QUEUE_ID, queue.getQid());
 //        startService(intent);
 
+        boolean isNotif = i.getBooleanExtra("isNot", false);
+        if (isNotif) {
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+            alertDialogBuilder.setMessage("Настала ваша очередь!");
+            alertDialogBuilder.setPositiveButton("OK", (dialog, id) -> dialog.dismiss());
+//            alertDialogBuilder.setNegativeButton("Отмена", (dialog, id) -> dialog.dismiss());
+            alertDialogBuilder.create().show();
+        }
+
         mHandler.postDelayed(new Runnable() {
             public void run() {
                 //do something
@@ -192,12 +203,16 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         }
 
 
-        LatLng place = this.queue.getLatLng();
-        if (place != null) {
-            LatLng move_place = new LatLng(place.latitude + 0.0001, place.longitude);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(move_place, 15f));
-            mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
-            findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
+        try {
+            LatLng place = this.queue.getLatLng();
+            if (place != null) {
+                LatLng move_place = new LatLng(place.latitude + 0.0001, place.longitude);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(move_place, 15f));
+                mMapMaker = mMap.addMarker(new MarkerOptions().position(place));
+                findViewById(R.id.lite_map).setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+
         }
 
     }
@@ -215,10 +230,10 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
         joinButton.setEnabled(true);
         joinButton.setText("Покинуть");
         joinButton.setOnClickListener((v) -> leaveQueue());
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-        Date date = new Date();
-        TextView tick_time = (TextView) findViewById(R.id.ticket_time);
-        tick_time.setText(dateFormat.format(date));
+//        DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+//        Date date = new Date();
+//        TextView tick_time = (TextView) findViewById(R.id.ticket_time);
+//        tick_time.setText(dateFormat.format(date));
 //        System.out.println(dateFormat.format(date)); //2014/08/06 15:59:48
 //        queue.setInFront(queue.getUsersQuantity());
 //        queue.setUsersQuantity(queue.getUsersQuantity());

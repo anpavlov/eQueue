@@ -31,7 +31,12 @@ public class MyGcmListenerService extends GcmListenerService {
         Log.d(TAG, "Message: " + message);
 
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(this, StartActivity.class), 0);
+        Intent i = new Intent(this, StartActivity.class);
+        i.putExtra("qid", qid);
+        i.putExtra("isNot", true);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, i, 0);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
@@ -48,9 +53,9 @@ public class MyGcmListenerService extends GcmListenerService {
         notificationManager.notify(7 /* ID of notification */, notificationBuilder.build());
 
 
-        Intent pushMsg = new Intent(ACTION_PUSH_INCOMING);
-        pushMsg.putExtra(EXTRA_QUEUE_ID, qid);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(pushMsg);
+//        Intent pushMsg = new Intent(ACTION_PUSH_INCOMING);
+//        pushMsg.putExtra(EXTRA_QUEUE_ID, qid);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(pushMsg);
 
     }
 

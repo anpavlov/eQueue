@@ -82,10 +82,12 @@ public class MainActivity extends NetBaseActivity {
             getSupportActionBar().setTitle("Очереди");
         }
 
+        Intent i = getIntent();
+
 //        ========== Queue List ============
         QueueList queueList;
         if (savedInstanceState == null) {
-            queueList = (QueueList) getIntent().getSerializableExtra(EXTRA_QUEUE_LIST);
+            queueList = (QueueList) i.getSerializableExtra(EXTRA_QUEUE_LIST);
         } else {
             queueList = (QueueList) savedInstanceState.getSerializable(SAVED_STATE_QUEUE_LIST);
         }
@@ -176,6 +178,18 @@ public class MainActivity extends NetBaseActivity {
 //        Intent intent = new Intent(this, WebSocketService.class);
 //        intent.setAction(WebSocketService.ACTION_BIND);
 //        startService(intent);
+
+//        === notif
+        boolean isNotif = i.getBooleanExtra("isNot", false);
+        if (isNotif) {
+            Queue q = (Queue) i.getSerializableExtra("notQueue");
+            if (q != null) {
+                Intent intent = new Intent(this, QueueActivity.class);
+                intent.putExtra("isNot", true);
+                intent.putExtra(QueueActivity.EXTRA_QUEUE, q);
+                startActivity(intent);
+            }
+        }
     }
 
     private void updateView() {
