@@ -104,6 +104,9 @@ function avg_by_queue(qid)
         total_sum = total_sum + q[4]
         count = count + 1
     end
+    if count == 0 then
+        return 0
+    end
     local avg = total_sum / count
     return avg
 end

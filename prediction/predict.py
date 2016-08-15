@@ -9,7 +9,7 @@ START_AVG = 3  # start using avg
 def predict(position, stand_time, avg=0, total_in_queue=0, passed=0):
     global USER_AVG
     if passed > START_AVG:
-        USER_AVG = avg
+        USER_AVG = avg / 60.
 
     if position == -1:
         wait_time = total_in_queue * USER_AVG
