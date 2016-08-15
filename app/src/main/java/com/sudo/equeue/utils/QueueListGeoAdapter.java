@@ -10,9 +10,7 @@ import android.widget.TextView;
 import com.sudo.equeue.R;
 import com.sudo.equeue.models.Queue;
 
-import java.util.List;
-
-public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.PersonViewHolder> {
+public class QueueListGeoAdapter extends RecyclerView.Adapter<QueueListGeoAdapter.PersonViewHolder> {
 
     public interface ItemClickListener {
         void onItemClick(Queue queue);
@@ -22,7 +20,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
     private QueueListWrapper queues;
     private ItemClickListener listener;
 
-    public QueueListAdapter(QueueListWrapper queues, ItemClickListener listener) {
+    public QueueListGeoAdapter(QueueListWrapper queues, ItemClickListener listener) {
         this.queues = queues;
         this.listener = listener;
     }
@@ -34,7 +32,7 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
 
     @Override
     public PersonViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.queue_card, viewGroup, false);
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.queue_card_geo, viewGroup, false);
         return new PersonViewHolder(v);
     }
 
@@ -56,7 +54,6 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
         private TextView queueLocation;
         private TextView queueRemaining;
         private TextView queueTotal;
-        private TextView queueFront;
 
         public PersonViewHolder(View itemView) {
             super(itemView);
@@ -66,7 +63,6 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
             queueLocation = (TextView)itemView.findViewById(R.id.location);
             queueRemaining = (TextView)itemView.findViewById(R.id.remaining);
             queueTotal = (TextView)itemView.findViewById(R.id.peop_number);
-            queueFront = (TextView)itemView.findViewById(R.id.front_of_you);
         }
 
         public void bind(Queue queue, ItemClickListener listener) {
@@ -75,7 +71,6 @@ public class QueueListAdapter extends RecyclerView.Adapter<QueueListAdapter.Pers
             queueLocation.setText(queue.getAddress());
             queueRemaining.setText(Integer.toString(queue.getWaitTime()) + " мин");
             queueTotal.setText(Integer.toString(queue.getUsersQuantity()) + " человек в очереди");
-            queueFront.setText(Integer.toString(queue.getInFront()) + " человек перед Вами");
             cv.setOnClickListener(v -> listener.onItemClick(queue));
         }
     }

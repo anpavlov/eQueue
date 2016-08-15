@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout-->
+    <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:id="@+id/queueCard"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:layout_marginBottom="5dp"
+    card_view:cardElevation="2dp"
+    card_view:cardCornerRadius="4dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/queue_img"
+            android:src="@drawable/people_pur"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="16dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/queue_name"
+            android:layout_toRightOf="@+id/queue_img"
+            android:layout_alignParentTop="true"
+            android:textSize="20sp"
+            android:singleLine="true"
+            android:ellipsize="end"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/queue_description"
+            android:layout_toRightOf="@+id/queue_img"
+            android:layout_below="@+id/queue_name"
+            android:ellipsize="end"
+            android:maxLines="2"
+            />
+
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/queue_img"
+            android:textSize="13sp"
+            android:drawableLeft="@drawable/location"
+            android:drawablePadding="7dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+        <TextView
+            android:id="@+id/remaining"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/location"
+            android:textSize="13sp"
+            android:drawableLeft="@drawable/time"
+            android:drawablePadding="7dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/peop_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/remaining"
+            android:textSize="13sp"
+            android:drawableLeft="@drawable/peop_number"
+            android:drawablePadding="7dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
+    <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:background="?android:attr/listDivider"/>-->
+<!--</LinearLayout>-->

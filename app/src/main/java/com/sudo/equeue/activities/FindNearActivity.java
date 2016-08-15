@@ -27,6 +27,7 @@ import com.sudo.equeue.utils.CustomSnackBar;
 import com.sudo.equeue.utils.MultiSwipeRefreshLayout;
 import com.sudo.equeue.utils.QueueApplication;
 import com.sudo.equeue.utils.QueueListAdapter;
+import com.sudo.equeue.utils.QueueListGeoAdapter;
 import com.sudo.equeue.utils.QueueListWrapper;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class FindNearActivity extends NetBaseActivity {
 
     private int getNearQueuesRequestId = -1;
     private QueueListWrapper queues;
-    private QueueListAdapter adapter;
+    private QueueListGeoAdapter adapter;
     private MultiSwipeRefreshLayout swipeRefreshLayout;
     private String coords;
     private ProgressBar buttonProgressBar;
@@ -82,7 +83,7 @@ public class FindNearActivity extends NetBaseActivity {
         rv.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setLayoutManager(llm);
-        adapter = new QueueListAdapter(queues, this::onItemClick);
+        adapter = new QueueListGeoAdapter(queues, this::onItemClick);
         rv.setAdapter(adapter);
 
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
