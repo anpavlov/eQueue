@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import request, Blueprint
+from flask import request, Blueprint, Response
 import json
 import tarantool
 import settings
@@ -11,6 +11,7 @@ from taran.helper import NoResult
 from gcm.gcm import GCMNotRegisteredException
 from prediction import predict
 from map import class_resolver, categories
+from gen_pdf import gen_pdf
 
 
 queue_api = Blueprint('queue', __name__)
@@ -645,3 +646,20 @@ def pretty():
     except NoResult:
         res = {}
     return json.dumps(res)
+
+
+@queue_api.route("/getpdf/", methods=['GET'])
+def get_pdf():
+    try:
+        qid = abs(int(request.args.get('qid')))
+    except (ValueError, TypeError):
+        return json.dumps(responses.BAD_REQUEST)
+    try:
+        q = tarantool_manager.select_assoc('queues', (qid), index='primary')
+    except NoResult:
+        return json.dumps(responses.QUEUE_NOT_FOUND)
+    try:
+        pdf_data = gen_pdf(q[0]['name'], q[0]['id']).getvalue()
+    except IndexError:
+        return json.dumps(responses.BAD_REQUEST)
+    return Response(pdf_data, mimetype='application/pdf')
