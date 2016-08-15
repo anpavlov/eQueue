@@ -16,9 +16,10 @@
 
     <item
         android:id="@+id/logout"
-        android:icon="@drawable/ic_arrow_forward"
+
         android:title="Выйти"
         app:showAsAction="ifRoom"/>
+    <!--android:icon="@drawable/ic_arrow_forward"-->
 
 
 

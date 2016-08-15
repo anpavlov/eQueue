@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sudo.equeueadmin">
+    package="com.sudo.equeueadmin" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <uses-permission android:name="com.sudo.equeue.permission.C2D_MESSAGE" />
     <uses-permission android:name="com.sudo.equeue.permission.INTERACT_ACROSS_USERS_FULL" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <permission android:name="com.sudo.equeue.permission.C2D_MESSAGE"
+    <permission
+        android:name="com.sudo.equeue.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
 
     <application
         android:name=".utils.QueueApplication"
@@ -22,7 +21,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -47,24 +45,32 @@
         <!-- android:exported="false" > -->
         <!-- </provider> -->
 
-        <activity android:name=".activities.MainActivity" />
-        <activity android:name=".activities.CreateQueueActivity" />
-        <activity android:name=".activities.AdminQueueActivity" />
-        <activity android:name=".activities.EditQueueActivity" />
-        <activity android:name=".activities.WebViewActivity" />
-        <activity android:name=".activities.MapActivity" />
-        <activity android:name=".activities.QueueTerminalActivity"
-            android:screenOrientation="landscape">
+        <activity android:name=".activities.MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.CreateQueueActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AdminQueueActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.EditQueueActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.WebViewActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.MapActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.QueueTerminalActivity"
+            android:screenOrientation="landscape" >
+        </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:screenOrientation="portrait" >
         </activity>
 
-        <activity android:name=".activities.LoginActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".activities.RegisterActivity"
-            android:screenOrientation="portrait">
-        </activity>
-
-        <!-- =================== GCM =====================-->
+        <!-- =================== GCM ===================== -->
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -72,6 +78,7 @@
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.sudo.equeue" />
             </intent-filter>
         </receiver>
@@ -83,22 +90,22 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
-
         <service
             android:name=".push.MyInstanceIDListenerService"
-            android:exported="false">
+            android:exported="false" >
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
-
         <service
             android:name=".push.RegistrationIntentService"
-            android:exported="false">
+            android:exported="false" >
         </service>
 
-        <!-- =================== /GCM =====================-->
+        <!-- =================== /GCM ===================== -->
 
+        <activity android:name=".activities.QRActivity" >
+        </activity>
     </application>
 
 </manifest>

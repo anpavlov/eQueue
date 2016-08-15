@@ -23,7 +23,9 @@ public class NetService extends IntentService {
 //    Actions
     public static final String ACTION_CREATE_QUEUE = QueueApplication.prefix + ".action.CREATE_QUEUE";
     public static final String ACTION_GET_QUEUE = QueueApplication.prefix + ".action.GET_QUEUE";
+    public static final String ACTION_GET_PDF = QueueApplication.prefix + ".action.GET_PDF";
     public static final String ACTION_SAVE_QUEUE = QueueApplication.prefix + ".action.SAVE_QUEUE";
+    public static final String ACTION_DELETE_QUEUE = QueueApplication.prefix + ".action.DELETE_QUEUE";
     public static final String ACTION_CALL_NEXT = QueueApplication.prefix + ".action.CALL_NEXT";
     public static final String ACTION_FIND_QUEUE = QueueApplication.prefix + ".action.FIND_QUEUE";
     public static final String ACTION_JOIN_QUEUE = QueueApplication.prefix + ".action.JOIN_QUEUE";
@@ -67,6 +69,7 @@ public class NetService extends IntentService {
     public static final String RETURN_CODE = QueueApplication.prefix + ".return.CODE";
     public static final String ERROR_MSG = QueueApplication.prefix + ".return.ERROR_MSG";
     public static final String RETURN_QUEUE = QueueApplication.prefix + ".return.QUEUE";
+    public static final String RETURN_PDF = QueueApplication.prefix + ".return.PDF";
     public static final String RETURN_QUEUE_LIST = QueueApplication.prefix + ".return.QUEUE_LIST";
     public static final String RETURN_USER = QueueApplication.prefix + ".return.USER";
     public static final String RETURN_IS_TOKEN_OK = QueueApplication.prefix + ".return.IS_TOKEN_OK";
@@ -104,6 +107,12 @@ public class NetService extends IntentService {
                     handleGetQueue(token, queueId);
                     break;
                 }
+                case ACTION_GET_PDF: {
+//                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
+                    handleGetPdf(queueId);
+                    break;
+                }
                 case ACTION_SAVE_QUEUE: {
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     final Queue queue = (Queue) intent.getSerializableExtra(EXTRA_QUEUE);
@@ -120,6 +129,12 @@ public class NetService extends IntentService {
                     final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
                     final String token = intent.getStringExtra(EXTRA_TOKEN);
                     handleCallNext(token, queueId);
+                    break;
+                }
+                case ACTION_DELETE_QUEUE: {
+                    final int queueId = intent.getIntExtra(EXTRA_QUEUE_ID, -1);
+                    final String token = intent.getStringExtra(EXTRA_TOKEN);
+                    handleDeleteQueue(token, queueId);
                     break;
                 }
                 case ACTION_FIND_QUEUE: {
@@ -290,6 +305,16 @@ public class NetService extends IntentService {
         receiver.send(CODE_OK, bundle);
     }
 
+    private void handleGetPdf(int queueId) {
+        if (queueId == -1) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.getPdf(queueId);
+        receiver.send(CODE_OK, bundle);
+    }
+
     private void handleSaveQueue(String token, Queue queue) {
         if (queue == null || token == null || token.equals("")) {
             receiver.send(CODE_FAILED, null);
@@ -319,6 +344,17 @@ public class NetService extends IntentService {
         }
 
         Bundle bundle = processor.callNext(token, queueId);
+//        receiver.send(result, null);
+        receiver.send(CODE_OK, bundle);
+    }
+
+    private void handleDeleteQueue(String token, int queueId) {
+        if (token == null || token.equals("") || queueId == -1) {
+            receiver.send(CODE_FAILED, null);
+            return;
+        }
+
+        Bundle bundle = processor.deleteQueue(token, queueId);
 //        receiver.send(result, null);
         receiver.send(CODE_OK, bundle);
     }

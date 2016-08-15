@@ -7,6 +7,7 @@ package com.sudo.equeueadmin.utils;
 //import com.sudo.equeue.models.CreateQueueResponse;
 //import com.sudo.equeue.models.Employer;
 
+import com.squareup.okhttp.ResponseBody;
 import com.sudo.equeueadmin.models.IsTokenOkModel;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.models.QueueList;
@@ -67,6 +68,9 @@ public interface QueueApi {
     @POST("/api/queue/info-admin/")
     Call<ResponseBase<Queue>> getQueue(@Field("token") String token, @Field("qid") int qid);
 
+    @GET("/api/queue/getpdf/")
+    Call<ResponseBody> getPdf(@Query("qid") int qid);
+
     @FormUrlEncoded
     @POST("/api/queue/update/")
     Call<ResponseBase<PossibleError>> saveQueue(@Field("token") String token, @Field("qid") int qid,
@@ -80,6 +84,10 @@ public interface QueueApi {
     @FormUrlEncoded
     @POST("/api/queue/call/")
     Call<ResponseBase<PossibleError>> callNext(@Field("token") String token, @Field("qid") int qid);
+
+    @FormUrlEncoded
+    @POST("/api/queue/delete/")
+    Call<ResponseBase<PossibleError>> deleteQueue(@Field("token") String token, @Field("qid") int qid);
 
     @GET("/api/queue/find/")
     Call<ResponseBase<QueueList>> findQueue(@Query("query") String query);

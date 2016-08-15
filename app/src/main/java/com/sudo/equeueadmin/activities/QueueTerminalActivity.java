@@ -19,6 +19,7 @@ import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.models.User;
 import com.sudo.equeueadmin.utils.AlertDialogHelper;
+import com.sudo.equeueadmin.utils.QRGenerator;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 import java.util.EnumMap;
@@ -35,8 +36,7 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     private int createUserRequestId;
     private int joinRequestId;
 
-    private static final int WHITE = 0xFFFFFFFF;
-    private static final int BLACK = 0xFF291545;
+
     private ImageView bar_code;
 
     private Queue queueInfo;
@@ -45,8 +45,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     LinkedList<Integer> tracks = new LinkedList<>();
     private MediaPlayer mediaPlayer = null;
     public int current_number = 0;
-    Thread period_task;
-    boolean running = true;
+//    Thread period_task;
+//    boolean running = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,28 +75,36 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         findViewById(R.id.btn_hide).setOnClickListener(v -> hide());
         bar_code = (ImageView) findViewById(R.id.bar_code);
 
-        period_task = new Thread(() -> {
-            // TODO Auto-generated method stub
-            while (running) {
-                try {
-                    Thread.sleep(2000);
-                    mHandler.post(() -> {
-                        // TODO Auto-generated method stub
-                        getRefreshQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
-                    });
-                } catch (Exception e) {
-                    // TODO: handle exception
-                }
+        mHandler.postDelayed(new Runnable(){
+            public void run(){
+                //do something
+                getRefreshQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
+                mHandler.postDelayed(this, 1000);
             }
-        });
-        period_task.start();
+        }, 1000);
+
+//        period_task = new Thread(() -> {
+//            // TODO Auto-generated method stub
+//            while (running) {
+//                try {
+//                    Thread.sleep(2000);
+//                    mHandler.post(() -> {
+//                        // TODO Auto-generated method stub
+//                        getRefreshQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
+//                    });
+//                } catch (Exception e) {
+//                    // TODO: handle exception
+//                }
+//            }
+//        });
+//        period_task.start();
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (period_task != null) running = false;
-    }
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        if (period_task != null) running = false;
+//    }
 
     public void say_number(int number) {
         switch (number / 100) {
@@ -177,8 +185,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     private void hide() {
         findViewById(R.id.number_lbl).setVisibility(View.INVISIBLE);
         findViewById(R.id.number_field).setVisibility(View.INVISIBLE);
-        findViewById(R.id.code_lbl).setVisibility(View.INVISIBLE);
-        findViewById(R.id.code_field).setVisibility(View.INVISIBLE);
+//        findViewById(R.id.code_lbl).setVisibility(View.INVISIBLE);
+//        findViewById(R.id.code_field).setVisibility(View.INVISIBLE);
         findViewById(R.id.btn_hide).setVisibility(View.INVISIBLE);
 
         findViewById(R.id.bar_code).setVisibility(View.VISIBLE);
@@ -219,11 +227,11 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     private void joinQueue(User user) {
         if (user != null && user.getToken() != null && !user.getToken().equals("")) {
             joinRequestId = getServiceHelper().joinQueueAnonym(queueInfo.getQid(), user.getToken());
-            Random rnd = new Random();
-            int code = 100 + rnd.nextInt(900);
+//            Random rnd = new Random();
+//            int code = 100 + rnd.nextInt(900);
             ((TextView) findViewById(R.id.number_field))
-                    .setText(String.valueOf(queueInfo.getPassed()+queueInfo.getUsersQuantity()+1));
-            ((TextView) findViewById(R.id.code_field)).setText(String.valueOf(code));
+                    .setText(String.valueOf(queueInfo.getPassed() + queueInfo.getUsersQuantity() + 1));
+//            ((TextView) findViewById(R.id.code_field)).setText(String.valueOf(code));
         } else {
             AlertDialogHelper.show(this, "Ошибка при запросе");
         }
@@ -245,8 +253,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 
                 findViewById(R.id.number_lbl).setVisibility(View.VISIBLE);
                 findViewById(R.id.number_field).setVisibility(View.VISIBLE);
-                findViewById(R.id.code_lbl).setVisibility(View.VISIBLE);
-                findViewById(R.id.code_field).setVisibility(View.VISIBLE);
+//                findViewById(R.id.code_lbl).setVisibility(View.VISIBLE);
+//                findViewById(R.id.code_field).setVisibility(View.VISIBLE);
                 findViewById(R.id.btn_hide).setVisibility(View.VISIBLE);
 
                 getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
@@ -259,54 +267,54 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 
     private void generateCodeImage(String text) {
         try {
-            Bitmap bitmap = encodeAsBitmap(text, BarcodeFormat.QR_CODE, 150, 150);
+            Bitmap bitmap = QRGenerator.encodeAsBitmap(text, 150, 150);
             bar_code.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();
         }
     }
 
-    private Bitmap encodeAsBitmap(String code, BarcodeFormat format, int img_width, int img_height) throws WriterException {
-        if (code == null) {
-            return null;
-        }
-        Map<EncodeHintType, Object> hints = null;
-        String encoding = guessAppropriateEncoding(code);
-        if (encoding != null) {
-            hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
-            hints.put(EncodeHintType.CHARACTER_SET, encoding);
-        }
-        MultiFormatWriter writer = new MultiFormatWriter();
-        BitMatrix result;
-        try {
-            result = writer.encode(code, format, img_width, img_height, hints);
-        } catch (IllegalArgumentException iae) {
-            // Unsupported format
-            return null;
-        }
-        int width = result.getWidth();
-        int height = result.getHeight();
-        int[] pixels = new int[width * height];
-        for (int y = 0; y < height; y++) {
-            int offset = y * width;
-            for (int x = 0; x < width; x++) {
-                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
-            }
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-        return bitmap;
-    }
-
-    private static String guessAppropriateEncoding(CharSequence contents) {
-        // Very crude at the moment
-        for (int i = 0; i < contents.length(); i++) {
-            if (contents.charAt(i) > 0xFF) {
-                return "UTF-8";
-            }
-        }
-        return null;
-    }
+//    private Bitmap encodeAsBitmap(String code, BarcodeFormat format, int img_width, int img_height) throws WriterException {
+//        if (code == null) {
+//            return null;
+//        }
+//        Map<EncodeHintType, Object> hints = null;
+//        String encoding = guessAppropriateEncoding(code);
+//        if (encoding != null) {
+//            hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+//            hints.put(EncodeHintType.CHARACTER_SET, encoding);
+//        }
+//        MultiFormatWriter writer = new MultiFormatWriter();
+//        BitMatrix result;
+//        try {
+//            result = writer.encode(code, format, img_width, img_height, hints);
+//        } catch (IllegalArgumentException iae) {
+//            // Unsupported format
+//            return null;
+//        }
+//        int width = result.getWidth();
+//        int height = result.getHeight();
+//        int[] pixels = new int[width * height];
+//        for (int y = 0; y < height; y++) {
+//            int offset = y * width;
+//            for (int x = 0; x < width; x++) {
+//                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+//            }
+//        }
+//
+//        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+//        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+//        return bitmap;
+//    }
+//
+//    private static String guessAppropriateEncoding(CharSequence contents) {
+//        // Very crude at the moment
+//        for (int i = 0; i < contents.length(); i++) {
+//            if (contents.charAt(i) > 0xFF) {
+//                return "UTF-8";
+//            }
+//        }
+//        return null;
+//    }
 
 }

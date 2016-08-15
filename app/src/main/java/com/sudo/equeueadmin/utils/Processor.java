@@ -5,13 +5,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.squareup.okhttp.ResponseBody;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.models.basic.PossibleError;
 import com.sudo.equeueadmin.models.basic.ResponseBase;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 
@@ -105,6 +108,45 @@ public class Processor {
         return makeSimpleRequest(queueApi.getQueue(token, queueId), NetService.RETURN_QUEUE);
     }
 
+    public Bundle getPdf(int queueId) {
+        Response<ResponseBody> response;
+        try {
+            response = queueApi.getPdf(queueId).execute();
+        } catch (SocketTimeoutException e) {
+            return createError(context.getString(R.string.error_msg_server_timeout));
+        } catch (ConnectException e) {
+            return createError(context.getString(R.string.error_msg_conn_timeout));
+        } catch (IOException e) {
+            return createError(context.getString(R.string.error_msg_unknown));
+        }
+
+        if (!response.isSuccess()) {
+            return createError(context.getString(R.string.error_msg_server_error));
+        }
+
+        try {
+            ResponseBody respBody = response.body();
+            Bundle bundle = new Bundle();
+
+            InputStream is = respBody.byteStream();
+            ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, len);
+            }
+            byte[] pdfBytes = byteBuffer.toByteArray();
+            bundle.putInt(NetService.RETURN_CODE, NetService.CODE_OK);
+            bundle.putByteArray(NetService.RETURN_PDF, pdfBytes);
+            return bundle;
+        } catch (Exception e) {
+            return createError(context.getString(R.string.error_msg_server_error));
+        }
+//        return makeSimpleRequest(queueApi.getPdf(queueId), NetService.RETURN_PDF);
+    }
+
     public Bundle saveQueue(String token, Queue queue) {
         return makeSimpleRequest(queueApi.saveQueue(token, queue.getQid(), queue.getName(), queue.getDescription()), null);
     }
@@ -115,6 +157,10 @@ public class Processor {
 
     public Bundle callNext(String token, int queueId) {
         return makeSimpleRequest(queueApi.callNext(token, queueId), null);
+    }
+
+    public Bundle deleteQueue(String token, int queueId) {
+        return makeSimpleRequest(queueApi.deleteQueue(token, queueId), null);
     }
 
     public Bundle findQueue(String query) {

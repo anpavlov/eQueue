@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'myandroidkey'
-            keyPassword 'eQueueTeam678'
-            storeFile file('/home/alex/keystores/android.jks')
-            storePassword 'eQueueTeam678'
-        }
-    }
+//    signingConfigs {
+//        config {
+//            keyAlias 'myandroidkey'
+//            keyPassword 'eQueueTeam678'
+//            storeFile file('/home/alex/keystores/android.jks')
+//            storePassword 'eQueueTeam678'
+//        }
+//    }
     compileSdkVersion 23
     buildToolsVersion "23.0.2"
     defaultConfig {
@@ -24,8 +24,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            debuggable false
-            signingConfig signingConfigs.config
+            debuggable true
+//            signingConfig signingConfigs.config
         }
     }
     compileOptions {
@@ -45,7 +45,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.5'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
-    compile files('libs/zxing_core.jar')
+    compile 'com.itextpdf:itextg:5.5.9'
 }
 
 apply plugin: 'com.google.gms.google-services'

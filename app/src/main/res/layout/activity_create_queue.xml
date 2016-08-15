@@ -30,14 +30,6 @@
         android:id="@+id/description_field"
         style="@style/FullWidthEditText"/>
 
-
-    <Spinner
-        android:layout_marginTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tags_spinner"
-        android:layout_gravity="center_horizontal" />
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

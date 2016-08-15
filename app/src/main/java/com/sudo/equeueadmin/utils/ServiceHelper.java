@@ -196,6 +196,18 @@ public class ServiceHelper implements ServiceCallbackListener {
         return requestId;
     }
 
+    public int getPdf(int queueId) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_GET_PDF, requestId);
+
+//        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+//        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
+
+        application.startService(i);
+        return requestId;
+    }
+
     public int saveQueueInfo(Queue queue) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_SAVE_QUEUE, requestId);
@@ -223,6 +235,18 @@ public class ServiceHelper implements ServiceCallbackListener {
     public int callNext(int queueId) {
         final int requestId = createId();
         Intent i = createIntent(NetService.ACTION_CALL_NEXT, requestId);
+
+        String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
+        i.putExtra(NetService.EXTRA_TOKEN, token);
+        i.putExtra(NetService.EXTRA_QUEUE_ID, queueId);
+
+        application.startService(i);
+        return requestId;
+    }
+
+    public int deleteQueue(int queueId) {
+        final int requestId = createId();
+        Intent i = createIntent(NetService.ACTION_DELETE_QUEUE, requestId);
 
         String token = prefs.getString(QueueApplication.PREFS_USER_TOKEN_KEY, null);
         i.putExtra(NetService.EXTRA_TOKEN, token);

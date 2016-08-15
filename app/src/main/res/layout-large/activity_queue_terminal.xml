@@ -144,7 +144,7 @@
             android:visibility="invisible"
             android:textSize="7pt"
             android:textColor="@color/white"
-            android:text="Я запомнил свой номер и секретный код"
+            android:text="Я запомнил свой номер"
             android:id="@+id/btn_hide"/>
 
 
