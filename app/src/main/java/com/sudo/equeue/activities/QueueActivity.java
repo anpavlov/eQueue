@@ -171,13 +171,13 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
             alertDialogBuilder.create().show();
         }
 
-        mHandler.postDelayed(new Runnable() {
-            public void run() {
-                //do something
-                getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
-                mHandler.postDelayed(this, 1000);
-            }
-        }, 1000);
+//        mHandler.postDelayed(new Runnable() {
+//            public void run() {
+//                //do something
+//                getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
+//                mHandler.postDelayed(this, 1000);
+//            }
+//        }, 1000);
     }
 
     private void getQueueSuccess(Queue newQueue) {
@@ -329,6 +329,13 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+                //do something
+                getQueueRequestId = getServiceHelper().getQueue(queue.getQid());
+                mHandler.postDelayed(this, 2000);
+            }
+        }, 2000);
 //        registerCustomReceiver();
     }
 
@@ -337,6 +344,7 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
 //        LocalBroadcastManager.getInstance(this).unregisterReceiver(queueBroadcastReceiver);
         isReceiverRegistered = false;
         super.onPause();
+        mHandler.removeCallbacksAndMessages(null);
     }
 
     private void registerCustomReceiver(){
