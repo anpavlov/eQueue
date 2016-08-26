@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -102,13 +103,7 @@ public class AdminQueueActivity extends NetBaseActivity {
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
         updateQueueView();
 
-        mHandler.postDelayed(new Runnable(){
-            public void run(){
-                //do something
-                getQueueRequestId = getServiceHelper().getQueue(queueInfo.getQid());
-                mHandler.postDelayed(this, 1000);
-            }
-        }, 1000);
+
 
 //        period_task = new Thread(() -> {
 //            // TODO Auto-generated method stub
@@ -129,17 +124,23 @@ public class AdminQueueActivity extends NetBaseActivity {
 
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        running = true;
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        running = false;
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mHandler.postDelayed(new Runnable(){
+            public void run(){
+                //do something
+                getQueueRequestId = getServiceHelper().getQueue(queueInfo.getQid());
+                mHandler.postDelayed(this, 2000);
+            }
+        }, 2000);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHandler.removeCallbacksAndMessages(null);
+    }
 
     private void refresh() {
         getQueueRequestId = getServiceHelper().getQueue(queueInfo.getQid());
@@ -247,13 +248,14 @@ public class AdminQueueActivity extends NetBaseActivity {
 //            case R.id.menu_print:
 //                printClicked();
 //                return true;
-//            case R.id.menu_qr:
-//                if (queueInfo != null) {
-//                    Intent i = new Intent(this, QRActivity.class);
-//                    i.putExtra("qid", queueInfo.getQid());
-//                    startActivity(i);
-//                }
-//                return true;
+            case R.id.menu_qr:
+                if (queueInfo != null) {
+                    String url = "http://p30280.lab1.stud.tech-mail.ru/api/queue/getpdf/?qid=" + Integer.toString(queueInfo.getQid());
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }

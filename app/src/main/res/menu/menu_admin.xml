@@ -7,15 +7,16 @@
     <item android:id="@+id/menu_terminal"
         android:title="Терминал"
         app:showAsAction="never" />
+    <item android:id="@+id/menu_qr"
+    android:title="Открыть QR"
+    app:showAsAction="never" />
     <item android:id="@+id/menu_delete"
         android:title="Удалить"
         app:showAsAction="never" />
     <!--<item android:id="@+id/menu_print"-->
         <!--android:title="Печать"-->
         <!--app:showAsAction="never" />-->
-    <!--<item android:id="@+id/menu_qr"-->
-        <!--android:title="Показать QR"-->
-        <!--app:showAsAction="never" />-->
+
     <!--<item android:id="@+id/menu_logout"-->
         <!--android:title="Выйти"-->
         <!--app:showAsAction="never" />-->
