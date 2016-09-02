@@ -1,12 +1,18 @@
 package com.sudo.equeueadmin.activities;//package com.sudo.equeue.activities;
 
+import android.bluetooth.BluetoothSocket;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -19,9 +25,11 @@ import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
 import com.sudo.equeueadmin.models.User;
 import com.sudo.equeueadmin.utils.AlertDialogHelper;
+import com.sudo.equeueadmin.utils.PrinterDriver;
 import com.sudo.equeueadmin.utils.QRGenerator;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
+import java.io.IOException;
 import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -45,8 +53,9 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     LinkedList<Integer> tracks = new LinkedList<>();
     private MediaPlayer mediaPlayer = null;
     public int current_number = 0;
-//    Thread period_task;
-//    boolean running = true;
+
+    int PrinterConnectId = 1;
+    private static BluetoothSocket btsocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,6 +246,31 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         }
     }
 
+    private void print_ticket(Integer i) {
+        try {
+            PrinterDriver printer = new PrinterDriver(btsocket);
+            printer.printLogo();
+
+            printer.setAlignCenter();
+            printer.printDoubleLine();
+            printer.printNameQueue(queueInfo.getName());
+            printer.printDescQueue(queueInfo.getDescription());
+            printer.printDoubleLine();
+
+            printer.printNumber(i);
+            printer.printNewLine();
+            printer.printNewLine();
+
+//            btoutputstream.write(0x0D);
+//            btoutputstream.write(0x0D);
+//            btoutputstream.write(0x0D);
+//            btoutputstream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     @Override
     public void onServiceCallback(int requestId, int resultCode, Bundle data) {
         if (requestId == getQueueRequestId || requestId == getRefreshQueueRequestId) {
@@ -253,11 +287,15 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 
                 findViewById(R.id.number_lbl).setVisibility(View.VISIBLE);
                 findViewById(R.id.number_field).setVisibility(View.VISIBLE);
-//                findViewById(R.id.code_lbl).setVisibility(View.VISIBLE);
-//                findViewById(R.id.code_field).setVisibility(View.VISIBLE);
                 findViewById(R.id.btn_hide).setVisibility(View.VISIBLE);
 
-                getQueueRequestId = getServiceHelper().getQueue(getIntent().getIntExtra(EXTRA_QUEUE_ID, -1));
+                getQueueRequestId = getServiceHelper()
+                                .getQueue(getIntent()
+                                .getIntExtra(EXTRA_QUEUE_ID, -1));
+
+                if (btsocket != null) {
+                    this.print_ticket(queueInfo.getPassed() + queueInfo.getUsersQuantity() + 1);
+                }
 
             }, null);
 
@@ -274,47 +312,38 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         }
     }
 
-//    private Bitmap encodeAsBitmap(String code, BarcodeFormat format, int img_width, int img_height) throws WriterException {
-//        if (code == null) {
-//            return null;
-//        }
-//        Map<EncodeHintType, Object> hints = null;
-//        String encoding = guessAppropriateEncoding(code);
-//        if (encoding != null) {
-//            hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
-//            hints.put(EncodeHintType.CHARACTER_SET, encoding);
-//        }
-//        MultiFormatWriter writer = new MultiFormatWriter();
-//        BitMatrix result;
-//        try {
-//            result = writer.encode(code, format, img_width, img_height, hints);
-//        } catch (IllegalArgumentException iae) {
-//            // Unsupported format
-//            return null;
-//        }
-//        int width = result.getWidth();
-//        int height = result.getHeight();
-//        int[] pixels = new int[width * height];
-//        for (int y = 0; y < height; y++) {
-//            int offset = y * width;
-//            for (int x = 0; x < width; x++) {
-//                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
-//            }
-//        }
-//
-//        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
-//        bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-//        return bitmap;
-//    }
-//
-//    private static String guessAppropriateEncoding(CharSequence contents) {
-//        // Very crude at the moment
-//        for (int i = 0; i < contents.length(); i++) {
-//            if (contents.charAt(i) > 0xFF) {
-//                return "UTF-8";
-//            }
-//        }
-//        return null;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(1, PrinterConnectId, 1, "Подлючить принтер");
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 1:
+                if(btsocket == null){
+                    Intent BTIntent = new Intent(getApplicationContext(), BTDeviceList.class);
+                    this.startActivityForResult(BTIntent, BTDeviceList.REQUEST_CONNECT_BT);
+                } else {
+                    Toast.makeText(QueueTerminalActivity.this,
+                            "Принтер уже подключен",
+                            Toast.LENGTH_LONG).show();
+                }
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            btsocket = BTDeviceList.getSocket();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
