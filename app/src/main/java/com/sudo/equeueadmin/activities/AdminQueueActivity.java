@@ -1,53 +1,23 @@
 package com.sudo.equeueadmin.activities;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.os.Handler;
-import android.os.ParcelFileDescriptor;
-import android.print.PageRange;
-import android.print.PrintAttributes;
-import android.print.PrintDocumentAdapter;
-import android.print.PrintDocumentInfo;
-import android.print.PrintManager;
-import android.printservice.PrintDocument;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
 import com.sudo.equeueadmin.models.Queue;
-import com.sudo.equeueadmin.utils.AlertDialogHelper;
 import com.sudo.equeueadmin.utils.QueueApplication;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class AdminQueueActivity extends NetBaseActivity {
 
@@ -256,6 +226,17 @@ public class AdminQueueActivity extends NetBaseActivity {
                     startActivity(i);
                 }
                 return true;
+
+            case R.id.menu_connect_printer:
+                if(BTDeviceListActivity.getSocket() == null){
+                    Intent BTIntent = new Intent(getApplicationContext(), BTDeviceListActivity.class);
+                    this.startActivityForResult(BTIntent, BTDeviceListActivity.REQUEST_CONNECT_BT);
+                } else {
+                    Toast.makeText(AdminQueueActivity.this,
+                            "Принтер уже подключен",
+                            Toast.LENGTH_LONG).show();
+                }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -283,6 +264,10 @@ public class AdminQueueActivity extends NetBaseActivity {
                     updateQueueView();
                 }
             }
+        }
+
+        if (requestCode == BTDeviceListActivity.REQUEST_CONNECT_BT){
+            Toast.makeText(this, "Принтер подключен", Toast.LENGTH_SHORT).show();
         }
     }
 

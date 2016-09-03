@@ -68,7 +68,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".activities.BTDeviceList"
+            android:name=".activities.BTDeviceListActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity

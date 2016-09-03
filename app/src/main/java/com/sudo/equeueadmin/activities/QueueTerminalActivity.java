@@ -7,18 +7,13 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.sudo.equeueadmin.NetBaseActivity;
 import com.sudo.equeueadmin.NetService;
 import com.sudo.equeueadmin.R;
@@ -30,10 +25,7 @@ import com.sudo.equeueadmin.utils.QRGenerator;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
 import java.io.IOException;
-import java.util.EnumMap;
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.Random;
 
 public class QueueTerminalActivity extends NetBaseActivity implements MediaPlayer.OnCompletionListener {
 
@@ -114,6 +106,13 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 //        super.onDestroy();
 //        if (period_task != null) running = false;
 //    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btsocket = BTDeviceListActivity.getSocket();
+    }
 
     public void say_number(int number) {
         switch (number / 100) {
@@ -323,8 +322,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         switch (item.getItemId()) {
             case 1:
                 if(btsocket == null){
-                    Intent BTIntent = new Intent(getApplicationContext(), BTDeviceList.class);
-                    this.startActivityForResult(BTIntent, BTDeviceList.REQUEST_CONNECT_BT);
+                    Intent BTIntent = new Intent(getApplicationContext(), BTDeviceListActivity.class);
+                    this.startActivityForResult(BTIntent, BTDeviceListActivity.REQUEST_CONNECT_BT);
                 } else {
                     Toast.makeText(QueueTerminalActivity.this,
                             "Принтер уже подключен",
@@ -340,7 +339,7 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         try {
-            btsocket = BTDeviceList.getSocket();
+            btsocket = BTDeviceListActivity.getSocket();
         } catch (Exception e) {
             e.printStackTrace();
         }
