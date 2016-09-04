@@ -267,7 +267,9 @@ public class AdminQueueActivity extends NetBaseActivity {
         }
 
         if (requestCode == BTDeviceListActivity.REQUEST_CONNECT_BT){
-            Toast.makeText(this, "Принтер подключен", Toast.LENGTH_SHORT).show();
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Принтер подключен", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

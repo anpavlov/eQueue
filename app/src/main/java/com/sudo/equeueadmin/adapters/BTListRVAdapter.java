@@ -48,7 +48,7 @@ public class BTListRVAdapter extends RecyclerView.Adapter<BTListRVAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 Log.i("adapter", "clicked");
-                Toast.makeText(v.getContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(v.getContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
 
                 Toast.makeText(
                         v.getContext(),

@@ -42,6 +42,7 @@ public class BTDeviceListActivity extends AppCompatActivity {
     static private final int REQUEST_ENABLE_BT = 0x1000;
 
     private ProgressDialog dialog;
+    private Menu menu;
 
     static private BluetoothAdapter mBluetoothAdapter = null;
 
@@ -63,12 +64,12 @@ public class BTDeviceListActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        deviceArrayList = new ArrayList<>();
 
-        dialog = new ProgressDialog(this);
+        dialog = new ProgressDialog(BTDeviceListActivity.this);
         dialog.setTitle("Поиск устройств");
         dialog.setMessage("Идет поиск устройств");
 
+        deviceArrayList = new ArrayList<>();
         setContentView(R.layout.activity_bluetooth_devices);
         devicesRV = (RecyclerView) findViewById(R.id.devices_rv);
         devicesRV.setLayoutManager(new LinearLayoutManager(BTDeviceListActivity.this));
@@ -95,8 +96,11 @@ public class BTDeviceListActivity extends AppCompatActivity {
             return;
         }
 
-        IntentFilter btIntentFilter = new IntentFilter(
-                BluetoothDevice.ACTION_FOUND);
+        IntentFilter btIntentFilter = new IntentFilter();
+        btIntentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        btIntentFilter.addAction(BluetoothDevice.ACTION_FOUND);
+        btIntentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        btIntentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         registerReceiver(mBTReceiver, btIntentFilter);
     }
 
@@ -135,13 +139,12 @@ public class BTDeviceListActivity extends AppCompatActivity {
     }
     private int initDevicesList() {
 
-        dialog.show();
         flushData();
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
             Toast.makeText(getApplicationContext(),
-                    "Bluetooth not supported!!", Toast.LENGTH_LONG).show();
+                    "Bluetooth не поддерживается", Toast.LENGTH_LONG).show();
             return -1;
         }
 
@@ -162,9 +165,9 @@ public class BTDeviceListActivity extends AppCompatActivity {
             return -2;
         }
 
-        Toast.makeText(getApplicationContext(),
-                "Поиск Bluetooth-устройств", Toast.LENGTH_SHORT)
-                .show();
+//        Toast.makeText(getApplicationContext(),
+//                "Поиск Bluetooth-устройств", Toast.LENGTH_SHORT)
+//                .show();
 
         return 0;
 
@@ -179,7 +182,7 @@ public class BTDeviceListActivity extends AppCompatActivity {
         if (hasReadContactsPermission != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.BLUETOOTH)) {
-                showMessageOKCancel("You need to allow access to Bluetooth",
+                showMessageOKCancel("Необходимо дать разрешение на использование сервиса Bluetooth",
                         (dialog, which) -> ActivityCompat.requestPermissions(BTDeviceListActivity.this,
                                 new String[] {Manifest.permission.BLUETOOTH},
                                 REQUEST_BLUETOOTH));
@@ -197,7 +200,7 @@ public class BTDeviceListActivity extends AppCompatActivity {
         if (hasLocationPermission != PackageManager.PERMISSION_GRANTED) {
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-                showMessageOKCancel("You need to allow access to LOCATION",
+                showMessageOKCancel("Необходимо дать разрешение на использование сервиса LOCATION",
                         (dialog, which) -> ActivityCompat.requestPermissions(BTDeviceListActivity.this,
                                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                 REQUEST_CODE_LOCATION));
@@ -233,27 +236,22 @@ public class BTDeviceListActivity extends AppCompatActivity {
 
             @Override
             public void run() {
+                Intent intent = new Intent();
+                setResult(RESULT_OK, intent);
                 try {
                     Log.i("adapter", "runned");
                     boolean gotuuid = device
                             .fetchUuidsWithSdp();
                     UUID uuid = device.getUuids()[0]
                             .getUuid();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Thread.sleep(1000);
                     mbtSocket = device
                             .createRfcommSocketToServiceRecord(uuid);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    Thread.sleep(1000);
                     mbtSocket.connect();
                     Log.i("adapter", "unregistered");
                 } catch (IOException ex) {
+                    setResult(RESULT_CANCELED, intent);
                     runOnUiThread(socketErrorRunnable);
                     try {
                         mbtSocket.close();
@@ -262,6 +260,8 @@ public class BTDeviceListActivity extends AppCompatActivity {
                     }
                     mbtSocket = null;
                     return;
+                } catch (InterruptedException ex){
+                    ex.printStackTrace();
                 } finally {
                     Log.i("adapter", "finally");
                     unregisterReceiver(mBTReceiver);
@@ -285,7 +285,7 @@ public class BTDeviceListActivity extends AppCompatActivity {
         @Override
         public void run() {
             Toast.makeText(BTDeviceListActivity.this,
-                    "Cannot establish connection", Toast.LENGTH_SHORT).show();
+                    "Невозможно установить соединение", Toast.LENGTH_SHORT).show();
             mBluetoothAdapter.startDiscovery();
 
         }
@@ -334,6 +334,9 @@ public class BTDeviceListActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+
+            Log.i("receive", action);
+
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 BluetoothDevice device = intent
                         .getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
@@ -357,7 +360,10 @@ public class BTDeviceListActivity extends AppCompatActivity {
 // ex.fillInStackTrace();
                 }
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                Log.i("adapter", "discovery finished");
                 dialog.dismiss();
+            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
+                dialog.show();
             }
         }
     };
@@ -366,9 +372,22 @@ public class BTDeviceListActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
 
-        menu.add(0, Menu.FIRST, Menu.NONE, "Refresh Scanning");
+        this.menu = menu;
 
+        getMenuInflater().inflate(R.menu.menu_bluetooth, menu);
         return true;
+    }
+
+    private void hideOption(int id)
+    {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(false);
+    }
+
+    private void showOption(int id)
+    {
+        MenuItem item = menu.findItem(id);
+        item.setVisible(true);
     }
 
     @Override
@@ -376,9 +395,13 @@ public class BTDeviceListActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
 
         switch (item.getItemId()) {
-            case Menu.FIRST:
+            case R.id.menu_bt_refresh:
                 initDevicesList();
+                Log.i("adapter", "refresh");
                 break;
+            case android.R.id.home:
+                onBackPressed();
+                return true;
         }
 
         return true;
