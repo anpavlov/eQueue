@@ -11,9 +11,9 @@ function handleSetState(state, newState) {
 
 function handleSetMyQueues(state, queues) {
     let queue_map = state.get('queues');
-    let qids = List(queues.map(q => q.id));
+    let qids = List(queues.map(q => q.qid));
     for (let q of queues) {
-        queue_map = queue_map.set(q.id, q);
+        queue_map = queue_map.set(q.qid, q);
     }
     return state.set('queues', queue_map)
                 .set('my_qids', qids);

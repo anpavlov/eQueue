@@ -45,7 +45,11 @@ export function loadQueue(qid) {
             dispatch(queueLoadingCompleted(qid, data.body));
             dispatch(push('/queue/' + qid));
         };
-        sendRequest(getQueuePrepare(getCookie('token'), qid), handleGetQueueSuccess, handleCommonError);
+        let handleGetQueueFailure = function (data) {
+            dispatch(queueLoadingCompleted(qid, undefined));
+            alert("Очередь не найдена");
+        };
+        sendRequest(getQueuePrepare(getCookie('token'), qid), handleGetQueueSuccess, handleGetQueueFailure);
     }
 }
 

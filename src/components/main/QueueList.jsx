@@ -17,12 +17,12 @@ export const QueueList = React.createClass({
         return <div>
             {this.props.my_qids.toArray().map(qid => {
                 let queue = this.props.queues.get(qid);
-                return <div key={queue.id}>
+                return <div key={queue.qid}>
                     <hr/>
                     <h4>{queue.name}</h4>
-                    <p>Осталось {queue.time}</p>
-                    <p>id: {queue.id}</p>
-                    <input value="Открыть" onClick={this.openQueue(queue.id)} type="button"
+                    <p>Осталось {queue.wait_time}</p>
+                    <p>id: {queue.qid}</p>
+                    <input value="Открыть" onClick={this.openQueue(queue.qid)} type="button"
                            disabled={this.props.is_loading ? "disabled" : ""}/>
                     <hr/>
                 </div>;

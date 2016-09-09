@@ -38,7 +38,7 @@ const history = syncHistoryWithStore(router_history, store, {
 });
 
 store.dispatch(init());
-store.dispatch(setMyQueues([{id: 2, name: "Adolf", time: "14 минут"}, {id: 6, name: "Pupes", time: "48 минут"}]));
+// store.dispatch(setMyQueues([{id: 2, name: "Adolf", time: "14 минут"}, {id: 6, name: "Pupes", time: "48 минут"}]));
 
 // const history = syncHistoryWithStore(hashHistory, store, {
 //     selectLocationState: state => state.get("routing")
