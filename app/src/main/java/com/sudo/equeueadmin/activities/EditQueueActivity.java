@@ -13,6 +13,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -71,11 +72,11 @@ public class EditQueueActivity extends NetBaseActivity implements OnMapReadyCall
             findViewById(R.id.btn_coords).setOnClickListener(v -> openMap());
         }
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.lite_map);
+        mapFragment.getMapAsync(this);
 
-        MapView mapView = (MapView) findViewById(R.id.lite_map);
-        mapView.onCreate(null);
-        mapView.getMapAsync(this);
-        if (queueInfo.getLatLng() == null) mapView.setVisibility(View.GONE);
+//        if (queueInfo.getLatLng() == null) mapView.setVisibility(View.GONE);
     }
 
     private void saveQueue() {

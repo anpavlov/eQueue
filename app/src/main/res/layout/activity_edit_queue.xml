@@ -37,12 +37,13 @@
             android:hint="Описание"
             style="@style/FullWidthEditText"/>
 
-        <com.google.android.gms.maps.MapView
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/lite_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            map:liteMode="true"
-            map:mapType="none" />
+            tools:context=".MapsActivity" />
 
         <Button
             android:layout_width="match_parent"
