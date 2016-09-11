@@ -41,4 +41,15 @@
         android:text="Ввести ID"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
+    <TextView
+        android:id="@+id/find_beacons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/ic_bluetooth_searching_white_36dp"
+        android:drawablePadding="15dp"
+        android:gravity="center_vertical"
+        android:padding="15dp"
+        android:text="Найти bluetooth-маячки"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
 </LinearLayout>

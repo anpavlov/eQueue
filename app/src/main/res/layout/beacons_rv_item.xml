@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/beacon_item_icon"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_margin="8dp"
+        android:src="@drawable/people_pur"/>
+
+    <TextView
+        android:textColor="@color/mainColor"
+        android:text="Queue name"
+        android:layout_marginLeft="16dp"
+        android:textSize="18sp"
+        android:layout_centerVertical="true"
+        android:id="@+id/beacon_queue_name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/beacon_item_icon"/>
+
+</RelativeLayout>

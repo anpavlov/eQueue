@@ -63,6 +63,7 @@ public class MainActivity extends NetBaseActivity {
 
     final static int REQUEST_CAMERA = 47;
     final static int REQUEST_LOCATION = 48;
+    final static int REQUEST_BLUETOOTH = 49;
 
     private int getMyQueuesRequestId = -1;
 //    private int isInQueueRequestId = -1;
@@ -269,6 +270,7 @@ public class MainActivity extends NetBaseActivity {
         TextView txtQR = (TextView)view.findViewById(R.id.qr_code);
         TextView txtID = (TextView)view.findViewById(R.id.enter_id);
         TextView txtNearby = (TextView)view.findViewById(R.id.findNearby);
+        TextView txtBeacons = (TextView)view.findViewById(R.id.find_beacons);
 
         mBottomSheetDialog = new Dialog (this,
                 R.style.MaterialDialogSheet);
@@ -279,6 +281,49 @@ public class MainActivity extends NetBaseActivity {
         mBottomSheetDialog.getWindow().setGravity(Gravity.BOTTOM);
         mBottomSheetDialog.show();
 
+        txtBeacons.setOnClickListener(v -> {
+
+            int hasCameraPermission = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.BLUETOOTH);
+
+            int hasLocationPermission = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+
+
+
+            if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.BLUETOOTH)) {
+                    showMessageOKCancel("Необходимо дать разрешение на использование сервиса Bluetooth",
+                            (dialog, which) -> ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[] {Manifest.permission.BLUETOOTH},
+                                    REQUEST_BLUETOOTH));
+                    return;
+                }
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[] {Manifest.permission.BLUETOOTH},
+                        REQUEST_BLUETOOTH);
+                return;
+            } else if (hasLocationPermission != PackageManager.PERMISSION_GRANTED) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    showMessageOKCancel("Необходимо дать разрешение на использование сервиса Location",
+                            (dialog, which) -> ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_LOCATION));
+                    return;
+                }
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION);
+                return;
+            } else {
+                Log.i("Bluetooth", "Permission granted");
+                Intent intent = new Intent(MainActivity.this, FindBeaconsActivity.class);
+                startActivity(intent);
+                mBottomSheetDialog.dismiss();
+            }
+        });
 
         txtQR.setOnClickListener(v -> {
 
@@ -358,6 +403,13 @@ public class MainActivity extends NetBaseActivity {
             case REQUEST_LOCATION:
                 if (resultCode == RESULT_OK){
                     Intent intent = new Intent(MainActivity.this, FindNearActivity.class);
+                    startActivity(intent);
+                    mBottomSheetDialog.dismiss();
+                    break;
+                };
+            case REQUEST_BLUETOOTH:
+                if (resultCode == RESULT_OK){
+                    Intent intent = new Intent(MainActivity.this, FindBeaconsActivity.class);
                     startActivity(intent);
                     mBottomSheetDialog.dismiss();
                     break;

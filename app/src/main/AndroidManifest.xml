@@ -18,6 +18,14 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- Required to scan for and connect to Estimote Beacons via Bluetooth. -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <!-- Required for BLE scanning on Android 6.0 and above. -->
+    <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+
     <!--<permission-->
         <!--android:name="com.sudo.equeue.permission.C2D_MESSAGE"-->
         <!--android:protectionLevel="signature" />-->
@@ -80,6 +88,9 @@
         <activity android:name=".activities.QueueActivity"
             android:screenOrientation="portrait">
         </activity>
+
+        <activity android:name=".activities.FindBeaconsActivity"
+            android:screenOrientation="portrait"/>
 
         <activity android:name=".activities.FindNearActivity"
             android:screenOrientation="portrait">
