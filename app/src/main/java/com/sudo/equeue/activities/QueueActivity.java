@@ -26,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -141,10 +142,14 @@ public class QueueActivity extends NetBaseActivity implements OnMapReadyCallback
             joinButton.setOnClickListener((v) -> joinQueue());
         }
 
-        MapView mapView = (MapView) findViewById(R.id.lite_map);
-        mapView.onCreate(null);
-        mapView.getMapAsync(this);
-        mapView.setVisibility(View.GONE);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.lite_map);
+        mapFragment.getMapAsync(this);
+
+//        MapView mapView = (MapView) findViewById(R.id.lite_map);
+//        mapView.onCreate(null);
+//        mapView.getMapAsync(this);
+//        mapView.setVisibility(View.GONE);
 
 //        LatLng place = queue.getLatLng();
 //        if (place != null) {
