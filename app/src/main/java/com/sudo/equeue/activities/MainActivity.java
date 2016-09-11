@@ -1,12 +1,18 @@
 package com.sudo.equeue.activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,7 +34,6 @@ import com.sudo.equeue.R;
 //import com.sudo.equeue.fragments.LoginFragment;
 //import com.sudo.equeue.fragments.MyQueuesFragment;
 //import com.sudo.equeue.fragments.ProfileFragment;
-import com.sudo.equeue.WebSocketService;
 import com.sudo.equeue.models.Queue;
 import com.sudo.equeue.models.QueueList;
 import com.sudo.equeue.push.MyGcmListenerService;
@@ -56,6 +61,9 @@ public class MainActivity extends NetBaseActivity {
     public static final String EXTRA_QUEUE_LIST = QueueApplication.prefix + ".extra.queue_list";
     private static final String SAVED_STATE_QUEUE_LIST = QueueApplication.prefix + ".QueueAdminActivity.saved.queue_list";
 
+    final static int REQUEST_CAMERA = 47;
+    final static int REQUEST_LOCATION = 48;
+
     private int getMyQueuesRequestId = -1;
 //    private int isInQueueRequestId = -1;
 //    private Queue savedQueue;
@@ -69,6 +77,7 @@ public class MainActivity extends NetBaseActivity {
     private MultiSwipeRefreshLayout swipeRefreshLayout;
     private PushBroadcastReceiver pushBroadcastReceiver;
     private boolean isReceiverRegistered;
+    private Dialog mBottomSheetDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,7 +270,7 @@ public class MainActivity extends NetBaseActivity {
         TextView txtID = (TextView)view.findViewById(R.id.enter_id);
         TextView txtNearby = (TextView)view.findViewById(R.id.findNearby);
 
-        final Dialog mBottomSheetDialog = new Dialog (this,
+        mBottomSheetDialog = new Dialog (this,
                 R.style.MaterialDialogSheet);
         mBottomSheetDialog.setContentView(view);
         mBottomSheetDialog.setCancelable(true);
@@ -272,9 +281,30 @@ public class MainActivity extends NetBaseActivity {
 
 
         txtQR.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, QRCodeActivity.class);
-            startActivity(intent);
-            mBottomSheetDialog.dismiss();
+
+            int hasCameraPermission = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA);
+
+            if (hasCameraPermission != PackageManager.PERMISSION_GRANTED) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.CAMERA)) {
+                    showMessageOKCancel("Необходимо дать разрешение на использование сервиса Camera",
+                            (dialog, which) -> ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[] {Manifest.permission.CAMERA},
+                                    REQUEST_CAMERA));
+                    return;
+                }
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[] {Manifest.permission.CAMERA},
+                        REQUEST_CAMERA);
+                return;
+            } else {
+                Log.i("CAMERA", "Permission granted");
+                Intent intent = new Intent(MainActivity.this, QRCodeActivity.class);
+                startActivity(intent);
+                mBottomSheetDialog.dismiss();
+            }
+
         });
 
         txtID.setOnClickListener(v -> {
@@ -284,11 +314,55 @@ public class MainActivity extends NetBaseActivity {
         });
 
         txtNearby.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, FindNearActivity.class);
-            startActivity(intent);
-            mBottomSheetDialog.dismiss();
+
+            int hasLocationPermission = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (hasLocationPermission != PackageManager.PERMISSION_GRANTED) {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    showMessageOKCancel("Необходимо дать разрешение на использование сервиса Location",
+                            (dialog, which) -> ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_LOCATION));
+                    return;
+                }
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION);
+                return;
+            } else {
+                Log.i("LOCATION", "Permission granted");
+                Intent intent = new Intent(MainActivity.this, FindNearActivity.class);
+                startActivity(intent);
+                mBottomSheetDialog.dismiss();
+            }
         });
 
+
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode){
+            case REQUEST_CAMERA:
+                if (resultCode == RESULT_OK){
+                    Intent intent = new Intent(MainActivity.this, QRCodeActivity.class);
+                    startActivity(intent);
+                    mBottomSheetDialog.dismiss();
+                    break;
+                };
+            case REQUEST_LOCATION:
+                if (resultCode == RESULT_OK){
+                    Intent intent = new Intent(MainActivity.this, FindNearActivity.class);
+                    startActivity(intent);
+                    mBottomSheetDialog.dismiss();
+                    break;
+                };
+        }
 
     }
 
@@ -370,5 +444,14 @@ public class MainActivity extends NetBaseActivity {
             }
 
         }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(MainActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 }
