@@ -6,7 +6,7 @@ var sockets = {};
 
 var groups = {};
 
-app.listen(5050);
+app.listen(30213);
 
 function handler (req, res) {
   fs.readFile(__dirname + '/index.html',
@@ -29,7 +29,7 @@ io.on('connection', function (socket) {
 
   socket.on('apiserver', function (qid) {
       group = groups[qid] !== undefined ? groups[qid] : new Set();
-      group.forEach( socket => sockets[socket].emit('refresh_info'));
+      group.forEach( socket => sockets[socket].emit('refresh_info', qid));
 
       console.log('send data to ' + group.length + ' users from queue:' + qid)
   });

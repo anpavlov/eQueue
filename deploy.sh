@@ -10,4 +10,7 @@ nohup python eQueue/main.py runserver -p 30212 > flask.out 2> flask.out < /dev/n
 kill $(ps aux | grep 'tasks' | awk '{print $2}') >& /dev/null
 cd eQueue
 nohup celery -A tasks worker -c 5 --loglevel=info --beat > ../celery.out 2> ../celery.out < /dev/null &
+cd socserver
+kill $(ps aux | grep 'node app.js' | awk '{print $2}') >& /dev/null
+nohup node app.js > ../../socket.out 2> ../../socket.out < /dev/null &
 echo 'done'

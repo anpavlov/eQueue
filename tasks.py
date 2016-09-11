@@ -13,7 +13,7 @@ class SocServer(object):
 
     def get_socket(self):
         if not SocServer.socket:
-            SocServer.socket = SocketIO('localhost', 7000, LoggingNamespace)
+            SocServer.socket = SocketIO('localhost', 30213, LoggingNamespace)
         return SocServer.socket
 
 @app.task
