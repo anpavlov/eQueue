@@ -38,6 +38,7 @@ public class EditQueueActivity extends NetBaseActivity implements OnMapReadyCall
     private GoogleMap mMap;
     private Marker mMapMaker;
     int RESULT_CODE = 55;
+    private SupportMapFragment mapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,17 +73,23 @@ public class EditQueueActivity extends NetBaseActivity implements OnMapReadyCall
             findViewById(R.id.btn_coords).setOnClickListener(v -> openMap());
         }
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.lite_map);
         mapFragment.getMapAsync(this);
 
-//        if (queueInfo.getLatLng() == null) mapView.setVisibility(View.GONE);
+        if (queueInfo.getLatLng() == null) mapFragment.getView().setVisibility(View.GONE);
     }
 
     private void saveQueue() {
         queueInfo.setName(((EditText) findViewById(R.id.name_field)).getText().toString());
         queueInfo.setDescription(((EditText) findViewById(R.id.description_field)).getText().toString());
         saveInfoRequestId = getServiceHelper().saveQueueInfo(queueInfo);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (queueInfo.getLatLng() != null) mapFragment.getView().setVisibility(View.VISIBLE);
     }
 
     private void openMap() {
