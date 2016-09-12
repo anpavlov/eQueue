@@ -1,0 +1,6 @@
+.idea/
+dist/
+!dist/index.html
+node_modules/
+.nyc_output
+coverage
