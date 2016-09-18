@@ -49,6 +49,7 @@ public class FindBeaconsActivity extends NetBaseActivity implements BeaconConsum
     private int searchQueueRequestId = -1;
 
     private ArrayList<Beacon> beaconArrayList;
+    private ArrayList<Queue> queues;
     private BeaconsRVAdapter adapter;
 
     private BeaconManager mBeaconManager;
@@ -81,17 +82,16 @@ public class FindBeaconsActivity extends NetBaseActivity implements BeaconConsum
         mBeaconManager.bind(this);
 
         beaconArrayList = new ArrayList<>();
-        adapter = new BeaconsRVAdapter(beaconArrayList, FindBeaconsActivity.this);
+        queues = new ArrayList<>();
+        adapter = new BeaconsRVAdapter(queues, FindBeaconsActivity.this);
         beaconsRVList.setAdapter(adapter);
 
     }
 
     private void gotQueue(Queue queue) {
         if (queue != null) {
-            Intent intent = new Intent(this, QueueActivity.class);
-            intent.putExtra(QueueActivity.EXTRA_QUEUE, queue);
-            startActivity(intent);
-            finish();
+            queues.add(queue);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -156,10 +156,10 @@ public class FindBeaconsActivity extends NetBaseActivity implements BeaconConsum
                         " approximately " + beacon.getDistance() + " meters away.");
                 if (url.lastIndexOf("equeue") != -1 && !beaconArrayList.contains(beacon)){
                     runOnUiThread(() -> {
-                        beaconArrayList.add(beacon);
-                        adapter.notifyDataSetChanged();
+                            beaconArrayList.add(beacon);
+                    String number = url.substring(url.lastIndexOf('/') + 1);
+                    searchForQueue(number);
                     });
-
                 }
 
             }
