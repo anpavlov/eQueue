@@ -51,7 +51,9 @@ dependencies {
     compile 'com.neovisionaries:nv-websocket-client:1.25'
     compile 'org.altbeacon:android-beacon-library:2.7.1'
     //    compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
-    compile files('libs/zbar.jar')
+//    compile files('libs/zbar.jar')
+
+    compile 'me.dm7.barcodescanner:zxing:1.9'
 }
 
 apply plugin: 'com.google.gms.google-services'
