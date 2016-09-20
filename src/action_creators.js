@@ -30,6 +30,12 @@ export function startLoadingQueue() {
     }
 }
 
+export function loadingCompleted() {
+    return {
+        type: actions.queue_loading_completed
+    }
+}
+
 export function queueLoadingCompleted(qid, queue) {
     return {
         type: actions.queue_loading_completed,
@@ -43,13 +49,28 @@ export function loadQueue(qid) {
         dispatch(startLoadingQueue());
         let handleGetQueueSuccess = function (data) {
             dispatch(queueLoadingCompleted(qid, data.body));
-            dispatch(push('/queue/' + qid));
+            dispatch(push('/client/queue/' + qid));
         };
         let handleGetQueueFailure = function (data) {
             dispatch(queueLoadingCompleted(qid, undefined));
             alert("Очередь не найдена");
         };
         sendRequest(getQueuePrepare(getCookie('token'), qid), handleGetQueueSuccess, handleGetQueueFailure);
+    }
+}
+
+export function joinQueue(qid) {
+    return function (dispatch) {
+        dispatch(startLoadingQueue());
+        let handleJoinQueueSuccess = function (data) {
+            dispatch(loadingCompleted());
+            dispatch(loadQueue(qid));
+        };
+        let handleJoinQueueFailure = function (data) {
+            dispatch(loadingCompleted());
+            alert("Не удалось присоединиться");
+        };
+        sendRequest(joinQueuePrepare(getCookie('token'), qid), handleJoinQueueSuccess, handleJoinQueueFailure);
     }
 }
 
@@ -74,6 +95,15 @@ function getQueuePrepare(token, qid) {
     fd.set('qid', qid);
     return new Request(
         'http://p30280.lab1.stud.tech-mail.ru/api/queue/info-user/',
+        { method: 'POST', body: fd});
+}
+
+function joinQueuePrepare(token, qid) {
+    let fd = new FormData();
+    fd.set('token', token);
+    fd.set('qid', qid);
+    return new Request(
+        'http://p30280.lab1.stud.tech-mail.ru/api/queue/join/',
         { method: 'POST', body: fd});
 }
 

@@ -1,5 +1,5 @@
 export default {
-    main: "/",
-    by_id: "/byid",
-    queue_page: "/queue/"
+    main: "/client/",
+    by_id: "/client/byid",
+    queue_page: "/client/queue/"
 };

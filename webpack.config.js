@@ -1,4 +1,7 @@
-var webpack = require('webpack');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const autoprefixer = require('autoprefixer');
+const path = require('path');
 
 module.exports = {
     entry: [
@@ -7,14 +10,25 @@ module.exports = {
         './src/index.jsx'
     ],
     module: {
-        loaders: [{
-            test: /\.jsx?$/,
-            exclude: /node_modules/,
-            loader: 'react-hot!babel'
-        }]
+        loaders: [
+            {
+                test: /(\.js|\.jsx)$/,
+                exclude: /node_modules/,
+                loader: 'react-hot!babel'
+            },
+            {
+                test: /(\.scss|\.css)$/,
+                loader: ExtractTextPlugin.extract('style', 'css?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!postcss!sass')
+            }
+        ]
+    },
+    postcss: [autoprefixer],
+    sassLoader: {
+        data: '@import "theme/_config.scss";',
+        includePaths: [path.resolve(__dirname, './src')]
     },
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['', '.scss', '.css', '.js', '.jsx'],
     },
     output: {
         path: __dirname + '/dist',
@@ -27,6 +41,7 @@ module.exports = {
         hot: true
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin()
+        new webpack.HotModuleReplacementPlugin(),
+        new ExtractTextPlugin('bundle.css', { allChunks: true }),
     ]
 };

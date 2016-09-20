@@ -3,8 +3,9 @@ import {connect} from 'react-redux';
 import * as actionCreators from '../action_creators';
 import {Link} from 'react-router';
 import paths from '../paths';
+import AppBar from 'react-toolbox/lib/app_bar';
 
-export const AppBar = React.createClass({
+export const MyBar = React.createClass({
     // getScreen: function() {
         // console.log("get screen");
         // console.log(this.props);
@@ -23,12 +24,11 @@ export const AppBar = React.createClass({
         let btn;
         if (this.isMainScreen()) btn = <input type="button" onClick={this.openById} value="find by id!"
                                               disabled={this.props.is_loading ? "disabled" : ""} />;
-        return <div>
-            <h2>Toolbar</h2>
-            <Link to="/">eQueue</Link>
-            {btn}
-            <hr/>
-        </div>;
+        return (
+            <AppBar >
+                <Link to="/client/">eQueue</Link>
+            </AppBar>
+        );
     }
 });
 
@@ -42,7 +42,7 @@ function mapStateToProps(state, ownProps) {
     }
 }
 
-export const AppBarCon = connect(
+export const MyBarCon = connect(
     mapStateToProps,
     actionCreators
-)(AppBar);
+)(MyBar);
