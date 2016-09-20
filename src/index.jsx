@@ -10,11 +10,17 @@ import thunk from 'redux-thunk';
 import reducer from './logic/reducer';
 import {AppCon} from './components/App';
 import {MainCon} from './components/main/Main';
+import {QueueListCon} from './components/main/QueueList';
+import {CreateCon} from './components/Create';
 import {LoginCon} from './components/Login';
 import {SignupCon} from './components/Signup';
 import {QueuePageCon} from './components/QueuePage';
 import {init} from './logic/action_creators';
 import paths from './utils/paths';
+
+import injectTapEventPlugin from "react-tap-event-plugin";
+
+injectTapEventPlugin();
 
 // var initialState = Map();
 // initialState = initialState.set('queues', Map());
@@ -60,8 +66,8 @@ const routes =
     <Route component={AppCon}>
         <Route path={paths.login} component={LoginCon} onEnter={requireNotAuth}/>
         <Route path={paths.signup} component={SignupCon} onEnter={requireNotAuth}/>
-        <Route path={paths.main} component={MainCon} onEnter={requireAuth}/>
-        <Route path={paths.create} component={LoginCon} onEnter={requireAuth}/>
+        <Route path={paths.main} component={QueueListCon} onEnter={requireAuth}/>
+        <Route path={paths.create} component={CreateCon} onEnter={requireAuth}/>
         <Route path={paths.queue} component={QueuePageCon} onEnter={requireAuth}/>
         <Redirect from="/admin" to={paths.main} />
     </Route>;

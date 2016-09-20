@@ -1,16 +1,22 @@
 import React from 'react';
 import {MyBarCon} from './MyBar';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {connect} from 'react-redux';
 import actionCreators from '../logic/all_actions';
 
 export const App = React.createClass({
     render: function() {
         return (
-            <div>
-                {this.props.is_loading ?
-                    <h1>Loading ...</h1> : false}
-                <div><MyBarCon/> {this.props.children}</div>
-            </div>
+            <MuiThemeProvider>
+                <div>
+                    {this.props.is_loading ?
+                        <h1>Loading ...</h1> : false}
+                    <div>
+                        <MyBarCon/>
+                        {this.props.children}
+                    </div>
+                </div>
+            </MuiThemeProvider>
         )
     }
 });

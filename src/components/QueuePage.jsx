@@ -1,24 +1,24 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import * as actionCreators from '../logic/action_creators';
+import actionCreators from '../logic/all_actions';
 
 export const QueuePage = React.createClass({
     componentWillMount: function () {
         if (!this.props.queue) {
-            this.props.startLoadingQueue();
+            this.props.startLoading();
             this.props.loadQueue(this.props.qid);
         }
     },
 
     componentWillReceiveProps: function (nextProps) {
         if (this.props.qid != nextProps.qid) {
-            this.props.startLoadingQueue();
+            this.props.startLoading();
             this.props.loadQueue(nextProps.qid);
         }
     },
 
-    joinQueue: function () {
-        this.props.joinQueue(this.props.queue.qid);
+    callNext: function () {
+        this.props.callNext(this.props.queue.qid);
     },
 
     render: function() {
@@ -29,14 +29,9 @@ export const QueuePage = React.createClass({
                     <div>Queue not found!</div> :
                     <div>
                         <h2>{this.props.queue.name}</h2>
-                        <p>Time left: {this.props.queue.wait_time}</p>
-                        {(
-                            this.props.queue.in_front == -1 ?
-                                <input value="Присоединиться" onClick={this.joinQueue} type="button"
-                                       disabled={this.props.is_loading ? "disabled" : ""}/> :
-                                false
-                        )}
                         <p>{JSON.stringify(this.props.queue)}</p>
+                        <input value="Вызвать следующего" onClick={this.callNext} type="button"
+                               disabled={this.props.is_loading ? "disabled" : ""}/>
                     </div>
         );
     }
@@ -46,7 +41,6 @@ function mapStateToProps(state, ownProps) {
     console.log('qp map cb');
     return {
         is_loading: state.getIn(['reducer', 'loading_queue']),
-        is_loading_sub: state.getIn(['reducer', 'loading_sub']),
         queue: state.getIn(['reducer', 'queues', +ownProps.params.qid]),
         qid: +ownProps.params.qid
     }

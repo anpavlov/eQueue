@@ -14,6 +14,21 @@ export function setMyQueues(queue_list) {
     }
 }
 
+export function setMyQids(qid_list) {
+    return {
+        type: actions.set_my_qids,
+        qids: qid_list
+    }
+}
+
+export function setQueue(qid, queue) {
+    return {
+        type: actions.set_queue,
+        qid: qid,
+        queue: queue
+    }
+}
+
 export function startLoading() {
     return {
         type: actions.start_loading

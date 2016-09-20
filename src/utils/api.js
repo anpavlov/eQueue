@@ -6,7 +6,7 @@ export function getMyQueuesPrepare(token) {
     let fd = new FormData();
     fd.set('token', token);
     return new Request(
-        domain + '/api/queue/in-queue/',
+        domain + '/api/queue/my/',
         { method: 'POST', body: fd});
 }
 
@@ -15,7 +15,7 @@ export function getQueuePrepare(token, qid) {
     fd.set('token', token);
     fd.set('qid', qid);
     return new Request(
-        domain + '/api/queue/info-user/',
+        domain + '/api/queue/info-admin/',
         { method: 'POST', body: fd});
 }
 
@@ -49,6 +49,25 @@ export function signupPrepare(email, pass) {
     fd.set('password', pass);
     return new Request(
         domain + '/api/user/create/',
+        { method: 'POST', body: fd });
+}
+
+export function createQueuePrepare(name, desc, token) {
+    let fd = new FormData();
+    fd.set('token', token);
+    fd.set('name', name);
+    fd.set('description', desc);
+    return new Request(
+        domain + '/api/queue/create/',
+        { method: 'POST', body: fd });
+}
+
+export function callNextPrepare(token, qid) {
+    let fd = new FormData();
+    fd.set('token', token);
+    fd.set('qid', qid);
+    return new Request(
+        domain + '/api/queue/call/',
         { method: 'POST', body: fd });
 }
 

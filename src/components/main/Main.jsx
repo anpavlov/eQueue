@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import * as actionCreators from '../../logic/action_creators';
+import actionCreators from '../../logic/all_actions';
 import EmptyList from './EmptyList';
 import {QueueListCon} from './QueueList';
 
