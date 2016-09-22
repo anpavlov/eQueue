@@ -50,3 +50,8 @@ dependencies {
 
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'me.tatarka.retrolambda'
+
+
+ant.importBuild 'assets.xml'
+preBuild.dependsOn(list, checksum)
+clean.dependsOn(clean_assets)

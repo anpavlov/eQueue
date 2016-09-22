@@ -155,7 +155,9 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
             @Override
             protected void onPostExecute(Exception result) {
                 if (result != null) {
-                    Toast.makeText(QueueTerminalActivity.this, "Can't init recognizer", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(QueueTerminalActivity.this, "Ошибка настройки распознавания речи", Toast.LENGTH_SHORT).show();
+                } else {
+//                    Toast.makeText(QueueTerminalActivity.this, "Inited recognizer", Toast.LENGTH_SHORT).show();
                 }
             }
         }.execute();
@@ -172,8 +174,6 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
                 .setRawLogDir(assetsDir) // To disable logging of raw audio comment out this call (takes a lot of space on the device)
                 .setKeywordThreshold(1e-45f) // Threshold to tune for keyphrase to balance between false alarms and misses
                 .setBoolean("-allphone_ci", true)  // Use context-independent phonetic search, context-dependent is too slow for mobile
-
-
                 .getRecognizer();
         recognizer.addListener(this);
 
@@ -183,6 +183,7 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 
         // Create keyword-activation search.
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
+        recognizer.startListening(KWS_SEARCH);
 
     }
 
@@ -461,22 +462,29 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 
     @Override
     public void onPartialResult(Hypothesis hypothesis) {
+//        Toast.makeText(QueueTerminalActivity.this, "Partitial result", Toast.LENGTH_SHORT).show();
         if (hypothesis == null)
             return;
 
         String text = hypothesis.getHypstr();
         if (text.equals(KEYPHRASE))
-            Toast.makeText(QueueTerminalActivity.this, "Got posledniy", Toast.LENGTH_SHORT).show();
+            recognizer.stop();
+//            Toast.makeText(QueueTerminalActivity.this, "Got posledniy", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onResult(Hypothesis hypothesis) {
+//        Toast.makeText(QueueTerminalActivity.this, "Result " + hypothesis, Toast.LENGTH_SHORT).show();
         if (hypothesis == null)
             return;
 
         String text = hypothesis.getHypstr();
-        if (text.equals(KEYPHRASE))
-            Toast.makeText(QueueTerminalActivity.this, "Got posledniy", Toast.LENGTH_SHORT).show();
+        if (text.equals(KEYPHRASE)) {
+            join();
+        }
+
+        recognizer.startListening(KWS_SEARCH);
+
     }
 
     @Override
