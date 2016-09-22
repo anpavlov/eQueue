@@ -67,6 +67,7 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 
     int PrinterConnectId = 1;
     private static BluetoothSocket btsocket;
+    final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -388,6 +389,8 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
                 findViewById(R.id.number_lbl).setVisibility(View.VISIBLE);
                 findViewById(R.id.number_field).setVisibility(View.VISIBLE);
                 findViewById(R.id.btn_hide).setVisibility(View.VISIBLE);
+
+                handler.postDelayed(() -> hide(), 2000);
 
                 getQueueRequestId = getServiceHelper()
                                 .getQueue(getIntent()
