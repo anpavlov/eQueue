@@ -10,13 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_weight="3">
+        android:layout_weight="4">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textSize="25sp"
+            android:textSize="30sp"
             android:text="Очередь"
             android:id="@+id/lbl_terminal"/>
 
@@ -26,12 +26,13 @@
             android:textColor="#000"
             android:textStyle="bold"
             android:textSize="30sp"
+            android:text="eQueue"
             android:id="@+id/name_field" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:textSize="25sp"
             android:text="Информация об очереди:"
             android:id="@+id/description_lbl"/>
@@ -41,13 +42,14 @@
             android:layout_height="wrap_content"
             android:textColor="#000"
             android:textStyle="bold"
-            android:textSize="30sp"
+            android:textSize="25sp"
+            android:text="text"
             android:id="@+id/description_field"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:textSize="25sp"
             android:text="Количество ожидающих:"
             android:id="@+id/lbl_lost"/>
@@ -57,14 +59,14 @@
             android:layout_height="wrap_content"
             android:textColor="#000"
             android:textStyle="bold"
-            android:textSize="30sp"
-            android:text=""
+            android:textSize="25sp"
+            android:text="5"
             android:id="@+id/count_field"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:textSize="25sp"
             android:text="Текущий номер:"
             android:id="@+id/current_lbl" />
@@ -74,8 +76,8 @@
             android:layout_height="wrap_content"
             android:textColor="#000"
             android:textStyle="bold"
-            android:textSize="30sp"
-            android:text=""
+            android:textSize="25sp"
+            android:text="10"
             android:id="@+id/current_field"/>
 
     </LinearLayout>
@@ -88,17 +90,16 @@
         android:gravity="center_horizontal">
 
         <Button
-            android:layout_width="300dp"
-            android:layout_height="150dp"
-            android:textSize="10pt"
+            android:layout_width="400dp"
+            android:layout_height="200dp"
+            android:textSize="30sp"
             android:text="Встать в очередь"
-            android:id="@+id/btn_join"
-            android:textColor="@color/white"/>
+            android:id="@+id/btn_join" />
 
         <ImageView
             android:id="@+id/bar_code"
-            android:layout_width="300dip"
-            android:layout_height="300dip"
+            android:layout_width="350dip"
+            android:layout_height="350dip"
             android:layout_gravity="center"/>
 
         <TextView
@@ -106,7 +107,7 @@
             android:layout_height="wrap_content"
             android:visibility="invisible"
             android:layout_marginTop="20dp"
-            android:textSize="12pt"
+            android:textSize="25pt"
             android:text="Ваш номер:"
             android:id="@+id/number_lbl" />
 
@@ -116,7 +117,7 @@
             android:visibility="invisible"
             android:textColor="#222"
             android:textStyle="bold"
-            android:textSize="15pt"
+            android:textSize="20pt"
             android:text="17"
             android:id="@+id/number_field" />
 
@@ -124,7 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            android:textSize="12pt"
+            android:textSize="25pt"
             android:text="Ваш секретный код:"
             android:id="@+id/code_lbl" />
 
@@ -134,16 +135,15 @@
             android:visibility="invisible"
             android:textColor="#222"
             android:textStyle="bold"
-            android:textSize="15pt"
+            android:textSize="20pt"
             android:text="739"
             android:id="@+id/code_field" />
 
         <Button
-            android:layout_width="300dp"
-            android:layout_height="80dp"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
             android:visibility="invisible"
-            android:textSize="7pt"
-            android:textColor="@color/white"
+            android:textSize="10pt"
             android:text="Я запомнил свой номер"
             android:id="@+id/btn_hide"/>
 

@@ -1,11 +1,17 @@
 package com.sudo.equeueadmin.activities;//package com.sudo.equeue.activities;
 
+import android.Manifest;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,10 +30,17 @@ import com.sudo.equeueadmin.utils.PrinterDriver;
 import com.sudo.equeueadmin.utils.QRGenerator;
 import com.sudo.equeueadmin.utils.QueueApplication;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class QueueTerminalActivity extends NetBaseActivity implements MediaPlayer.OnCompletionListener {
+import edu.cmu.pocketsphinx.Assets;
+import edu.cmu.pocketsphinx.Hypothesis;
+import edu.cmu.pocketsphinx.RecognitionListener;
+import edu.cmu.pocketsphinx.SpeechRecognizer;
+import edu.cmu.pocketsphinx.SpeechRecognizerSetup;
+
+public class QueueTerminalActivity extends NetBaseActivity implements MediaPlayer.OnCompletionListener, RecognitionListener {
 
     public static final String EXTRA_QUEUE_ID = QueueApplication.prefix + ".extra.queue_id";
 
@@ -35,6 +48,12 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
     private int getRefreshQueueRequestId;
     private int createUserRequestId;
     private int joinRequestId;
+
+    private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
+    private static final String KEYPHRASE = "kto posledniy";
+    private static final String KWS_SEARCH = "wakeup";
+
+    private SpeechRecognizer recognizer;
 
 
     private ImageView bar_code;
@@ -84,6 +103,15 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
             }
         }, 1000);
 
+        // Check if user has given permission to record audio
+        int permissionCheck = ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO);
+        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            Log.i("permission", "denied");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
+            return;
+        }
+        runRecognizerSetup();
+
 //        period_task = new Thread(() -> {
 //            // TODO Auto-generated method stub
 //            while (running) {
@@ -107,12 +135,85 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
 //        if (period_task != null) running = false;
 //    }
 
+    private void runRecognizerSetup() {
+//         Recognizer initialization is a time-consuming and it involves IO,
+//         so we execute it in async task
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                try {
+                    Assets assets = new Assets(QueueTerminalActivity.this);
+                    File assetDir = assets.syncAssets();
+                    setupRecognizer(assetDir);
+                } catch (IOException e) {
+                    return e;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Exception result) {
+                if (result != null) {
+                    Toast.makeText(QueueTerminalActivity.this, "Can't init recognizer", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }.execute();
+    }
+
+    private void setupRecognizer(File assetsDir) throws IOException {
+        // The recognizer can be configured to perform multiple searches
+        // of different kind and switch between them
+
+        recognizer = SpeechRecognizerSetup.defaultSetup()
+                .setAcousticModel(new File(assetsDir, "en-us-ptm"))
+                .setDictionary(new File(assetsDir, "cmudict-en-us.dict"))
+
+                .setRawLogDir(assetsDir) // To disable logging of raw audio comment out this call (takes a lot of space on the device)
+                .setKeywordThreshold(1e-45f) // Threshold to tune for keyphrase to balance between false alarms and misses
+                .setBoolean("-allphone_ci", true)  // Use context-independent phonetic search, context-dependent is too slow for mobile
+
+
+                .getRecognizer();
+        recognizer.addListener(this);
+
+        /** In your application you might not need to add all those searches.
+         * They are added here for demonstration. You can leave just one.
+         */
+
+        // Create keyword-activation search.
+        recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
+
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         btsocket = BTDeviceListActivity.getSocket();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (recognizer != null) {
+            recognizer.cancel();
+            recognizer.shutdown();
+        }
+    }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           String[] permissions, int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//
+//        if (requestCode == PERMISSIONS_REQUEST_RECORD_AUDIO) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                runRecognizerSetup();
+//            } else {
+////                finish();
+//            }
+//        }
+//    }
 
     public void say_number(int number) {
         switch (number / 100) {
@@ -345,4 +446,43 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
         }
     }
 
+    @Override
+    public void onBeginningOfSpeech() {
+
+    }
+
+    @Override
+    public void onEndOfSpeech() {
+
+    }
+
+    @Override
+    public void onPartialResult(Hypothesis hypothesis) {
+        if (hypothesis == null)
+            return;
+
+        String text = hypothesis.getHypstr();
+        if (text.equals(KEYPHRASE))
+            Toast.makeText(QueueTerminalActivity.this, "Got posledniy", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onResult(Hypothesis hypothesis) {
+        if (hypothesis == null)
+            return;
+
+        String text = hypothesis.getHypstr();
+        if (text.equals(KEYPHRASE))
+            Toast.makeText(QueueTerminalActivity.this, "Got posledniy", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onError(Exception e) {
+
+    }
+
+    @Override
+    public void onTimeout() {
+
+    }
 }
