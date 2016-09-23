@@ -321,7 +321,7 @@ public class QueueTerminalActivity extends NetBaseActivity implements MediaPlaye
             ((TextView) findViewById(R.id.description_field)).setText(queueInfo.getDescription());
         }
 
-        generateCodeImage("http://equeue/" + queueInfo.getQid());
+        generateCodeImage("http://equeue.org/client/queue/" + queueInfo.getQid());
         int current = queueInfo.getPassed();
         ((TextView) findViewById(R.id.count_field))
                 .setText(String.valueOf(queueInfo.getUsersQuantity()));
