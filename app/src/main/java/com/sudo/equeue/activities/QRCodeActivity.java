@@ -46,9 +46,9 @@ public class QRCodeActivity extends NetBaseActivity implements ZXingScannerView.
         Log.v(TAG, rawResult.getText()); // Prints scan results
         Log.v(TAG, rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
 
-        if (rawResult.getText().indexOf("http://equeue/") != -1) {
+        if (rawResult.getText().indexOf("http://equeue.org/client/queue/") != -1) {
             try {
-                int qid = Integer.parseInt(rawResult.getText().replace("http://equeue/", ""));
+                int qid = Integer.parseInt(rawResult.getText().replace("http://equeue.org/client/queue/", ""));
                 getQueueRequestId = getServiceHelper().getQueue(qid);
                 sentRequest = true;
 //                loadingStart();
