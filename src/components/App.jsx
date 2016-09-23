@@ -3,6 +3,21 @@ import {MyBarCon} from './MyBar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {connect} from 'react-redux';
 import actionCreators from '../logic/all_actions';
+import CircularProgress from 'material-ui/CircularProgress';
+
+const load_style  = {
+    zIndex: "9999",
+    position: "absolute",
+    top: "0px",
+    left: "0px",
+    right: "0px",
+    bottom: "0px",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    textAlign: "center"
+};
+
+const bar_style = {
+};
 
 export const App = React.createClass({
     render: function() {
@@ -10,9 +25,9 @@ export const App = React.createClass({
             <MuiThemeProvider>
                 <div>
                     {this.props.is_loading ?
-                        <h1>Loading ...</h1> : false}
+                        <div style={load_style}><CircularProgress style={bar_style}/></div> : false}
                     <div>
-                        <MyBarCon/>
+                        <MyBarCon screen={this.props.location.pathname}/>
                         {this.props.children}
                     </div>
                 </div>
@@ -21,10 +36,10 @@ export const App = React.createClass({
     }
 });
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
-        is_logged_in: state.getIn(['reducer', 'token']) != undefined,
-        is_loading: state.getIn(['reducer', 'is_loading'])
+        is_loading: state.getIn(['reducer', 'is_loading']),
+        screen: ownProps.location.pathname
     }
 }
 

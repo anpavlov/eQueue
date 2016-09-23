@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import actionCreators from '../../logic/all_actions';
-import EmptyList from './EmptyList';
+import {EmptyListCon} from './EmptyList';
 import {QueueListCon} from './QueueList';
 
 export const Main = React.createClass({
@@ -13,7 +13,7 @@ export const Main = React.createClass({
         // console.log("hi from render");
         return this.isQueuesPresent() ?
             <QueueListCon /> :
-            <EmptyList/>
+            <EmptyListCon/>
     }
 });
 

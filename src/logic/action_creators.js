@@ -18,7 +18,7 @@ export function loadQueue(qid) {
         let handleGetQueueSuccess = function (data) {
             dispatch(plain_actions.setQueue(qid, data.body));
             dispatch(plain_actions.loadingCompleted());
-            dispatch(push('/admin/queue/' + qid));
+            dispatch(push('/client/queue/' + qid));
         };
         let handleGetQueueFailure = function (data) {
             dispatch(plain_actions.loadingCompleted());
@@ -29,11 +29,13 @@ export function loadQueue(qid) {
 }
 
 export function joinQueue(qid) {
-    return function (dispatch) {
+    return function (dispatch, getState) {
         dispatch(plain_actions.startLoading());
         let handleJoinQueueSuccess = function (data) {
+            let my_qids = getState().getIn(['reducer', 'my_qids']);
+            dispatch(plain_actions.setMyQids(my_qids.push(qid)));
+            dispatch(loadQueue(qid));
             dispatch(plain_actions.loadingCompleted());
-            dispatch(plain_actions.loadQueue(qid));
         };
         let handleJoinQueueFailure = function (data) {
             dispatch(plain_actions.loadingCompleted());
@@ -43,78 +45,20 @@ export function joinQueue(qid) {
     }
 }
 
-export function callNext(qid) {
+export function leaveQueue(qid) {
     return function (dispatch, getState) {
-        let token = getState().getIn(['reducer', 'token']);
         dispatch(plain_actions.startLoading());
         let handleJoinQueueSuccess = function (data) {
+            let my_qids = getState().getIn(['reducer', 'my_qids']);
+            dispatch(plain_actions.setMyQids(my_qids.filter(l_qid => l_qid !== qid)));
             dispatch(loadQueue(qid));
+            dispatch(plain_actions.loadingCompleted());
         };
         let handleJoinQueueFailure = function (data) {
             dispatch(plain_actions.loadingCompleted());
-            if (data.code == 400)
-                alert("Очередь пуста");
-            else
-                alert("Неизвестная ошибка");
+            alert("Не удалось выйти");
         };
-        api.sendRequest(api.callNextPrepare(getCookie('token'), qid), handleJoinQueueSuccess, handleJoinQueueFailure);
-    }
-}
-
-export function login(email, pass, cb) {
-    return function (dispatch) {
-        dispatch(plain_actions.startLoading());
-        let handleRequestSuccess = function (data) {
-            setCookie("token", data.body.token);
-            dispatch(plain_actions.setToken(data.body.token));
-            dispatch(plain_actions.loadingCompleted());
-            dispatch(pullMyQueues());
-            cb(true);
-        };
-        let handleRequestFailure = function (data) {
-            dispatch(plain_actions.loadingCompleted());
-            cb(false);
-        };
-        api.sendRequest(api.loginPrepare(email, pass), handleRequestSuccess, handleRequestFailure);
-    }
-}
-
-export function signup(email, pass, cb) {
-    return function (dispatch) {
-        dispatch(plain_actions.startLoading());
-        let handleRequestSuccess = function (data) {
-            setCookie("token", data.body.token);
-            dispatch(plain_actions.setToken(data.body.token));
-            dispatch(plain_actions.loadingCompleted());
-            cb(0);
-            dispatch(push(paths.main));
-        };
-        let handleRequestFailure = function (data) {
-            dispatch(plain_actions.loadingCompleted());
-            if (+data.code == 403)
-                cb(1);
-            else
-                cb(-1);
-        };
-        api.sendRequest(api.signupPrepare(email, pass), handleRequestSuccess, handleRequestFailure);
-    }
-}
-
-export function createQueue(email, pass) {
-    return function (dispatch, getState) {
-        let token = getState().getIn(['reducer', 'token']);
-        dispatch(plain_actions.startLoading());
-        let handleRequestSuccess = function (data) {
-            let my_qids = getState().getIn(['reducer', 'my_qids']);
-            my_qids = my_qids.push(+data.body.qid);
-            dispatch(plain_actions.setMyQids(my_qids));
-            dispatch(loadQueue(+data.body.qid));
-        };
-        let handleRequestFailure = function (data) {
-            console.log("Problems here!");
-            dispatch(plain_actions.loadingCompleted());
-        };
-        api.sendRequest(api.createQueuePrepare(email, pass, token), handleRequestSuccess, handleRequestFailure);
+        api.sendRequest(api.leaveQueuePrepare(getCookie('token'), qid), handleJoinQueueSuccess, handleJoinQueueFailure);
     }
 }
 
@@ -135,6 +79,12 @@ export function openCreate() {
 export function openMain() {
     return function (dispatch) {
         dispatch(push(paths.main));
+    }
+}
+
+export function openById() {
+    return function (dispatch) {
+        dispatch(push(paths.by_id));
     }
 }
 
@@ -163,11 +113,28 @@ export function pullMyQueues() {
 
 export function init() {
     return function (dispatch) {
-        let token = getCookie("token");
-        if (token) {
-            dispatch(plain_actions.setToken(token));
+        let handleCreateUserSuccess = function (data) {
+            setCookie("token", data.body.token);
+            dispatch(plain_actions.setToken(data.body.token));
             dispatch(pullMyQueues());
+            // api.sendRequest(api.getMyQueuesPrepare(data.body.token), handleGetMyQueuesSuccess);
+        };
+        let handleRequestFailure = function (data) {
+            dispatch(plain_actions.loadingCompleted());
+        };
+        let token = getCookie("token");
+        if (!token) {
+            dispatch(plain_actions.startLoading());
+            api.sendRequest(api.createUserPrepare(), handleCreateUserSuccess, handleRequestFailure);
+        } else {
+            handleCreateUserSuccess({ body: { token } });
         }
+        //===========
+        // let token = getCookie("token");
+        // if (token) {
+        //     dispatch(plain_actions.setToken(token));
+        //     dispatch(pullMyQueues());
+        // }
 
     }
 }

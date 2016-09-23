@@ -1,12 +1,12 @@
 import fetch from 'isomorphic-fetch';
 
-const domain = "http://p30280.lab1.stud.tech-mail.ru";
+const domain = "http://equeue.org";
 
 export function getMyQueuesPrepare(token) {
     let fd = new FormData();
     fd.set('token', token);
     return new Request(
-        domain + '/api/queue/my/',
+        domain + '/api/queue/in-queue/',
         { method: 'POST', body: fd});
 }
 
@@ -15,7 +15,7 @@ export function getQueuePrepare(token, qid) {
     fd.set('token', token);
     fd.set('qid', qid);
     return new Request(
-        domain + '/api/queue/info-admin/',
+        domain + '/api/queue/info-user/',
         { method: 'POST', body: fd});
 }
 
@@ -25,6 +25,15 @@ export function joinQueuePrepare(token, qid) {
     fd.set('qid', qid);
     return new Request(
         domain + '/api/queue/join/',
+        { method: 'POST', body: fd});
+}
+
+export function leaveQueuePrepare(token, qid) {
+    let fd = new FormData();
+    fd.set('token', token);
+    fd.set('qid', qid);
+    return new Request(
+        domain + '/api/queue/leave/',
         { method: 'POST', body: fd});
 }
 

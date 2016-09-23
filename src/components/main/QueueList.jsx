@@ -1,16 +1,35 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import actionCreators from '../../logic/all_actions';
+import {Card, CardActions, CardHeader} from 'material-ui/Card';
+import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
+import EnhancedButton from 'material-ui/internal/EnhancedButton';
+
+const card_style = {
+    margin: "5px"
+};
+
+const btn_style = {
+    width: "100%"
+};
+
+const inbtn_style = {
+    textAlign: "left",
+    padding: "5px",
+    paddingLeft: "15px"
+};
+
+const desc_style = {
+    fontSize: "smaller",
+    color: "rgba(0,0,0,0.54)"
+};
 
 export const QueueList = React.createClass({
     openQueue: function (qid) {
         return () => {
             this.props.loadQueue(qid);
         }
-    },
-
-    openCreate: function () {
-        this.props.openCreate();
     },
 
     isQueuesPresent: function () {
@@ -26,26 +45,30 @@ export const QueueList = React.createClass({
                     if (!queue)
                         return false;
                     return (
-                        <div key={queue.qid}>
-                            <hr/>
-                            <h4>{queue.name}</h4>
-                            <p>id: {queue.qid}</p>
-                            <input value="Открыть" onClick={this.openQueue(queue.qid)} type="button"
-                                   disabled={this.props.is_loading ? "disabled" : ""}/>
-                            <hr/>
-                        </div>
+                        <Paper key={queue.qid} style={card_style}>
+                            <EnhancedButton style={btn_style} onTouchTap={this.openQueue(queue.qid)}>
+                                <div style={inbtn_style}>
+                                    <p>{queue.name}</p>
+                                    <p style={desc_style}>{queue.description}</p>
+                                </div>
+                            </EnhancedButton>
+                        </Paper>
                     );
                 }) :
                 false
                 }
-            <div>
-                <input value="Создать" onClick={this.openCreate} type="button"
-                       disabled={this.props.is_loading ? "disabled" : ""}/>
-                <hr/>
-            </div>
         </div>
     }
 });
+
+{/*<div key={queue.qid}>*/}
+    {/*<hr/>*/}
+    {/*<h4>{queue.name}</h4>*/}
+    {/*<p>id: {queue.qid}</p>*/}
+    {/*<input value="Открыть" onClick={this.openQueue(queue.qid)} type="button"*/}
+           {/*disabled={this.props.is_loading ? "disabled" : ""}/>*/}
+    {/*<hr/>*/}
+{/*</div>*/}
 
 function mapStateToProps(state) {
     console.log();

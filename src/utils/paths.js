@@ -1,8 +1,6 @@
-const admin_pref = "/admin";
+const admin_pref = "/client";
 export default {
     main: admin_pref + "/",
-    login: admin_pref + "/login",
-    signup: admin_pref + "/signup",
     queue: admin_pref + "/queue/:qid",
-    create: admin_pref + "/create"
+    by_id: admin_pref + "/byid"
 };

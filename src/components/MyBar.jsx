@@ -13,8 +13,8 @@ const styles = {
 };
 
 export const MyBar = React.createClass({
-    handleLogout: function () {
-        this.props.logout();
+    handleById: function () {
+        this.props.openById();
     },
 
     handleTouchTitle: function () {
@@ -23,13 +23,13 @@ export const MyBar = React.createClass({
 
     render: function() {
         let app_bar;
-        if (this.props.is_logged_in)
+        if (this.props.screen == paths.main)
             app_bar = (
                 <AppBar
                     showMenuIconButton={false}
                     title={<span style={styles.title}>eQueue</span>}
                     onTitleTouchTap={this.handleTouchTitle}
-                    iconElementRight={<FlatButton label="Logout" onTouchTap={this.handleLogout}/>}
+                    iconElementRight={<FlatButton label="Поиск по ID" onTouchTap={this.handleById}/>}
                 />
             );
         else
@@ -55,7 +55,7 @@ function mapStateToProps(state, ownProps) {
     // console.log(ownProps);
 
     return {
-        is_logged_in: !!state.getIn(['reducer', 'token'])
+        screen: ownProps.screen
     }
 }
 
