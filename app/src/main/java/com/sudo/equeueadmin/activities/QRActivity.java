@@ -60,7 +60,7 @@ public class QRActivity extends NetBaseActivity {
         }
         if (qid != -1) {
             try {
-                Bitmap bitmap = QRGenerator.encodeAsBitmap("http://equeue/" + Integer.toString(qid), 300, 300);
+                Bitmap bitmap = QRGenerator.encodeAsBitmap("http://equeue.org/client/queue/" + Integer.toString(qid), 300, 300);
                 qr_code.setImageBitmap(bitmap);
             } catch (Exception e) {
 

@@ -220,7 +220,7 @@ public class AdminQueueActivity extends NetBaseActivity {
 //                return true;
             case R.id.menu_qr:
                 if (queueInfo != null) {
-                    String url = "http://p30280.lab1.stud.tech-mail.ru/api/queue/getpdf/?qid=" + Integer.toString(queueInfo.getQid());
+                    String url = "http://equeue.org/api/queue/getpdf/?qid=" + Integer.toString(queueInfo.getQid());
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
