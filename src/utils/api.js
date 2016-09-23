@@ -4,7 +4,7 @@ const domain = "http://equeue.org";
 
 export function getMyQueuesPrepare(token) {
     let fd = new FormData();
-    fd.set('token', token);
+    fd.append('token', token);
     return new Request(
         domain + '/api/queue/in-queue/',
         { method: 'POST', body: fd});
@@ -12,8 +12,8 @@ export function getMyQueuesPrepare(token) {
 
 export function getQueuePrepare(token, qid) {
     let fd = new FormData();
-    fd.set('token', token);
-    fd.set('qid', qid);
+    fd.append('token', token);
+    fd.append('qid', qid);
     return new Request(
         domain + '/api/queue/info-user/',
         { method: 'POST', body: fd});
@@ -21,8 +21,8 @@ export function getQueuePrepare(token, qid) {
 
 export function joinQueuePrepare(token, qid) {
     let fd = new FormData();
-    fd.set('token', token);
-    fd.set('qid', qid);
+    fd.append('token', token);
+    fd.append('qid', qid);
     return new Request(
         domain + '/api/queue/join/',
         { method: 'POST', body: fd});
@@ -30,8 +30,8 @@ export function joinQueuePrepare(token, qid) {
 
 export function leaveQueuePrepare(token, qid) {
     let fd = new FormData();
-    fd.set('token', token);
-    fd.set('qid', qid);
+    fd.append('token', token);
+    fd.append('qid', qid);
     return new Request(
         domain + '/api/queue/leave/',
         { method: 'POST', body: fd});
@@ -45,8 +45,8 @@ export function createUserPrepare() {
 
 export function loginPrepare(email, pass) {
     let fd = new FormData();
-    fd.set('email', email);
-    fd.set('password', pass);
+    fd.append('email', email);
+    fd.append('password', pass);
     return new Request(
         domain + '/api/user/login/',
         { method: 'POST', body: fd });
@@ -54,8 +54,8 @@ export function loginPrepare(email, pass) {
 
 export function signupPrepare(email, pass) {
     let fd = new FormData();
-    fd.set('email', email);
-    fd.set('password', pass);
+    fd.append('email', email);
+    fd.append('password', pass);
     return new Request(
         domain + '/api/user/create/',
         { method: 'POST', body: fd });
@@ -63,9 +63,9 @@ export function signupPrepare(email, pass) {
 
 export function createQueuePrepare(name, desc, token) {
     let fd = new FormData();
-    fd.set('token', token);
-    fd.set('name', name);
-    fd.set('description', desc);
+    fd.append('token', token);
+    fd.append('name', name);
+    fd.append('description', desc);
     return new Request(
         domain + '/api/queue/create/',
         { method: 'POST', body: fd });
@@ -73,8 +73,8 @@ export function createQueuePrepare(name, desc, token) {
 
 export function callNextPrepare(token, qid) {
     let fd = new FormData();
-    fd.set('token', token);
-    fd.set('qid', qid);
+    fd.append('token', token);
+    fd.append('qid', qid);
     return new Request(
         domain + '/api/queue/call/',
         { method: 'POST', body: fd });

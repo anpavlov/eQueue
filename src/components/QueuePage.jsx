@@ -16,15 +16,25 @@ const paper_style  = {
     fontFamily: "Roboto, sans-serif"
 };
 
+const vash_style  = {
+    textAlign: "center"
+};
+
+const num_style  = {
+    textAlign: "center",
+    margin: "10px",
+    fontSize: "150px"
+};
+
 export const QueuePage = React.createClass({
     componentWillMount: function () {
-        if (!this.props.queue) {
+        if (!this.props.queue && this.props.is_token) {
             this.props.loadQueue(this.props.qid);
         }
     },
 
     componentWillReceiveProps: function (nextProps) {
-        if (this.props.qid != nextProps.qid) {
+        if (this.props.qid != nextProps.qid || this.props.is_token != nextProps.is_token) {
             this.props.loadQueue(nextProps.qid);
         }
     },
@@ -41,7 +51,7 @@ export const QueuePage = React.createClass({
         return (
             <Paper style={paper_style}>
                 {(!this.props.queue ?
-                    <div style={h2_style}>Queue not found!</div> :
+                    <div style={h2_style}>Очередь не найдена!</div> :
                     <div>
                         <h2 style={h2_style}>{this.props.queue.name}</h2>
                         <p><i>{this.props.queue.description}</i></p>
@@ -53,7 +63,11 @@ export const QueuePage = React.createClass({
                         {(
                             this.props.queue.in_front == -1 ?
                                 <RaisedButton primary={true} label="Присоединиться" fullWidth={true} onTouchTap={this.joinQueue}/> :
-                                <RaisedButton primary={true} label="Выйти" fullWidth={true} onTouchTap={this.leaveQueue}/>
+                                <div>
+                                    <div style={vash_style}>Ваш номер:</div>
+                                    <div style={num_style}>{this.props.queue.number}</div>
+
+                                </div>
                         )}
                     </div>
                 )}
@@ -62,10 +76,13 @@ export const QueuePage = React.createClass({
     }
 });
 
+// <RaisedButton primary={true} label="Выйти" fullWidth={true} onTouchTap={this.leaveQueue}/>
+
 function mapStateToProps(state, ownProps) {
     console.log('qp map cb');
     return {
         is_loading: state.getIn(['reducer', 'is_loading']),
+        is_token: !!state.getIn(['reducer', 'token']),
         queue: state.getIn(['reducer', 'queues', +ownProps.params.qid]),
         qid: +ownProps.params.qid
     }

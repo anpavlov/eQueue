@@ -1,6 +1,7 @@
 import React from 'react';
 import {MyBarCon} from './MyBar';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import {connect} from 'react-redux';
 import actionCreators from '../logic/all_actions';
 import CircularProgress from 'material-ui/CircularProgress';
@@ -16,13 +17,19 @@ const load_style  = {
     textAlign: "center"
 };
 
+const muiTheme = getMuiTheme({
+    palette: {
+        primary1Color: "#291545",
+    }
+});
+
 const bar_style = {
 };
 
 export const App = React.createClass({
     render: function() {
         return (
-            <MuiThemeProvider>
+            <MuiThemeProvider muiTheme={muiTheme}>
                 <div>
                     {this.props.is_loading ?
                         <div style={load_style}><CircularProgress style={bar_style}/></div> : false}

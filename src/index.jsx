@@ -6,13 +6,15 @@ import {Provider} from 'react-redux';
 import {Router, Route, hashHistory, browserHistory, Redirect} from 'react-router';
 import {syncHistoryWithStore, routerReducer, routerMiddleware} from 'react-router-redux';
 import thunk from 'redux-thunk';
+import io from 'socket.io-client';
 
 import reducer from './logic/reducer';
 import {AppCon} from './components/App';
 import {MainCon} from './components/main/Main';
 import {QueuePageCon} from './components/QueuePage';
 import {ByIdCon} from './components/ById';
-import {init} from './logic/action_creators';
+import {init, updateQueue} from './logic/action_creators';
+import {setSocket} from './logic/plain_actions';
 import paths from './utils/paths';
 
 import injectTapEventPlugin from "react-tap-event-plugin";
@@ -41,6 +43,13 @@ const history = syncHistoryWithStore(router_history, store, {
 });
 
 store.dispatch(init());
+
+const socket = io('http://equeue.org/');
+store.dispatch(setSocket(socket));
+socket.on('refresh_info', function (qid) {
+    qid = +qid;
+    store.dispatch(updateQueue(qid));
+});
 
 const routes =
     <Route component={AppCon}>

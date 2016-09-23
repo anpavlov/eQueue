@@ -29,6 +29,13 @@ export function setQueue(qid, queue) {
     }
 }
 
+export function setSocket(socket) {
+    return {
+        type: actions.set_socket,
+        socket: socket
+    }
+}
+
 export function startLoading() {
     return {
         type: actions.start_loading

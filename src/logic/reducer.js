@@ -34,6 +34,8 @@ export default function (state = initialState, action) {
             return state.set('token', undefined);
         case actions.set_my_qids:
             return state.set('my_qids', action.qids);
+        case actions.set_socket:
+            return state.set('socket', action.socket);
         case actions.set_queue:
             return state.setIn(['queues', +action.qid], action.queue);
         case actions.set_my_queues:

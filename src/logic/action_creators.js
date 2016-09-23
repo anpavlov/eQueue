@@ -11,20 +11,54 @@ export function openPage(path) {
     }
 }
 
+export function subscribeQueue(qid) {
+    return function (dispatch, getState) {
+        let sock = getState().getIn(['reducer', 'socket']);
+        sock.emit('bindclient', +qid);
+    }
+}
+
+
 export function loadQueue(qid) {
     return function (dispatch, getState) {
         let token = getState().getIn(['reducer', 'token']);
-        dispatch(plain_actions.startLoading());
         let handleGetQueueSuccess = function (data) {
             dispatch(plain_actions.setQueue(qid, data.body));
             dispatch(plain_actions.loadingCompleted());
+            dispatch(subscribeQueue(qid));
             dispatch(push('/client/queue/' + qid));
         };
         let handleGetQueueFailure = function (data) {
             dispatch(plain_actions.loadingCompleted());
             alert("Очередь не найдена");
         };
-        api.sendRequest(api.getQueuePrepare(getCookie('token'), qid), handleGetQueueSuccess, handleGetQueueFailure);
+        if (token) {
+            dispatch(plain_actions.startLoading());
+            api.sendRequest(api.getQueuePrepare(getCookie('token'), qid), handleGetQueueSuccess, handleGetQueueFailure);
+        }
+    }
+}
+
+export function updateQueue(qid) {
+    return function (dispatch, getState) {
+        let token = getState().getIn(['reducer', 'token']);
+        let handleGetQueueSuccess = function (data) {
+            let new_queue = data.body;
+            if (new_queue.in_front == 1) {
+                alert("Перед вами 2 человека в очереди '" + new_queue.name + "'!");
+            }
+            if (new_queue.in_front == 0) {
+                alert("Вы следующий в очереди '" + new_queue.name + "'!");
+            }
+            let old_queue = getState().getIn(['reducer', 'queue', qid]);
+            if (!!old_queue && new_queue.in_front == -1 && old_queue.in_front > -1) {
+                alert("Ваша очередь в '" + new_queue.name + "'!");
+                let my_qids = getState().getIn(['reducer', 'my_qids']);
+                dispatch(plain_actions.setMyQids(my_qids.filter(l_qid => l_qid !== qid)));
+            }
+            dispatch(plain_actions.setQueue(qid, data.body));
+        };
+        api.sendRequest(api.getQueuePrepare(getCookie('token'), qid), handleGetQueueSuccess);
     }
 }
 
@@ -99,7 +133,10 @@ export function pullMyQueues() {
         let token = getState().getIn(['reducer', 'token']);
         dispatch(plain_actions.startLoading());
         let handleRequestSuccess = function (data) {
-            let my_qids = List(data.body.queues.map(q => q.qid));
+            let my_qids = List(data.body.queues.map(q => {
+                dispatch(subscribeQueue(q.qid));
+                return q.qid;
+            }));
             dispatch(plain_actions.setMyQids(my_qids));
             data.body.queues.forEach(q => dispatch(plain_actions.setQueue(q.qid, q)));
             dispatch(plain_actions.loadingCompleted());
