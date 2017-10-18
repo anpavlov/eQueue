@@ -29,7 +29,11 @@ export const QueuePage = React.createClass({
                     <div>Queue not found!</div> :
                     <div>
                         <h2>{this.props.queue.name}</h2>
-                        <p>{JSON.stringify(this.props.queue)}</p>
+                        <p><i>Предупреждение! Автоматического обновления нет! Чтобы обновить информацию, обновите страницу в браузере (функция вызова работает без обновления)</i></p>
+                        <p>В очереди: {this.props.queue.users_quantity} человек</p>
+                        <p>Прошло: {this.props.queue.passed} человек</p>
+                        <p>ID очереди: {this.props.queue.qid}</p>
+                        <a href={"http://equeue.org/api/queue/getpdf/?qid=" + this.props.queue.qid } target="_blank">Открыть PDF с QR кодом</a><br/>
                         <input value="Вызвать следующего" onClick={this.callNext} type="button"
                                disabled={this.props.is_loading ? "disabled" : ""}/>
                     </div>
@@ -38,7 +42,7 @@ export const QueuePage = React.createClass({
 });
 
 function mapStateToProps(state, ownProps) {
-    console.log('qp map cb');
+    //console.log('qp map cb');
     return {
         is_loading: state.getIn(['reducer', 'loading_queue']),
         queue: state.getIn(['reducer', 'queues', +ownProps.params.qid]),

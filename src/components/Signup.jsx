@@ -33,7 +33,7 @@ export const Signup = React.createClass({
             <label><input ref="email" placeholder="Email"/></label>
             <label><input ref="pass1" placeholder="Password" type="password"/></label><br />
             <label><input ref="pass2" placeholder="Repeat password" type="password"/></label><br />
-            <button type="submit">login</button>
+            <button type="submit">Signup</button>
             {this.state.pass_not_equal && (
                 <p>Пароли не совпадают</p>
             )}

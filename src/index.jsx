@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {createStore, applyMiddleware, compose} from 'redux';
 import { combineReducers } from 'redux-immutable';
 import {Provider} from 'react-redux';
-import {Router, Route, hashHistory, Redirect} from 'react-router';
+import {Router, Route, hashHistory, browserHistory, Redirect} from 'react-router';
 import {syncHistoryWithStore, routerReducer, routerMiddleware} from 'react-router-redux';
 import thunk from 'redux-thunk';
 
@@ -24,7 +24,7 @@ injectTapEventPlugin();
 
 // var initialState = Map();
 // initialState = initialState.set('queues', Map());
-const router_history = hashHistory;
+const router_history = browserHistory; // hashHistory;
 const router_middleware = routerMiddleware(router_history);
 const store = createStore(
     combineReducers({

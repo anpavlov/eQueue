@@ -5,6 +5,8 @@ import {getCookie, setCookie, deleteCookie} from '../utils/cookies';
 import * as api from '../utils/api';
 import * as plain_actions from './plain_actions';
 
+const cookie_token = "admintoken";
+
 export function openPage(path) {
     return function (dispatch) {
         dispatch(push(path));
@@ -24,7 +26,7 @@ export function loadQueue(qid) {
             dispatch(plain_actions.loadingCompleted());
             alert("Очередь не найдена");
         };
-        api.sendRequest(api.getQueuePrepare(getCookie('token'), qid), handleGetQueueSuccess, handleGetQueueFailure);
+        api.sendRequest(api.getQueuePrepare(getCookie(cookie_token), qid), handleGetQueueSuccess, handleGetQueueFailure);
     }
 }
 
@@ -39,7 +41,7 @@ export function joinQueue(qid) {
             dispatch(plain_actions.loadingCompleted());
             alert("Не удалось присоединиться");
         };
-        api.sendRequest(api.joinQueuePrepare(getCookie('token'), qid), handleJoinQueueSuccess, handleJoinQueueFailure);
+        api.sendRequest(api.joinQueuePrepare(getCookie(cookie_token), qid), handleJoinQueueSuccess, handleJoinQueueFailure);
     }
 }
 
@@ -57,7 +59,7 @@ export function callNext(qid) {
             else
                 alert("Неизвестная ошибка");
         };
-        api.sendRequest(api.callNextPrepare(getCookie('token'), qid), handleJoinQueueSuccess, handleJoinQueueFailure);
+        api.sendRequest(api.callNextPrepare(getCookie(cookie_token), qid), handleJoinQueueSuccess, handleJoinQueueFailure);
     }
 }
 
@@ -65,7 +67,7 @@ export function login(email, pass, cb) {
     return function (dispatch) {
         dispatch(plain_actions.startLoading());
         let handleRequestSuccess = function (data) {
-            setCookie("token", data.body.token);
+            setCookie(cookie_token, data.body.token);
             dispatch(plain_actions.setToken(data.body.token));
             dispatch(plain_actions.loadingCompleted());
             dispatch(pullMyQueues());
@@ -83,7 +85,7 @@ export function signup(email, pass, cb) {
     return function (dispatch) {
         dispatch(plain_actions.startLoading());
         let handleRequestSuccess = function (data) {
-            setCookie("token", data.body.token);
+            setCookie(cookie_token, data.body.token);
             dispatch(plain_actions.setToken(data.body.token));
             dispatch(plain_actions.loadingCompleted());
             cb(0);
@@ -120,7 +122,7 @@ export function createQueue(email, pass) {
 
 export function logout() {
     return function (dispatch) {
-        deleteCookie("token");
+        deleteCookie(cookie_token);
         dispatch(plain_actions.removeToken());
         dispatch(push(paths.login));
     }
@@ -163,7 +165,7 @@ export function pullMyQueues() {
 
 export function init() {
     return function (dispatch) {
-        let token = getCookie("token");
+        let token = getCookie(cookie_token);
         if (token) {
             dispatch(plain_actions.setToken(token));
             dispatch(pullMyQueues());
